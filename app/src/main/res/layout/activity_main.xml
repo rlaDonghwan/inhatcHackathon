@@ -1,82 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
-    <!-- Main Vertical Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="#4A90E2"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="디지털 손주"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp"
+            android:fontFamily="@font/kangwon_tntnche"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <!-- Centered Content -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <!-- Rich Text Equivalent (Title) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="디지털 손주"
-                android:fontFamily="@font/kangwon_tntnche"
-                android:textSize="50sp"
-                android:gravity="center"
-                android:textColor="#36B4FF"/>
-
-            <!-- Image Placeholder -->
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/robot"
-                android:backgroundTint="#36B4FF"
-                android:scaleType="centerCrop"
-                android:layout_gravity="center"
-                android:background="@drawable/rounded_corner"/>
-
-            <!-- Start Button -->
-            <Button
-                android:id="@+id/btnStart"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="100dp"
-                android:text="시작하기"
-                android:fontFamily="@font/kangwon_tntnche"
-                android:textSize="30sp"
-                android:backgroundTint="#36B4FF"
-                android:background="@drawable/rounded_corner"/>
-
-
-        </LinearLayout>
-
-        <!-- Footer Text -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:text="OOO님"
+            android:textColor="#4A90E2"
+            android:textSize="90sp"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:paddingTop="70dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="환영합니다."
+            android:textColor="#000000"
+            android:textSize="70sp"
+            android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:padding="24dp">
+            android:paddingBottom="80dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp">
+
+            <CheckBox
+                android:id="@+id/checkbox_auto_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:buttonTint="#4A90E2"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="/@B1A3"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:gravity="center"/>
-
+                android:text="자동 로그인"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:fontFamily="@font/kangwon_tntnche"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/button_start"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="시작하기"
+            android:backgroundTint="#4A90E2"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:layout_marginBottom="80dp"/>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/logout_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="로그아웃"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:fontFamily="@font/kangwon_tntnche"
+        android:layout_gravity="center_horizontal|bottom"
+        android:paddingBottom="55dp"/>
+</LinearLayout>

@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 // 메인 화면으로 이동
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
                 intent.putExtra("userName", userName);
                 startActivity(intent);
                 finish();
