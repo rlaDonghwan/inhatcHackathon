@@ -37,8 +37,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation("mysql:mysql-connector-java:5.1.49") // MySQL Connector/J 5.1.49 추가
-    implementation ("org.mindrot:jbcrypt:0.4")
+    implementation(libs.mysql.connector.java.v5149) // MySQL Connector/J 5.1.49 추가
+    implementation (libs.jbcrypt)
+    implementation (libs.cardview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
