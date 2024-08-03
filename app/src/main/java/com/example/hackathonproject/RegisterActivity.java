@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (result) {
                 Toast.makeText(RegisterActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show();
                 // 회원가입 성공 시 로그인 페이지로 이동
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, SignUpActivity.class);
                 Log.d(TAG, "Starting LoginActivity");
                 startActivity(intent);
                 finish(); // 현재 액티비티 종료
