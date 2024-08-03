@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="디지털 손주"
                 android:fontFamily="@font/kangwon_tntnche"
-                android:textSize="50sp"
+                android:textSize  ="50sp"
                 android:gravity="center"
                 android:textColor="#36B4FF"/>
 
@@ -55,8 +55,8 @@
                 android:text="시작하기"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize="30sp"
-                android:backgroundTint="#36B4FF"
-                android:background="@drawable/rounded_corner"/>
+                android:backgroundTint="#36B4FF"/>
+
 
 
         </LinearLayout>
