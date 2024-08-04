@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="디지털 손주"
+                android:text="@string/projectName"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize  ="50sp"
                 android:gravity="center"
