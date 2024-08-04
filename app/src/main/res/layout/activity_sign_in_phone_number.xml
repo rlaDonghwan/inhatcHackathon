@@ -4,29 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F4F6"
-    tools:context=".SignUpActivity">
+    tools:context=".SignInPhoneNumActivity">
 
     <!-- Custom Appbar Widget -->
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/back_button"
-        android:layout_alignParentStart="true" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/skyBlue"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="4dp">
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/back_button" />
+    </androidx.appcompat.widget.Toolbar>
 
     <!-- Title Text -->
     <TextView
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/back_button"
+        android:layout_below="@id/toolbar"
         android:layout_marginTop="24dp"
         android:text="전화번호를\n입력해주세요"
         android:textSize="40sp"
-        android:textStyle="bold"
         android:fontFamily="@font/kangwon_tntnche"
         android:letterSpacing="0.1"
         android:paddingStart="16dp"
@@ -61,9 +69,7 @@
         android:layout_marginEnd="16dp"
         android:text="확인"
         android:textSize="30sp"
-        android:textStyle="bold"
-        android:backgroundTint="@color/secondaryColor"
-
+        android:backgroundTint="@color/skyBlue"
         android:fontFamily="@font/kangwon_tntnche" />
 
     <!-- Footer Section -->
