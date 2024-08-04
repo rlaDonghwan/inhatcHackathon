@@ -31,6 +31,8 @@
         <activity android:name=".SignInPWActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".EducationActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
 
     </application>
 </manifest>

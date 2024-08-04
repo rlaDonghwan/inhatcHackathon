@@ -52,28 +52,6 @@
             android:gravity="center"
             android:paddingBottom="80dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingBottom="20dp">
-
-            <CheckBox
-                android:id="@+id/checkbox_auto_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:buttonTint="@color/skyBlue"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="자동 로그인"
-                android:textColor="#000000"
-                android:textSize="25sp"
-                android:fontFamily="@font/kangwon_tntnche"/>
-        </LinearLayout>
 
         <Button
             android:id="@+id/button_start"
@@ -96,5 +74,5 @@
         android:textSize="20sp"
         android:fontFamily="@font/kangwon_tntnche"
         android:layout_gravity="center_horizontal|bottom"
-        android:paddingBottom="55dp"/>
+        android:paddingBottom="20dp"/>
 </LinearLayout>
