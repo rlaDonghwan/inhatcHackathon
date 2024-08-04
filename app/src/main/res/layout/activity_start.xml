@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashActivity">
+    tools:context=".StartActivity">
 
     <!-- Main Vertical Layout -->
     <LinearLayout
@@ -31,11 +31,9 @@
                 android:layout_height="wrap_content"
                 android:text="디지털 손주"
                 android:fontFamily="@font/kangwon_tntnche"
-                android:textSize="70sp"
+                android:textSize  ="50sp"
                 android:gravity="center"
-                android:textColor="#36B4FF"
-                android:paddingTop="30dp"
-                android:paddingBottom="20dp"/>
+                android:textColor="#36B4FF"/>
 
             <!-- Image Placeholder -->
             <ImageView
@@ -57,10 +55,7 @@
                 android:text="시작하기"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize="30sp"
-                android:backgroundTint="#36B4FF"
-                android:background="@drawable/rounded_corner"/>
-
-
+                android:backgroundTint="#36B4FF"/>
         </LinearLayout>
 
         <!-- Footer Text -->
@@ -74,11 +69,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="/@B1A3"
+                android:text="@string/b1a3"
                 android:textSize="15sp"
-                android:textStyle="bold"
                 android:gravity="center"/>
-
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
