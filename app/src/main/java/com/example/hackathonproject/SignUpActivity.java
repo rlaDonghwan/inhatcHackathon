@@ -3,7 +3,6 @@ package com.example.hackathonproject;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -17,10 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -31,13 +30,16 @@ public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
 
     private EditText etName, etPassword, etPhoneNum, etBirthYear, etMonth, etDay;
-    private Button btnRegister;
     private CheckBox cbIsOrganization;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        // 뒤로가기 버튼 설정
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> onBackPressed());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
         etMonth = findViewById(R.id.month_input);
         etDay = findViewById(R.id.day_input);
         cbIsOrganization = findViewById(R.id.checkbox);
-        btnRegister = findViewById(R.id.sign_up_button);
+        Button btnRegister = findViewById(R.id.sign_up_button);
 
         // 전화번호 입력 시 자동으로 하이픈 추가 및 최대 길이 13자리로 설정
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});

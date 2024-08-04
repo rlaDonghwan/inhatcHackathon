@@ -50,6 +50,10 @@ public class SignInPWActivity extends AppCompatActivity {
                 Toast.makeText(SignInPWActivity.this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
+
     }
 
     // 비동기 작업으로 사용자 로그인 처리

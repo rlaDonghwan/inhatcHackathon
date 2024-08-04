@@ -30,7 +30,7 @@
         <activity android:name=".SignInPhoneNumActivity" />
         <activity android:name=".SignInPWActivity" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".MainActivity" />
 
     </application>
 </manifest>
