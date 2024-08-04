@@ -1,9 +1,37 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Base.Theme.HackathonProject" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.HackathonProject" parent="Base.Theme.HackathonProject" />
+    <style name="Theme.HackathonProject" parent="Base.Theme.HackathonProject">
+        <!-- Customize your theme here -->
+        <item name="android:selectableItemBackground">@null</item>
+        <item name="android:selectableItemBackgroundBorderless">@null</item>
+
+        <!-- 기본 버튼 스타일 -->
+        <item name="buttonStyle">@style/CustomButton</item>
+        <!-- 기본 텍스트뷰 스타일 -->
+        <item name="android:textViewStyle">@style/CustomTextView</item>
+    </style>
+
+    <!-- 버튼에 대한 커스텀 스타일 -->
+    <style name="CustomButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@null</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
+    <!-- 텍스트뷰에 대한 커스텀 스타일 -->
+    <style name="CustomTextView" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@null</item>
+    </style>
+
+    <!-- 클릭 효과 제거를 위한 커스텀 스타일 -->
+    <style name="NoClickEffect">
+        <item name="android:background">@null</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:foreground">@null</item>
+    </style>
 </resources>

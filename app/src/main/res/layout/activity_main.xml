@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="#4A90E2"
+        android:background="@color/skyBlue"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingTop="10dp">
@@ -19,10 +19,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/kangwon_tntnche"
             android:text="디지털 손주"
             android:textColor="#FFFFFF"
-            android:textSize="35sp"
-            android:fontFamily="@font/kangwon_tntnche"/>
+            android:textSize="35sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -33,10 +33,11 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/welcome_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="OOO님"
-            android:textColor="#4A90E2"
+            android:textColor="@color/skyBlue"
             android:textSize="90sp"
             android:fontFamily="@font/kangwon_tntnche"
             android:paddingTop="70dp"/>
@@ -63,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:buttonTint="#4A90E2"/>
+                android:buttonTint="@color/skyBlue"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,7 +80,7 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:text="시작하기"
-            android:backgroundTint="#4A90E2"
+            android:backgroundTint="@color/skyBlue"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:fontFamily="@font/kangwon_tntnche"

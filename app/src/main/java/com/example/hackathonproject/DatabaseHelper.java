@@ -34,13 +34,40 @@ public class DatabaseHelper {
         return conn;
     }
 
+    // 사용자가 이미 존재하는지 확인하는 메서드
+    public boolean isUserExist(String phoneNum) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM User WHERE PhoneNumber = ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, phoneNum);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;  // 사용자가 존재하면 true 반환
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to check if user exists", e);
+            throw e;
+        }
+        return false;
+    }
+
     // 새로운 사용자를 데이터베이스에 등록하는 메서드
-    public void registerUser(String name, String password, String phoneNum, String birthDate) throws SQLException {
+    public void registerUser(String name, String password, String phoneNum, String birthDate, boolean isOrganization) throws SQLException {
+        // 사용자가 이미 존재하는지 확인
+        if (isUserExist(phoneNum)) {
+            throw new SQLException("User already exists with phone number: " + phoneNum);
+        }
+
         int age = -1;
         String role = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            age = calculateAge(birthDate); // 나이 계산
-            role = determineRole(age); // 사용자 역할 결정
+        if (isOrganization) {
+            role = "기관";
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                age = calculateAge(birthDate); // 나이 계산
+                role = determineRole(age); // 사용자 역할 결정
+            }
         }
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt()); // 비밀번호 해싱
@@ -108,5 +135,4 @@ public class DatabaseHelper {
             throw e;
         }
     }
-
 }
