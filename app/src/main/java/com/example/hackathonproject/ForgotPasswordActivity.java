@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.sql.SQLException;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-
+    //동환---------------------------------------------------------------------------------------------------------
     private static final int PERMISSIONS_REQUEST_SEND_SMS = 2323; // SMS 권한 요청 코드
     private static final String TAG = "ForgotPasswordActivity"; // 디버깅을 위한 태그
 
@@ -207,4 +207,5 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         }
     }
+    //동환---------------------------------------------------------------------------------------------------------
 }

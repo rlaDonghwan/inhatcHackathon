@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class DatabaseHelper {
+    //동환---------------------------------------------------------------------------------------------------------
     private static final String TAG = "DatabaseHelper";
     private static final String URL = "jdbc:mysql://projectdb.cno4e4q0ev10.ap-northeast-2.rds.amazonaws.com:3306/project";  // 올바른 RDS 엔드포인트
     private static final String USER = "admin";
@@ -157,5 +158,6 @@ public class DatabaseHelper {
             throw e; // 예외 발생
         }
     }
+    //동환---------------------------------------------------------------------------------------------------------
 }
 

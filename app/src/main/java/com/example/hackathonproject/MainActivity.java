@@ -12,8 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-
-    private CheckBox autoLoginCheckbox; // 자동 로그인 체크박스
+    //동환---------------------------------------------------------------------------------------------------------
     private Button startButton; // 시작하기 버튼
     private TextView logoutTextView; // 로그아웃 텍스트뷰
     private TextView welcomeTextView; // 환영 메시지 텍스트뷰
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         // SharedPreferences에서 사용자 이름과 자동 로그인 상태를 가져옴
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         String userName = sharedPreferences.getString("userName", "사용자"); // 사용자 이름 가져오기
-        boolean isAutoLogin = sharedPreferences.getBoolean("autoLogin", false); // 자동 로그인 상태 가져오기
 
         // 사용자 이름을 환영 메시지에 설정
         welcomeTextView = findViewById(R.id.welcome_text); // 환영 메시지 텍스트뷰 찾기
@@ -51,4 +49,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent); // EducationActivity 시작
         });
     }
+    //동환---------------------------------------------------------------------------------------------------------
 }

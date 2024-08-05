@@ -26,9 +26,8 @@ import androidx.appcompat.widget.Toolbar;
 import java.sql.SQLException;
 
 public class SignUpActivity extends AppCompatActivity {
-
+    //동환---------------------------------------------------------------------------------------------------------
     private static final String TAG = "SignUpActivity";
-
     private EditText etName, etPassword, etPhoneNum, etBirthYear, etMonth, etDay;
     private CheckBox cbIsOrganization;
 
@@ -291,4 +290,5 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
     }
+    //동환---------------------------------------------------------------------------------------------------------
 }
