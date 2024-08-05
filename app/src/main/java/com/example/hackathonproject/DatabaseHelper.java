@@ -12,10 +12,13 @@ import java.time.format.DateTimeParseException;
 
 import android.os.Build;
 import android.util.Log;
+
 import androidx.annotation.RequiresApi;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 public class DatabaseHelper {
+    //동환---------------------------------------------------------------------------------------------------------
     private static final String TAG = "DatabaseHelper";
     private static final String URL = "jdbc:mysql://projectdb.cno4e4q0ev10.ap-northeast-2.rds.amazonaws.com:3306/project";  // 올바른 RDS 엔드포인트
     private static final String USER = "admin";
@@ -36,20 +39,23 @@ public class DatabaseHelper {
 
     // 사용자가 이미 존재하는지 확인하는 메서드
     public boolean isUserExist(String phoneNum) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM User WHERE PhoneNumber = ?"; // 전화번호로 사용자 존재 여부 확인 쿼리
+        String sql = "SELECT COUNT(*) FROM User WHERE PhoneNumber = ?";
+        Log.d(TAG, "Executing query: " + sql + " with phone number: " + phoneNum);
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, phoneNum); // 전화번호 바인딩
+            pstmt.setString(1, phoneNum); // 하이픈이 포함된 전화번호 바인딩
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0;  // 사용자가 존재하면 true 반환
+                    int count = rs.getInt(1);
+                    Log.d(TAG, "User count for phone number " + phoneNum + ": " + count);
+                    return count > 0;
                 }
             }
         } catch (SQLException e) {
-            Log.e(TAG, "Failed to check if user exists", e); // 확인 실패 로그
-            throw e; // 예외 발생
+            Log.e(TAG, "Failed to check if user exists", e);
+            throw e;
         }
-        return false; // 사용자가 존재하지 않으면 false 반환
+        return false;
     }
 
     // 새로운 사용자를 데이터베이스에 등록하는 메서드
@@ -135,4 +141,23 @@ public class DatabaseHelper {
             throw e; // 예외 발생
         }
     }
+
+    // 비밀번호 변경 메서드
+    public boolean changePassword(String phoneNum, String newPassword) throws SQLException {
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt()); // 새 비밀번호 해싱
+        String sql = "UPDATE User SET Password = ? WHERE PhoneNumber = ?"; // 비밀번호 변경 쿼리
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, hashedPassword); // 해싱된 비밀번호 바인딩
+            pstmt.setString(2, phoneNum); // 전화번호 바인딩
+            int rowsAffected = pstmt.executeUpdate(); // 쿼리 실행
+            Log.d(TAG, "Password updated for phone number: " + phoneNum + ", Rows affected: " + rowsAffected); // 비밀번호 변경 로그
+            return rowsAffected > 0; // 변경 성공 여부 반환
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to change password: " + e.getErrorCode() + " - " + e.getSQLState(), e); // 변경 실패 로그
+            throw e; // 예외 발생
+        }
+    }
+    //동환---------------------------------------------------------------------------------------------------------
 }
+
