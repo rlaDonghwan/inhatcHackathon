@@ -25,7 +25,7 @@ public class SignInPWActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in_pw); // 레이아웃 설정
+        setContentView(R.layout.activity_sign_in_password); // 레이아웃 설정
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); // 툴바 설정
