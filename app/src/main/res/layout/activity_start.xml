@@ -33,7 +33,7 @@
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize  ="50sp"
                 android:gravity="center"
-                android:textColor="#36B4FF"/>
+                android:textColor="@color/skyBlue"/>
 
             <!-- Image Placeholder -->
             <ImageView
@@ -41,7 +41,7 @@
                 android:layout_height="150dp"
                 android:layout_marginTop="20dp"
                 android:src="@drawable/robot"
-                android:backgroundTint="#36B4FF"
+                android:backgroundTint="@color/skyBlue"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:background="@drawable/rounded_corner"/>
@@ -55,7 +55,7 @@
                 android:text="시작하기"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize="30sp"
-                android:backgroundTint="#36B4FF"/>
+                android:backgroundTint="@color/skyBlue"/>
         </LinearLayout>
 
         <!-- Footer Text -->

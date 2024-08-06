@@ -25,7 +25,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="@string/eduTitle"
+            android:text="@string/seminorTitle"
             android:textColor="#FFFFFF"
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
@@ -221,14 +221,14 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/study"
-                app:tint="@color/skyBlue"/>
+                app:tint="@android:color/darker_gray"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="교육 받기"
                 android:fontFamily="@font/kangwon_tntnche"
-                android:textColor="@color/skyBlue"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="12sp"
                 android:layout_marginTop="5dp" />
         </LinearLayout>
@@ -246,13 +246,13 @@
                 android:layout_height="30dp"
                 android:src="@drawable/teach"
                 android:layout_marginTop="3dp"
-                app:tint="@android:color/darker_gray" />
+                app:tint="@color/skyBlue" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="강연자 신청"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/skyBlue"
                 android:textSize="12sp"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:layout_marginTop="7dp"/>
