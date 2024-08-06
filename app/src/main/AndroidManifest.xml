@@ -4,7 +4,14 @@
     package="com.example.hackathonproject">
 
     <!-- 인터넷 접근 권한 추가 -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
 
     <application
         android:allowBackup="true"
@@ -33,6 +40,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".EducationActivity" />
         <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".ChangePasswordActivity" />
 
     </application>
 </manifest>

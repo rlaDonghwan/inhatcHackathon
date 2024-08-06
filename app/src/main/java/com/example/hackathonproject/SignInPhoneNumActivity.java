@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class SignInPhoneNumActivity extends AppCompatActivity {
-
+    //동환---------------------------------------------------------------------------------------------------------
     private EditText phoneInput; // 전화번호 입력 필드
     private Button confirmButton; // 확인 버튼
     private Button createAccountButton; // 계정 생성 버튼
@@ -105,4 +105,5 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
             }
         }
     }
+    //동환---------------------------------------------------------------------------------------------------------
 }
