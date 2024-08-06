@@ -3,11 +3,13 @@
     <string name="back_button">뒤로 가기</string>
     <string name="confirm_button">확인</string>
     <string name="apply_button">신청하기</string>
+    <string name="submit_button">올리기</string>
     <string name="create_account_button">계정 만들기</string>
     <string name="b1a3">\@B1A3</string>
     <string name="projectName">디지털 손주</string>
     <string name="Button">+</string>
     <string name="eduTitle">교육 받기</string>
+    <string name="seminorTitle">강연자 신청</string>
     <string name="buttonDescription">write post</string>
 </resources>
 

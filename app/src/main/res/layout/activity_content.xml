@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#F2F4F6">
 
     <!-- Toolbar -->
@@ -50,8 +51,8 @@
             android:id="@+id/teacher_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OOO 선생님"
-            android:textSize="25sp"
+            android:text="작성자 | OOO"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -62,7 +63,7 @@
             android:text="20xx. 08. 03"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:layout_gravity="end" />
+            android:textAlignment="viewEnd" />
     </LinearLayout>
 
     <!-- Divider -->
@@ -107,7 +108,7 @@
         android:text="@string/apply_button"
         android:fontFamily="@font/kangwon_tntnche"
         android:textSize="25sp"
-        android:backgroundTint="#36B4FF"
+        android:backgroundTint="@color/skyBlue"
         android:textColor="#FFFFFF"
         android:gravity="center"
         android:padding="10dp"
