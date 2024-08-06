@@ -41,6 +41,7 @@
         <activity android:name=".EducationActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".ChangePasswordActivity" />
+        <activity android:name=".WriteActivity"/>
 
     </application>
 </manifest>

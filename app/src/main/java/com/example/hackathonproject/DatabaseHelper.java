@@ -9,7 +9,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
@@ -159,5 +162,84 @@ public class DatabaseHelper {
         }
     }
     //동환---------------------------------------------------------------------------------------------------------
+
+    //----------------------------------------------주진DB------------------------------------------------------------------------------
+    public boolean insertEducation(String title, String description) {
+        String sql = "INSERT INTO Education (Title, Description, Date, OrganizerID, OrganizerRole, EducatorID, Location, Status) " +
+                "VALUES (?, ?, CURDATE(), 1, '기관', 1, '서울', '등록')";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            pstmt.setString(2, description);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to insert education", e);
+            return false;
+        }
+    }
+
+    // AsyncTask를 사용하여 교육 정보를 비동기로 삽입하는 메서드
+    public void insertEducationAsync(String title, String description, DatabaseCallback callback) {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return insertEducation(title, description);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (callback != null) {
+                    callback.onQueryComplete(result);
+                }
+            }
+        }.execute();
+    }
+
+    // AsyncTask를 사용하여 교육 정보를 비동기로 가져오는 메서드
+    public void getAllEducationsAsync(DatabaseCallback callback) {
+        new AsyncTask<Void, Void, List<Education>>() {
+            @Override
+            protected List<Education> doInBackground(Void... voids) {
+                return getAllEducations();
+            }
+
+            @Override
+            protected void onPostExecute(List<Education> educationList) {
+                if (callback != null) {
+                    callback.onQueryComplete(educationList);
+                }
+            }
+        }.execute();
+    }
+
+    public List<Education> getAllEducations() {
+        List<Education> educationList = new ArrayList<>();
+        String sql = "SELECT Title, Description, Location, Status FROM Education";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String location = rs.getString("Location");
+                int views = 0; // 조회수는 따로 관리하거나 계산하는 로직이 필요
+                educationList.add(new Education(title, description, location, views));
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to load educations", e);
+        }
+
+        return educationList;
+    }
+
+    // 콜백 인터페이스
+    public interface DatabaseCallback {
+        void onQueryComplete(Object result);
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------
 }
 
