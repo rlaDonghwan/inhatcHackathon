@@ -34,6 +34,9 @@ public class EducationContentView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
+        // Toolbar 제목을 빈 문자열로 설정
+        getSupportActionBar().setTitle("");
+
         postId = getIntent().getIntExtra("postId", -1);
 
         contentTextView = findViewById(R.id.content_text);
@@ -71,20 +74,18 @@ public class EducationContentView extends AppCompatActivity {
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
         popup.getMenu().add(0, 0, 0, "게시글 수정");
-        popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제"); // Condensed title for styling
+        popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제");
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case 0:
-                        // 게시글 수정 기능
                         Intent intent = new Intent(EducationContentView.this, WriteActivity.class);
                         intent.putExtra("postId", postId);
                         startActivity(intent);
                         return true;
                     case 1:
-                        // 게시글 삭제 기능
                         confirmDeletePost();
                         return true;
                     default:
@@ -122,5 +123,23 @@ public class EducationContentView extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        navigateBackToEducationActivity();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        navigateBackToEducationActivity();
+    }
+
+    private void navigateBackToEducationActivity() {
+        Intent intent = new Intent(this, EducationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 }
