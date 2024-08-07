@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="#F2F4F6">
+    android:background="#F2F4F6"
+    tools:context=".Edu.EducationContentView">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -26,14 +26,26 @@
             tools:ignore="UsingOnClickInXml" />
 
         <TextView
+            android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="제목입니다."
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="35sp"
+            android:visibility="gone" /> <!-- 제목 숨기기 -->
+
+        <ImageButton
+            android:id="@+id/menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="@string/menu"
+            app:iconTint="@android:color/white"
+            tools:ignore="UsingOnClickInXml" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Info Row -->
@@ -60,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="20xx. 08. 03"
+            android:text="2024-08-06 13:33"
             android:textSize="15sp"
             android:textStyle="bold"
             android:textAlignment="viewEnd" />
@@ -91,7 +103,7 @@
             android:id="@+id/content_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="안녕하세요!\n\n실버계층 대상으로 디지털 교육을\n진행하는 OOO 입니다.\n\n.\n.\n.\n.\n.\n.\n\n내용 들어가는"
+            android:text="예시"
             android:textSize="30sp"
             android:textStyle="bold"
             android:textColor="#000000" />

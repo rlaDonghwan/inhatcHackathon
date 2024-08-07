@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartActivity">
+    android:background="@android:color/white"
+    tools:context=".Login.StartActivity">
 
     <!-- Main Vertical Layout -->
     <LinearLayout
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/projectName"
                 android:fontFamily="@font/kangwon_tntnche"
-                android:textSize  ="50sp"
+                android:textSize="50sp"
                 android:gravity="center"
                 android:textColor="@color/skyBlue"/>
 

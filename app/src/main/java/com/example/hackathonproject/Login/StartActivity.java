@@ -1,4 +1,4 @@
-package com.example.hackathonproject;
+package com.example.hackathonproject.Login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.hackathonproject.MainActivity;
+import com.example.hackathonproject.R;
 
 public class StartActivity extends AppCompatActivity {
     //동환---------------------------------------------------------------------------------------------------------
