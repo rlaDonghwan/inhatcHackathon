@@ -15,7 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <ImageButton
-            android:id="@+id/backs_button"
+            android:id="@+id/back_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="start"
