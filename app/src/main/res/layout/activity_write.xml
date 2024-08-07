@@ -114,6 +114,8 @@
         android:textColor="@android:color/black" />
 
     <!-- Content EditText -->
+
+    <!-- Submit Button -->
     <EditText
         android:id="@+id/content_edit_text"
         android:layout_width="388dp"
@@ -132,7 +134,6 @@
         android:textColor="@android:color/black"
         android:textSize="17sp" />
 
-    <!-- Submit Button -->
     <Button
         android:id="@+id/btnSummit"
         android:layout_width="150dp"

@@ -5,22 +5,28 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.hackathonproject.Edu.EducationPost;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 public class DatabaseHelper {
-    //동환---------------------------------------------------------------------------------------------------------
     private static final String TAG = "DatabaseHelper";
-    private static final String URL = "jdbc:mysql://projectdb.cno4e4q0ev10.ap-northeast-2.rds.amazonaws.com:3306/project";  // 올바른 RDS 엔드포인트
+    private static final String URL = "jdbc:mysql://projectdb.cno4e4q0ev10.ap-northeast-2.rds.amazonaws.com:3306/project?useSSL=false";
     private static final String USER = "admin";
     private static final String PASSWORD = "inhatc2024";
 
@@ -158,6 +164,206 @@ public class DatabaseHelper {
             throw e; // 예외 발생
         }
     }
-    //동환---------------------------------------------------------------------------------------------------------
-}
 
+    //----------------------------------------------주진DB------------------------------------------------------------------------------
+
+    // 교육 게시글 삽입 메서드
+    public boolean insertEducationPost(String title, String category, String content, String location) {
+        String sql = "INSERT INTO EducationPost (UserID, Title, Category, Content, Location) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, getCurrentUserId()); // 현재 사용자 ID 가져오기
+            pstmt.setString(2, title);
+            pstmt.setString(3, category);
+            pstmt.setString(4, content);
+            pstmt.setString(5, location);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to insert post", e);
+            return false;
+        }
+    }
+
+    // 비동기 게시글 삽입 메서드
+    @SuppressLint("StaticFieldLeak")
+    public void insertEducationPostAsync(String title, String category, String content, String location, DatabaseCallback callback) {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return insertEducationPost(title, category, content, location);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (callback != null) {
+                    callback.onQueryComplete(result);
+                }
+            }
+        }.execute();
+    }
+
+    // 현재 사용자의 ID를 가져오는 메서드 (여기서는 임시로 1을 반환)
+    private int getCurrentUserId() {
+        return 1; // 실제로는 로그인한 사용자의 ID를 반환해야 함
+    }
+
+    // 모든 게시글 가져오기 메서드
+    public List<EducationPost> getAllEducationPosts() {
+        List<EducationPost> postList = new ArrayList<>();
+        String sql = "SELECT e.PostID, e.Title, e.Category, e.Content, e.Location, e.Views, e.CreatedAt, u.Name " +
+                "FROM EducationPost e JOIN User u ON e.UserID = u.UserID";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                int postId = rs.getInt("PostID");
+                String title = rs.getString("Title");
+                String category = rs.getString("Category");
+                String content = rs.getString("Content");
+                String location = rs.getString("Location");
+                int views = rs.getInt("Views");
+                Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                String userName = rs.getString("Name");
+
+                postList.add(new EducationPost(postId, title, category, content, location, views, createdAt, userName));
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to load posts", e);
+        }
+        return postList;
+    }
+
+    // 비동기 모든 게시글 가져오기 메서드
+    @SuppressLint("StaticFieldLeak")
+    public void getAllEducationPostsAsync(DatabaseCallback callback) {
+        new AsyncTask<Void, Void, List<EducationPost>>() {
+            @Override
+            protected List<EducationPost> doInBackground(Void... voids) {
+                return getAllEducationPosts();
+            }
+
+            @Override
+            protected void onPostExecute(List<EducationPost> posts) {
+                if (callback != null) {
+                    callback.onQueryComplete(posts);
+                }
+            }
+        }.execute();
+    }
+
+    // 게시글 ID로 게시글 가져오기 비동기 메서드
+    @SuppressLint("StaticFieldLeak")
+    public void getEducationPostByIdAsync(int postId, DatabaseCallback callback) {
+        new AsyncTask<Void, Void, EducationPost>() {
+            @Override
+            protected EducationPost doInBackground(Void... voids) {
+                return getEducationPostById(postId);
+            }
+
+            @Override
+            protected void onPostExecute(EducationPost post) {
+                if (callback != null) {
+                    callback.onQueryComplete(post);
+                }
+            }
+        }.execute();
+    }
+
+    // 게시글 조회수 증가 메서드
+    public void incrementPostViews(int postId) {
+        String sql = "UPDATE EducationPost SET Views = Views + 1 WHERE PostID = ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, postId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to update post views", e);
+        }
+    }
+
+
+    // 게시글 ID로 게시글 가져오기 메서드
+    public EducationPost getEducationPostById(int postId) {
+        String sql = "SELECT PostID, Title, Category, Content, Location, Views, CreatedAt, UserID FROM EducationPost WHERE PostID = ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, postId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("PostID");
+                    String title = rs.getString("Title");
+                    String category = rs.getString("Category");
+                    String content = rs.getString("Content");
+                    String location = rs.getString("Location");
+                    int views = rs.getInt("Views");
+                    Timestamp createdAt = rs.getTimestamp("CreatedAt");
+                    int userId = rs.getInt("UserID");
+
+                    // 작성자 이름을 가져오는 쿼리 추가
+                    String userName = getUserNameById(userId);
+
+                    return new EducationPost(id, title, category, content, location, views, createdAt, userName);
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to load post by ID", e);
+        }
+        return null;
+    }
+
+    // 게시글 삭제 비동기 메서드
+    @SuppressLint("StaticFieldLeak")
+    public void deleteEducationPostAsync(int postId, DatabaseCallback callback) {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return deleteEducationPost(postId);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (callback != null) {
+                    callback.onQueryComplete(result);
+                }
+            }
+        }.execute();
+    }
+
+    // 게시글 삭제 메서드
+    public boolean deleteEducationPost(int postId) {
+        String sql = "DELETE FROM EducationPost WHERE PostID = ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, postId);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to delete post", e);
+            return false;
+        }
+    }
+
+    // 사용자 ID로 사용자 이름 가져오기 메서드
+    private String getUserNameById(int userId) {
+        String sql = "SELECT Name FROM User WHERE UserID = ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Name");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to load user name by ID", e);
+        }
+        return null;
+    }
+
+    // DatabaseCallback 인터페이스 추가
+    public interface DatabaseCallback {
+        void onQueryComplete(Object result);
+    }
+}

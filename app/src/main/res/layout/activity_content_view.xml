@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F4F6">
+    android:background="#F2F4F6"
+    tools:context=".Edu.EducationContentView">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -16,27 +16,36 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <ImageButton
-            android:id="@+id/backs_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:scaleType="centerInside"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_arrow_back"
-            android:fontFamily="@font/kangwon_tntnche"
-            android:textStyle="bold"
             app:iconTint="@android:color/white"
-            android:contentDescription="@string/back_button" />
+            tools:ignore="UsingOnClickInXml" />
 
         <TextView
+            android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="제목입니다."
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="35sp"
+            android:visibility="gone" /> <!-- 제목 숨기기 -->
+
+        <ImageButton
+            android:id="@+id/menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="메뉴"
+            app:iconTint="@android:color/white"
+            tools:ignore="UsingOnClickInXml" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Info Row -->
@@ -56,17 +65,17 @@
             android:layout_height="wrap_content"
             android:text="작성자 | OOO"
             android:textSize="20sp"
-            android:fontFamily="@font/im_hyemin_regular" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="20xx. 08. 03"
-            android:textSize="17sp"
-            android:textAlignment="viewEnd"
-            android:fontFamily="@font/im_hyemin_regular" />
+            android:text="2024-08-06 13:33"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textAlignment="viewEnd" />
     </LinearLayout>
 
     <!-- Divider -->
@@ -81,9 +90,10 @@
     <ScrollView
         android:id="@+id/content_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/btnApply"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_below="@id/info_row"
+        android:layout_above="@id/btnApply"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:paddingStart="20dp"
@@ -93,17 +103,17 @@
             android:id="@+id/content_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/im_hyemin_bold"
-            android:text="@string/contentMsg"
-            android:textColor="#000000"
-            android:textSize="30sp" />
+            android:text="안녕하세요!\n\n실버계층 대상으로 디지털 교육을\n진행하는 OOO 입니다.\n\n.\n.\n.\n.\n.\n.\n\n내용 들어가는"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
     </ScrollView>
 
     <!-- Apply Button -->
     <Button
         android:id="@+id/btnApply"
         android:layout_width="150dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
@@ -115,13 +125,4 @@
         android:gravity="center"
         android:padding="10dp"
         android:backgroundTintMode="src_in" />
-
-    <!-- Divider Above Button -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_above="@id/btnApply"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="5dp"
-        android:background="#9B9D9F" />
 </RelativeLayout>
