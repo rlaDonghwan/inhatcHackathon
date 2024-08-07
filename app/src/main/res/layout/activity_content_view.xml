@@ -43,7 +43,7 @@
             android:layout_gravity="end"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_more_vert"
-            android:contentDescription="@string/menu"
+            android:contentDescription="메뉴"
             app:iconTint="@android:color/white"
             tools:ignore="UsingOnClickInXml" />
     </androidx.appcompat.widget.Toolbar>
@@ -103,7 +103,7 @@
             android:id="@+id/content_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="예시"
+            android:text="안녕하세요!\n\n실버계층 대상으로 디지털 교육을\n진행하는 OOO 입니다.\n\n.\n.\n.\n.\n.\n.\n\n내용 들어가는"
             android:textSize="30sp"
             android:textStyle="bold"
             android:textColor="#000000" />
