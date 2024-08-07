@@ -89,8 +89,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="내 정보 수정하기"
-                    android:fontFamily="@font/chosun_gu"
+                    android:text="@string/editProfileTitle"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -120,8 +120,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="B1A3 소개"
-                    android:fontFamily="@font/chosun_gu"
+                    android:text="@string/app_infoTitle"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -152,8 +152,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="질문 접수하기"
-                    android:fontFamily="@font/chosun_gu"
+                    android:text="@string/qna"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -185,8 +185,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="로그아웃"
-                android:fontFamily="@font/chosun_gu"
+                android:text="@string/logoutTitle"
+                android:fontFamily="@font/im_hyemin_bold"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
