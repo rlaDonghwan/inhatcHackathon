@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">디지털 손주</string>
     <string name="back_button">뒤로 가기</string>
+    <string name="title">제목</string>
+    <string name="content">내용</string>
+    <string name="qna">질문 접수하기</string>
     <string name="confirm_button">확인</string>
     <string name="apply_button">신청하기</string>
     <string name="submit_button">올리기</string>
@@ -10,6 +13,10 @@
     <string name="Button">+</string>
     <string name="eduTitle">교육 받기</string>
     <string name="seminorTitle">강연자 신청</string>
+    <string name="settingTitle">설정</string>
     <string name="buttonDescription">write post</string>
+    <string name="contentMsg">안녕하세요!\n\n실버계층 대상으로 디지털 교육을\n진행하는 OOO 입니다.\n\n.\n.\n.\n.\n.\n.\n\n내용 들어가는 부분</string>
+    <string name="welcomeMsg">디지털 손주를 이용해주셔서 감사합니다!\n\n불편한 점은 [질문 접수하기] 를 이용해주세요.</string>
+    <string name="b1a3_info">안녕하십니까 이용자 여러분\n개발팀 B1A3 입니다.\n\n저희는 여러분의 더욱 활발한 사회활동을 위해 디지털 손주를 개발하게 되었습니다.\n여러분의 불편사항을 듣고 고쳐가며 디지털 손주를 더욱 퀄리티 있게 개발해나가겠습니다.\n\n이용해주셔서 감사합니다.</string>
 </resources>
 
