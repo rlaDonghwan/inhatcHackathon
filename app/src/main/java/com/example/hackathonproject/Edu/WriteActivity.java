@@ -23,7 +23,7 @@ public class WriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
 
-        ImageButton backButton = findViewById(R.id.backs_button); // 뒤로가기 버튼
+        ImageButton backButton = findViewById(R.id.back_button); // 뒤로가기 버튼
         backButton.setOnClickListener(v -> onBackPressed());
 
         titleEditText = findViewById(R.id.title_edit_text); // 제목 입력 필드 초기화

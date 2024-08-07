@@ -1,5 +1,6 @@
 package com.example.hackathonproject.Edu;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class EducationContentView extends AppCompatActivity {
     private void loadPostContent() {
         DatabaseHelper dbHelper = new DatabaseHelper();
         dbHelper.getEducationPostByIdAsync(postId, new DatabaseHelper.DatabaseCallback() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onQueryComplete(Object result) {
                 EducationPost post = (EducationPost) result;
@@ -133,6 +135,7 @@ public class EducationContentView extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         navigateBackToEducationActivity();
     }
 
