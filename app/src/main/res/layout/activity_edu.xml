@@ -76,8 +76,9 @@
                             android:id="@+id/postDetails1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="10dp"
                             android:text="작성자 | 게시시간"
+                            android:fontFamily="@font/im_hyemin_bold"
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -93,7 +94,9 @@
                             android:id="@+id/postLocation1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:text="위치     |  전국"
+                            android:fontFamily="@font/im_hyemin_bold"
                             android:textSize="14sp"
                             android:textColor="@color/gray" />
 
@@ -102,9 +105,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="조회수 |  123"
+                            android:fontFamily="@font/im_hyemin_bold"
                             android:textSize="14sp"
                             android:textColor="@color/gray"
-                            android:layout_marginTop="8dp" />
+                            android:layout_marginTop="10dp" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -144,10 +148,11 @@
                             android:id="@+id/postDetails2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/im_hyemin_bold"
                             android:text="OOO | 2024.08.05"
-                            android:textSize="14sp"
                             android:textColor="@color/gray"
-                            android:layout_marginTop="8dp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <!-- Right Group: Location and Views -->
@@ -162,7 +167,9 @@
                             android:id="@+id/postLocation2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="위치    |  인천"
+                            android:layout_marginTop="5dp"
+                            android:text="위치     |  인천"
+                            android:fontFamily="@font/im_hyemin_bold"
                             android:textSize="14sp"
                             android:textColor="@color/gray" />
 
@@ -170,10 +177,11 @@
                             android:id="@+id/postViews2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="조회수 |  98"
+                            android:text="조회수 |  98 "
+                            android:fontFamily="@font/im_hyemin_bold"
                             android:textSize="14sp"
                             android:textColor="@color/gray"
-                            android:layout_marginTop="8dp" />
+                            android:layout_marginTop="10dp" />
                     </LinearLayout>
 
                 </RelativeLayout>

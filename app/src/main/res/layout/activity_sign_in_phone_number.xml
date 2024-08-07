@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F2F4F6"
     tools:context=".SignInPhoneNumActivity">
 
@@ -15,15 +16,20 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:elevation="4dp">
+
         <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/backs_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="start"
-            android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_arrow_back"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textStyle="bold"
+            app:iconTint="@android:color/white"
             android:contentDescription="@string/back_button" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Title Text -->
@@ -51,12 +57,12 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/flat_corner"
-        android:fontFamily="@font/kangwon_tntnche"
+        android:fontFamily="@font/im_hyemin_bold"
         android:hint="010 - 1234 - 5678"
         android:inputType="phone"
         android:maxLength="14"
         android:padding="16dp"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <!-- Confirm Button -->
     <Button
@@ -64,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_below="@id/phone_input"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="확인"
@@ -85,22 +91,23 @@
             android:id="@+id/first_time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/kangwon_tntnche"
+            android:fontFamily="@font/im_hyemin_bold"
             android:gravity="center"
             android:text="처음 이용하시나요?"
-            android:textSize="15sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/create_account_button"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="12dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
             android:backgroundTint="#4236B4FF"
             android:elevation="0dp"
-            android:fontFamily="@font/kangwon_tntnche"
+            android:fontFamily="@font/im_hyemin_bold"
             android:letterSpacing="0.1"
             android:text="계정 만들기"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="23sp" />
     </LinearLayout>
 </RelativeLayout>

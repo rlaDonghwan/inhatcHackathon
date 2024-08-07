@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="#F2F4F6">
 
     <!-- Toolbar -->
@@ -16,14 +16,17 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/backs_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="start"
+            android:scaleType="centerInside"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_arrow_back"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textStyle="bold"
             app:iconTint="@android:color/white"
-            tools:ignore="UsingOnClickInXml" />
+            android:contentDescription="@string/back_button" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="작성자 | OOO"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/im_hyemin_regular" />
 
         <TextView
             android:id="@+id/date"
@@ -61,9 +64,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="20xx. 08. 03"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textAlignment="viewEnd" />
+            android:textSize="17sp"
+            android:textAlignment="viewEnd"
+            android:fontFamily="@font/im_hyemin_regular" />
     </LinearLayout>
 
     <!-- Divider -->
@@ -78,10 +81,9 @@
     <ScrollView
         android:id="@+id/content_scroll"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_below="@id/info_row"
+        android:layout_height="wrap_content"
         android:layout_above="@id/btnApply"
+        android:layout_below="@id/info_row"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:paddingStart="20dp"
@@ -91,17 +93,17 @@
             android:id="@+id/content_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="안녕하세요!\n\n실버계층 대상으로 디지털 교육을\n진행하는 OOO 입니다.\n\n.\n.\n.\n.\n.\n.\n\n내용 들어가는"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:textColor="#000000" />
+            android:fontFamily="@font/im_hyemin_bold"
+            android:text="@string/contentMsg"
+            android:textColor="#000000"
+            android:textSize="30sp" />
     </ScrollView>
 
     <!-- Apply Button -->
     <Button
         android:id="@+id/btnApply"
         android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
@@ -113,4 +115,13 @@
         android:gravity="center"
         android:padding="10dp"
         android:backgroundTintMode="src_in" />
+
+    <!-- Divider Above Button -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@id/btnApply"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="5dp"
+        android:background="#9B9D9F" />
 </RelativeLayout>
