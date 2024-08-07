@@ -3,6 +3,7 @@
     <string name="back_button">뒤로 가기</string>
     <string name="title">제목</string>
     <string name="content">내용</string>
+    <string name="qna">질문 접수하기</string>
     <string name="confirm_button">확인</string>
     <string name="apply_button">신청하기</string>
     <string name="submit_button">올리기</string>
