@@ -1,4 +1,4 @@
-package com.example.hackathonproject;
+package com.example.hackathonproject.Login;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.example.hackathonproject.DatabaseHelper;
+import com.example.hackathonproject.R;
 
 import java.sql.SQLException;
 
