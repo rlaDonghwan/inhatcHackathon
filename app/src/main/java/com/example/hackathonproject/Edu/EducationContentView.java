@@ -36,7 +36,13 @@ public class EducationContentView extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         // Toolbar 제목을 빈 문자열로 설정
-        getSupportActionBar().setTitle("");
+        // getSupportActionBar().setTitle("");
+
+        //--------- 예지 -----------
+        // Toolbar 제목 설정을 위한 TextView 찾기
+        titleTextView = findViewById(R.id.toolbar_title);
+        //--------- 예지 -----------
+
 
         postId = getIntent().getIntExtra("postId", -1);
 
@@ -51,6 +57,30 @@ public class EducationContentView extends AppCompatActivity {
         loadPostContent();
     }
 
+//    private void loadPostContent() {
+//        DatabaseHelper dbHelper = new DatabaseHelper();
+//        dbHelper.getEducationPostByIdAsync(postId, new DatabaseHelper.DatabaseCallback() {
+//            @SuppressLint("SetTextI18n")
+//            @Override
+//            public void onQueryComplete(Object result) {
+//                EducationPost post = (EducationPost) result;
+//                if (post != null) {
+//                    titleTextView.setText(post.getTitle());
+//                    contentTextView.setText(post.getContent());
+//                    teacherNameTextView.setText("작성자 | " + post.getUserName());
+//                    dateTextView.setText(post.getCreatedAt().toString().substring(0, 16));
+//
+//                    // 조회수 증가
+//                    dbHelper.incrementPostViews(postId);
+//                } else {
+//                    Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
+
+    // ------------- 에지 -------------
+    // 게시글 내용을 로드하는 메소드에서 제목 설정
     private void loadPostContent() {
         DatabaseHelper dbHelper = new DatabaseHelper();
         dbHelper.getEducationPostByIdAsync(postId, new DatabaseHelper.DatabaseCallback() {
@@ -59,7 +89,7 @@ public class EducationContentView extends AppCompatActivity {
             public void onQueryComplete(Object result) {
                 EducationPost post = (EducationPost) result;
                 if (post != null) {
-                    titleTextView.setText(post.getTitle());
+                    titleTextView.setText(post.getTitle());  // 여기서 제목을 설정
                     contentTextView.setText(post.getContent());
                     teacherNameTextView.setText("작성자 | " + post.getUserName());
                     dateTextView.setText(post.getCreatedAt().toString().substring(0, 16));
@@ -72,6 +102,9 @@ public class EducationContentView extends AppCompatActivity {
             }
         });
     }
+    // ------------- 에지 -------------
+
+
 
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
