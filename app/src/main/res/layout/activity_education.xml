@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F4F6"
-    tools:context="Edu.EducationActivity">
+    tools:context="Education.EducationActivity">
 
     <!-- Custom Appbar Widget -->
 
@@ -70,6 +70,7 @@
 
         <!-- First Menu Item -->
         <LinearLayout
+            android:id="@+id/first_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -80,7 +81,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/study"
-                app:tint="@color/skyBlue" />
+                app:tint="@color/skyBlue"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -94,6 +95,7 @@
 
         <!-- Second Menu Item -->
         <LinearLayout
+            android:id="@+id/second_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -105,7 +107,7 @@
                 android:layout_height="30dp"
                 android:src="@drawable/teach"
                 android:layout_marginTop="3dp"
-                app:tint="@android:color/darker_gray"/>
+                app:tint="@android:color/darker_gray" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -119,6 +121,33 @@
 
         <!-- Third Menu Item -->
         <LinearLayout
+            android:id="@+id/third_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:src="@drawable/chat"
+                android:layout_marginTop="3dp"
+                app:tint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:text="채팅"
+                android:layout_marginTop="3dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Fourth Menu Item -->
+        <LinearLayout
+            android:id="@+id/fourth_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -1,0 +1,147 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F4F6"
+    tools:context=".Setting.EditProfileActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/skyBlue"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/back_button"
+            app:iconTint="@android:color/white" />
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center"
+            android:text="@string/editProfileTitle"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/toolbar"
+        android:padding="16dp">
+
+        <!-- 이름 입력 필드 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이름"
+            android:fontFamily="@font/im_hyemin_bold"
+            android:textSize="23sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="홍길동"
+            android:fontFamily="@font/im_hyemin_regular"
+            android:textColor="@color/gray"
+            android:textSize="17sp"
+            android:background="@drawable/edit_text_background"
+            android:padding="10dp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="본명으로 작성해 주세요."
+            android:fontFamily="@font/im_hyemin_regular"
+            android:textSize="17sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp" />
+
+        <!-- 비밀번호 변경 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="비밀번호 변경"
+            android:fontFamily="@font/im_hyemin_bold"
+            android:textSize="23sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="50dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전화번호 인증 후 비밀번호를 변경하세요."
+            android:fontFamily="@font/im_hyemin_regular"
+            android:textSize="17sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/change_password_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/skyBlue"
+            android:text="비밀번호 변경하기"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center" />
+
+        <!-- 계정 삭제 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="탈퇴하시겠습니까?"
+            android:fontFamily="@font/im_hyemin_bold"
+            android:textSize="23sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="180dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="계정 정보가 삭제되고 재가입해야합니다."
+            android:fontFamily="@font/im_hyemin_regular"
+            android:textSize="17sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/delete_account_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/bg_red"
+            android:text="계정 삭제하기"
+            android:textColor="@color/dark_red"
+            android:textSize="18sp"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</RelativeLayout>
