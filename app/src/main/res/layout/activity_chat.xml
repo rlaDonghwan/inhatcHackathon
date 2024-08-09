@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F4F6"
-    tools:context=".Edu.EducationActivity">
+    tools:context=".Edu.ChatActivity">
 
     <!-- Custom Appbar Widget -->
 
@@ -42,150 +42,132 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- First Post -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/content1"
+            <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- First Message -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/message2"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"> <!-- 여기서 오른쪽 정렬을 적용 -->
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <!-- Right Group: Location and Views -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/msgContent2"
+                                android:layout_width="267dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/im_hyemin_bold"
+                                android:text="안녕하세요.\n프로그램 교육 받고싶어서 문의 드립니다!"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Second Message -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/message1"
+                    android:layout_width="306dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#BADCE9"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"> <!-- 여기서 오른쪽 정렬을 적용 -->
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <!-- Left Group: Location and Views -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/msgContent1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/im_hyemin_bold"
+                                android:text="안녕하세요!\n장소는 OOO이고, 가능하신 시간대랑 참여인원 말씀해주시면 맞춰서 수업 준비하겠습니다!"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- First Message -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/message3"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
                 app:cardElevation="4dp"
-                app:cardCornerRadius="8dp">
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"> <!-- 여기서 오른쪽 정렬을 적용 -->
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
-                    <!-- Left Group: Title and Author -->
+                    <!-- Right Group: Location and Views -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/postTitle1"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/msgContent3"
+                            android:layout_width="267dp"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/kangwon_tntnche"
-                            android:text="글 제목 1"
-                            android:textColor="#000000"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/postDetails1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="작성자 | 게시시간"
                             android:fontFamily="@font/im_hyemin_bold"
-                            android:textColor="@color/gray"
+                            android:text="저희 수업 인원은 XX명이구요, 다음주 금요일 가능합니다."
+                            android:textColor="@android:color/black"
                             android:textSize="14sp" />
                     </LinearLayout>
 
-                    <!-- Right Group: Location and Views -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentEnd="true">
-
-                        <TextView
-                            android:id="@+id/postLocation1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="위치     |  전국"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/postViews1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="조회수 |  123"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
-
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
-
-            <!-- Second Post -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/content2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <!-- Left Group: Title and Author -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentStart="true">
-
-                        <TextView
-                            android:id="@+id/postTitle2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="글 제목 2"
-                            android:fontFamily="@font/kangwon_tntnche"
-                            android:textSize="24sp"
-                            android:textColor="#000000"/>
-
-                        <TextView
-                            android:id="@+id/postDetails2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="OOO | 2024.08.05"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-
-                    <!-- Right Group: Location and Views -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true">
-
-                        <TextView
-                            android:id="@+id/postLocation2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="위치     |  인천"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/postViews2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="조회수 |  98 "
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
@@ -254,13 +236,13 @@
                 android:layout_height="30dp"
                 android:src="@drawable/teach"
                 android:layout_marginTop="3dp"
-                app:tint="@color/skyBlue" />
+                app:tint="@android:color/darker_gray" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="강연자 신청"
-                android:textColor="@color/skyBlue"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="12sp"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:layout_marginTop="7dp"/>
@@ -279,7 +261,7 @@
                 android:layout_height="33dp"
                 android:src="@drawable/chat"
                 android:layout_marginTop="3dp"
-                app:tint="@android:color/darker_gray" />
+                app:tint="@color/skyBlue" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -287,7 +269,7 @@
                 android:fontFamily="@font/kangwon_tntnche"
                 android:text="채팅"
                 android:layout_marginTop="3dp"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/skyBlue"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -315,6 +297,5 @@
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
         </LinearLayout>
-
     </LinearLayout>
 </RelativeLayout>

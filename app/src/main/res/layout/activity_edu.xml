@@ -80,7 +80,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/study"
-                app:tint="@color/skyBlue" />
+                app:tint="@color/skyBlue"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
                 android:layout_height="30dp"
                 android:src="@drawable/teach"
                 android:layout_marginTop="3dp"
-                app:tint="@android:color/darker_gray"/>
+                app:tint="@android:color/darker_gray" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -118,6 +118,31 @@
         </LinearLayout>
 
         <!-- Third Menu Item -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:src="@drawable/chat"
+                android:layout_marginTop="3dp"
+                app:tint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:text="채팅"
+                android:layout_marginTop="3dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Fourth Menu Item -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"

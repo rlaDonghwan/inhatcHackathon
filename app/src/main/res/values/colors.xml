@@ -7,4 +7,6 @@
 
     <color name="primaryBackground">#F2F4F6</color>
     <color name="gray">#666666</color>
+    <color name="dark_red">#b74d4d</color>
+    <color name="bg_red">#ffd4d4</color>
 </resources>
