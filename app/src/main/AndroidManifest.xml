@@ -4,7 +4,15 @@
     package="com.example.hackathonproject">
 
     <!-- 인터넷 접근 권한 추가 -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -19,7 +27,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".StartActivity"
+            android:name=".Login.StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,12 +35,23 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignInPhoneNumActivity" />
-        <activity android:name=".SignInPWActivity" />
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".Login.SignInPhoneNumActivity" />
+        <activity android:name=".Login.SignInPasswordActivity" />
+        <activity android:name=".Login.SignUpActivity" />
+        <activity android:name=".Login.ForgotPasswordActivity" />
+        <activity android:name=".Login.ChangePasswordActivity" />
+        <activity android:name=".Education.EducationActivity" />
+        <activity android:name=".Education.WriteActivity"/>
+        <activity android:name=".Education.EducationContentView"/>
+        <activity android:name=".Seminar.SeminarActivity"/>
+        <activity android:name=".Setting.SettingsActivity"/>
+        <activity android:name=".Setting.AboutB1A3Activity"/>
+        <activity android:name=".Setting.EditProfileActivity"/>
+        <activity android:name=".Setting.QnaActivity"/>
+        <activity android:name=".ChatActivity"/>
         <activity android:name=".MainActivity" />
-        <activity android:name=".EducationActivity" />
-        <activity android:name=".ForgotPasswordActivity" />
+
+
 
     </application>
 </manifest>

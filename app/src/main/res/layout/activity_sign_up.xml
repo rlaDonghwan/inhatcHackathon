@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/primaryBackground">
 
     <!-- AppBar -->
@@ -12,15 +13,20 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:elevation="4dp">
+
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="start"
-            android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_arrow_back"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textStyle="bold"
+            app:iconTint="@android:color/white"
             android:contentDescription="@string/back_button" />
+
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Main Content -->
@@ -56,19 +62,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="이름"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/kangwon_tntnche"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:paddingBottom="4dp" />
 
                 <EditText
                     android:id="@+id/full_name_input"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/kangwon_tntnche"
+                    android:fontFamily="@font/im_hyemin_regular"
                     android:hint="이름"
                     android:padding="12dp"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:inputType="textPersonName"
                     android:imeOptions="actionDone" />
 
@@ -78,50 +84,50 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="전화번호"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/kangwon_tntnche"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:paddingTop="18dp"
                     android:paddingBottom="4dp" />
 
+                <!-- Password Field -->
                 <EditText
                     android:id="@+id/phone_number_input"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/kangwon_tntnche"
+                    android:fontFamily="@font/im_hyemin_regular"
                     android:hint="010-1234-5678"
                     android:inputType="phone"
                     android:padding="12dp"
-                    android:textSize="16sp" />
+                    android:textSize="17sp" />
 
-                <!-- Password Field -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="비밀번호"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/kangwon_tntnche"
+                    android:fontFamily="@font/im_hyemin_bold"
+                    android:textSize="23sp"
                     android:paddingTop="18dp"
                     android:paddingBottom="4dp" />
 
                 <EditText
                     android:id="@+id/password_input"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/kangwon_tntnche"
                     android:hint="비밀번호"
+                    android:fontFamily="@font/im_hyemin_regular"
                     android:inputType="textPassword"
                     android:padding="12dp"
-                    android:textSize="16sp" />
+                    android:textSize="17sp" />
 
                 <!-- Date of Birth Fields -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="생년월일"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/kangwon_tntnche"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:paddingTop="18dp"
                     android:paddingBottom="4dp" />
                 <LinearLayout
@@ -132,41 +138,41 @@
                     <EditText
                         android:id="@+id/birthYear_input"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/kangwon_tntnche"
+                        android:fontFamily="@font/im_hyemin_regular"
                         android:hint="출생년도"
                         android:inputType="number"
                         android:padding="12dp"
                         android:textAlignment="textStart"
-                        android:textSize="16sp" />
+                        android:textSize="17sp" />
 
                     <EditText
                         android:id="@+id/month_input"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/kangwon_tntnche"
+                        android:fontFamily="@font/im_hyemin_regular"
                         android:hint="월"
                         android:inputType="number"
                         android:padding="12dp"
                         android:textAlignment="textStart"
-                        android:textSize="16sp" />
+                        android:textSize="17sp" />
 
                     <EditText
                         android:id="@+id/day_input"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/kangwon_tntnche"
+                        android:fontFamily="@font/im_hyemin_regular"
                         android:hint="일"
                         android:inputType="number"
                         android:padding="12dp"
                         android:textAlignment="textStart"
-                        android:textSize="16sp" />
+                        android:textSize="17sp" />
                 </LinearLayout>
 
                 <!-- Checkbox -->
@@ -191,8 +197,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="기관 담당자입니까?"
-                        android:textSize="17sp"
-                        android:fontFamily="@font/kangwon_tntnche"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/im_hyemin_bold"
                         android:paddingBottom="4dp" />
                 </LinearLayout>
 

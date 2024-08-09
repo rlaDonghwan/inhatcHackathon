@@ -1,0 +1,312 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F2F4F6"
+    tools:context=".Setting.SettingsActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/skyBlue"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_arrow_back"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textStyle="bold"
+            app:iconTint="@android:color/white"
+            android:contentDescription="@string/back_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center"
+            android:text="@string/settingTitle"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Main Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_below="@id/toolbar">
+
+        <!-- Welcome Message -->
+        <TextView
+            android:id="@+id/welcome_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:background="#4236b4ff"
+            android:fontFamily="@font/im_hyemin_bold"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/welcomeMsg"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <!-- Option 1: 내 정보 수정하기 -->
+            <LinearLayout
+                android:id="@+id/option_edit_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/my_info"
+                    app:tint="@color/skyBlue" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/editProfileTitle"
+                    android:fontFamily="@font/im_hyemin_bold"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyBlue" />
+
+            <!-- Option 2: B1A3 소개 -->
+            <LinearLayout
+                android:id="@+id/option_about_b1a3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/information"
+                    app:tint="@color/skyBlue" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/app_infoTitle"
+                    android:fontFamily="@font/im_hyemin_bold"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyBlue" />
+
+            <!-- Option 3: 질문 접수하기 -->
+            <LinearLayout
+                android:id="@+id/option_qna"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:textStyle="bold"
+                    android:src="@drawable/message"
+                    app:tint="@color/skyBlue" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/qna"
+                    android:fontFamily="@font/im_hyemin_bold"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyBlue" />
+
+            <!-- Option 4: 로그아웃 -->
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/logout_option"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/logout"
+                app:tint="@color/skyBlue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/logoutTitle"
+                android:fontFamily="@font/im_hyemin_bold"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Bottom Navigation Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:padding="8dp">
+
+        <!-- First Menu Item -->
+        <LinearLayout
+            android:id="@+id/first_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/study"
+                app:tint="@android:color/darker_gray"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="교육 받기"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+        <!-- Second Menu Item -->
+        <LinearLayout
+            android:id="@+id/second_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/teach"
+                android:layout_marginTop="3dp"
+                app:tint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="강연자 신청"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:layout_marginTop="7dp"/>
+        </LinearLayout>
+
+        <!-- Third Menu Item -->
+        <LinearLayout
+            android:id="@+id/third_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:src="@drawable/chat"
+                android:layout_marginTop="3dp"
+                app:tint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:text="채팅"
+                android:layout_marginTop="3dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Fourth Menu Item -->
+        <LinearLayout
+            android:id="@+id/fourth_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:src="@drawable/setting"
+                android:layout_marginTop="3dp"
+                app:tint="@color/skyBlue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:text="설정"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/skyBlue"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
