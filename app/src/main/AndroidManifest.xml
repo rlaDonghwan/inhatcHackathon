@@ -36,14 +36,22 @@
         </activity>
 
         <activity android:name=".Login.SignInPhoneNumActivity" />
-        <activity android:name=".Login.SignInPWActivity" />
+        <activity android:name=".Login.SignInPasswordActivity" />
         <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".Edu.EducationActivity" />
         <activity android:name=".Login.ForgotPasswordActivity" />
         <activity android:name=".Login.ChangePasswordActivity" />
-        <activity android:name=".Edu.WriteActivity"/>
-        <activity android:name=".Edu.EducationContentView"/>
+        <activity android:name=".Education.EducationActivity" />
+        <activity android:name=".Education.WriteActivity"/>
+        <activity android:name=".Education.EducationContentView"/>
+        <activity android:name=".Seminar.SeminarActivity"/>
+        <activity android:name=".Setting.SettingsActivity"/>
+        <activity android:name=".Setting.AboutB1A3Activity"/>
+        <activity android:name=".Setting.EditProfileActivity"/>
+        <activity android:name=".Setting.QnaActivity"/>
+        <activity android:name=".ChatActivity"/>
+        <activity android:name=".MainActivity" />
+
+
 
     </application>
 </manifest>

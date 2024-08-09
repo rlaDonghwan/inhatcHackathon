@@ -43,24 +43,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:gravity="end">
 
             <TextView
                 android:id="@+id/postLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="위치     |  전국"
+                android:text="위치: 전국"
                 android:textSize="14sp"
-                android:textColor="@color/gray" />
+                android:textColor="@color/gray"
+                android:gravity="end"/>
 
             <TextView
                 android:id="@+id/postViews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="조회수 |  123"
+                android:text="조회수: 123"
                 android:textSize="14sp"
                 android:textColor="@color/gray"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:gravity="end"/>
         </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

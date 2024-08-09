@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F2F4F6"
-    tools:context=".SettingsActivity">
+    tools:context=".Setting.SettingsActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -54,17 +53,16 @@
             android:id="@+id/welcome_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#4236b4ff"
-            android:padding="16dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/welcomeMsg"
+            android:background="#4236b4ff"
             android:fontFamily="@font/im_hyemin_bold"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/welcomeMsg"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:gravity="center" />
+            android:textSize="18sp" />
 
-        <!-- Settings Options -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -73,6 +71,7 @@
 
             <!-- Option 1: 내 정보 수정하기 -->
             <LinearLayout
+                android:id="@+id/option_edit_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -104,6 +103,7 @@
 
             <!-- Option 2: B1A3 소개 -->
             <LinearLayout
+                android:id="@+id/option_about_b1a3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -135,6 +135,7 @@
 
             <!-- Option 3: 질문 접수하기 -->
             <LinearLayout
+                android:id="@+id/option_qna"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -169,6 +170,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/logout_option"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
@@ -205,6 +207,7 @@
 
         <!-- First Menu Item -->
         <LinearLayout
+            android:id="@+id/first_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -229,6 +232,7 @@
 
         <!-- Second Menu Item -->
         <LinearLayout
+            android:id="@+id/second_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -254,6 +258,7 @@
 
         <!-- Third Menu Item -->
         <LinearLayout
+            android:id="@+id/third_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -279,6 +284,7 @@
 
         <!-- Fourth Menu Item -->
         <LinearLayout
+            android:id="@+id/fourth_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

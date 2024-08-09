@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
+    implementation (libs.appcompat.v131)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)

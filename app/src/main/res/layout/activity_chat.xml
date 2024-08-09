@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F4F6"
-    tools:context=".Edu.ChatActivity">
+    tools:context=".ChatActivity">
 
     <!-- Custom Appbar Widget -->
 
@@ -25,7 +25,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="@string/seminorTitle"
+            android:text=""
             android:textColor="#FFFFFF"
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
@@ -201,6 +201,7 @@
 
         <!-- First Menu Item -->
         <LinearLayout
+            android:id="@+id/first_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -225,6 +226,7 @@
 
         <!-- Second Menu Item -->
         <LinearLayout
+            android:id="@+id/second_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -250,6 +252,7 @@
 
         <!-- Third Menu Item -->
         <LinearLayout
+            android:id="@+id/third_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -275,6 +278,7 @@
 
         <!-- Fourth Menu Item -->
         <LinearLayout
+            android:id="@+id/fourth_menu_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
