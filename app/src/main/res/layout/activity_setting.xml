@@ -101,7 +101,39 @@
                 android:layout_height="1dp"
                 android:background="@color/skyBlue" />
 
-            <!-- Option 2: B1A3 소개 -->
+            <!-- Option 2: 신청한 프로그램 리스트 -->
+            <LinearLayout
+                android:id="@+id/chat_list"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/apply"
+                    app:tint="@color/skyBlue" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/chatList"
+                    android:fontFamily="@font/im_hyemin_bold"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyBlue" />
+
+            <!-- Option 3: B1A3 소개 -->
             <LinearLayout
                 android:id="@+id/option_about_b1a3"
                 android:layout_width="match_parent"
@@ -133,7 +165,7 @@
                 android:layout_height="1dp"
                 android:background="@color/skyBlue" />
 
-            <!-- Option 3: 질문 접수하기 -->
+            <!-- Option 4: 질문 접수하기 -->
             <LinearLayout
                 android:id="@+id/option_qna"
                 android:layout_width="match_parent"
@@ -166,7 +198,7 @@
                 android:layout_height="1dp"
                 android:background="@color/skyBlue" />
 
-            <!-- Option 4: 로그아웃 -->
+            <!-- Option 5: 로그아웃 -->
         </LinearLayout>
 
         <LinearLayout

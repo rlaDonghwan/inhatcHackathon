@@ -7,6 +7,7 @@
     <string name="seminorTitle">강연자 신청</string>
     <string name="settingTitle">설정</string>
     <string name="editProfileTitle">내 정보 수정</string>
+    <string name="chatList">신청한 프로그램</string>
     <string name="app_infoTitle">B1A3 소개</string>
     <string name="logoutTitle">로그아웃</string>
 

@@ -17,15 +17,28 @@
         android:layout_height="wrap_content"
         android:background="@color/skyBlue"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/back_button"
+            app:iconTint="@android:color/white" />
 
         <TextView
+            android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:text="OOO 강사님"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text=""
             android:textColor="#FFFFFF"
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
@@ -172,134 +185,4 @@
         </LinearLayout>
     </ScrollView>
 
-
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="80dp"
-        android:backgroundTint="@color/skyBlue"
-        android:contentDescription="@string/buttonDescription"
-        android:elevation="4dp"
-        android:src="@drawable/plus"
-        app:fabSize="normal"
-        app:tint="@android:color/white"/>
-
-    <!-- Bottom Navigation Bar -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:elevation="4dp"
-        android:padding="8dp">
-
-        <!-- First Menu Item -->
-        <LinearLayout
-            android:id="@+id/first_menu_item"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/study"
-                app:tint="@android:color/darker_gray"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="교육 받기"
-                android:fontFamily="@font/kangwon_tntnche"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"
-                android:layout_marginTop="5dp" />
-        </LinearLayout>
-
-        <!-- Second Menu Item -->
-        <LinearLayout
-            android:id="@+id/second_menu_item"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/teach"
-                android:layout_marginTop="3dp"
-                app:tint="@android:color/darker_gray" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="강연자 신청"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"
-                android:fontFamily="@font/kangwon_tntnche"
-                android:layout_marginTop="7dp"/>
-        </LinearLayout>
-
-        <!-- Third Menu Item -->
-        <LinearLayout
-            android:id="@+id/third_menu_item"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:src="@drawable/chat"
-                android:layout_marginTop="3dp"
-                app:tint="@color/skyBlue" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/kangwon_tntnche"
-                android:text="채팅"
-                android:layout_marginTop="3dp"
-                android:textColor="@color/skyBlue"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- Fourth Menu Item -->
-        <LinearLayout
-            android:id="@+id/fourth_menu_item"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:src="@drawable/setting"
-                android:layout_marginTop="3dp"
-                app:tint="@android:color/darker_gray" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/kangwon_tntnche"
-                android:text="설정"
-                android:layout_marginTop="3dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
 </RelativeLayout>
