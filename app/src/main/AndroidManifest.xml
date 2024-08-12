@@ -50,6 +50,7 @@
         <activity android:name=".Setting.QnaActivity"/>
         <activity android:name=".ChatActivity"/>
         <activity android:name=".MainActivity" />
+        <activity android:name=".Seminar.SeminarWriteActivity" />
 
 
 

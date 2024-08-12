@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- app은 cardView에 대한 app namespace 정의 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F4F6"
-    tools:context=".Education.EducationActivity">
-
-    <!-- Custom Appbar Widget -->
+    tools:context=".Seminar.SeminarActivity">
 
     <!-- ToolBar -->
     <androidx.appcompat.widget.Toolbar
@@ -30,166 +27,19 @@
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 게시글 -->
-    <ScrollView
+    <!-- SwipeRefreshLayout 추가 -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:padding="16dp">
+        android:layout_below="@id/toolbar">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- First Post -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/content1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <!-- Left Group: Title and Author -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/postTitle1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/kangwon_tntnche"
-                            android:text="글 제목 1"
-                            android:textColor="#000000"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/postDetails1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="작성자 | 게시시간"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textColor="@color/gray"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <!-- Right Group: Location and Views -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentEnd="true">
-
-                        <TextView
-                            android:id="@+id/postLocation1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="위치     |  전국"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/postViews1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="조회수 |  123"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Second Post -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/content2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <!-- Left Group: Title and Author -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentStart="true">
-
-                        <TextView
-                            android:id="@+id/postTitle2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="글 제목 2"
-                            android:fontFamily="@font/kangwon_tntnche"
-                            android:textSize="24sp"
-                            android:textColor="#000000"/>
-
-                        <TextView
-                            android:id="@+id/postDetails2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="OOO | 2024.08.05"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-
-                    <!-- Right Group: Location and Views -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true">
-
-                        <TextView
-                            android:id="@+id/postLocation2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="위치     |  인천"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
-
-                        <TextView
-                            android:id="@+id/postViews2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="조회수 |  98 "
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-    </ScrollView>
-
+            android:layout_height="match_parent"
+            android:padding="16dp"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
