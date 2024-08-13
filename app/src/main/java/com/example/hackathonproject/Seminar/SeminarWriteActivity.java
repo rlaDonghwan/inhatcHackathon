@@ -121,7 +121,7 @@ public class SeminarWriteActivity extends AppCompatActivity {
                 Log.d("SubmitLectureTask", "KST Time: " + kstTime);
 
                 // 데이터를 데이터베이스에 삽입
-                return seminarDAO.insertLecture(title, content, location, fee, userId, kstTime);
+                return seminarDAO.insertSeminarPost(userId, title, content, location, fee, kstTime);
             } catch (Exception e) {
                 Log.e("SubmitLectureTask", "Error inserting lecture", e);
                 return false;
@@ -154,7 +154,7 @@ public class SeminarWriteActivity extends AppCompatActivity {
 
             try {
                 // 데이터를 데이터베이스에서 업데이트
-                return seminarDAO.updateLecture(lectureId, title, content, location, fee, userId);
+                return seminarDAO.updateSeminarPost(lectureId, title, content, location, fee, userId);
             } catch (Exception e) {
                 Log.e("UpdateLectureTask", "Error updating lecture", e);
                 return false;

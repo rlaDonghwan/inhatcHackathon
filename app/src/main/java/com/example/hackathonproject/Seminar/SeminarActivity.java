@@ -3,7 +3,9 @@ package com.example.hackathonproject.Seminar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +73,17 @@ public class SeminarActivity extends AppCompatActivity {
         fourthMenuItem.setOnClickListener(v -> {
             Intent intent = new Intent(SeminarActivity.this, SettingsActivity.class);
             startActivity(intent);
+        });
+
+        // SeminarPost 클릭 시 이벤트 처리
+        adapter.setOnItemClickListener(new SeminarAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                SeminarPost post = seminarPostList.get(position);
+                Intent intent = new Intent(SeminarActivity.this, SeminarContentView.class); // SeminarContentView로 이동
+                intent.putExtra("lectureId", post.getLectureId()); // 게시글 ID 전달
+                startActivity(intent); // 액티비티 시작
+            }
         });
     }
 
