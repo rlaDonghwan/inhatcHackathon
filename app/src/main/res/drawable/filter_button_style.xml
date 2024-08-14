@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="20dp" /> <!-- 둥근 모서리 적용 -->
+        </shape>
+    </item>
+    <item android:drawable="@drawable/filter_button_selector" />
+</layer-list>

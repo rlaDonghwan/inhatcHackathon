@@ -1,11 +1,14 @@
 package com.example.hackathonproject.Education;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -17,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.hackathonproject.Chat.ChatActivity;
+import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.db.EducationDAO;
 import com.example.hackathonproject.R;
 
@@ -27,6 +32,14 @@ public class EducationContentView extends AppCompatActivity {
     private EducationDAO educationDAO;  // 데이터베이스 접근 객체
     private EducationPost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
+
+    // 로그인한 사용자의 ID를 가져오는 메서드
+    private int getLoggedInUserId() {
+        SharedPreferences pref = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        return pref.getInt("UserID", -1); // 로그인하지 않은 경우 -1 반환
+    }
+
+
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -107,10 +120,37 @@ public class EducationContentView extends AppCompatActivity {
                 contentTextView.setText(post.getContent());  // 내용 설정
                 teacherNameTextView.setText("작성자 | " + post.getUserName());  // 작성자 설정
                 dateTextView.setText(post.getCreatedAt().toString().substring(0, 16));  // 작성 날짜 설정
+
+                int loggedInUserId = getLoggedInUserId();
+                Button btnApply = findViewById(R.id.btnApply);
+
+                if (loggedInUserId == post.getUserId()) {
+                    // 사용자가 게시글 작성자인 경우
+                    btnApply.setText("글 수정하기");
+                    btnApply.setOnClickListener(v -> {
+                        Intent intent = new Intent(EducationContentView.this, WriteActivity.class);
+                        intent.putExtra("postId", currentPost.getPostId());
+                        intent.putExtra("title", currentPost.getTitle());
+                        intent.putExtra("content", currentPost.getContent());
+                        intent.putExtra("location", currentPost.getLocation());
+                        intent.putExtra("category", currentPost.getCategory());
+                        startActivity(intent);
+                    });
+                } else {
+                    // 사용자가 다른 사람의 글을 본 경우
+                    btnApply.setText("신청하기");
+                    btnApply.setOnClickListener(v -> {
+                        // 채팅 화면으로 이동하는 코드 추가
+                        Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
+                        intent.putExtra("otherUserId", post.getUserId()); // 게시글 작성자의 ID를 채팅 화면으로 전달
+                        startActivity(intent);
+                    });
+                }
             } else {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
         }
+
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -79,9 +79,14 @@ public class SignInPasswordActivity extends AppCompatActivity {
 
             try {
                 userId = authManager.loginUserAndGetId(phoneNumber, password);  // 사용자 ID 가져오기
-                userName = authManager.getUserNameById(userId);  // 사용자 이름 가져오기
-                return userId != -1;
+                if (userId != -1) {
+                    userName = authManager.getUserNameById(userId);  // 사용자 이름 가져오기
+                    return true;
+                } else {
+                    return false;
+                }
             } catch (SQLException e) {
+                Log.e("SignInPasswordActivity", "로그인 중 오류 발생", e);
                 return false;
             }
         }
@@ -100,5 +105,4 @@ public class SignInPasswordActivity extends AppCompatActivity {
             }
         }
     }
-
 }
