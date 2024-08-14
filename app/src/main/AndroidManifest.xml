@@ -50,8 +50,8 @@
         <activity android:name=".Setting.QnaActivity"/>
         <activity android:name=".Chat.ChatListActivity"/>
         <activity android:name=".MainActivity" />
-
-
+        <activity android:name=".Seminar.SeminarWriteActivity" />
+        <activity android:name=".Seminar.SeminarContentView"/>
 
     </application>
 </manifest>
