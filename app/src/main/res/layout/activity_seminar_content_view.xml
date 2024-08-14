@@ -1,0 +1,169 @@
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Seminar.SeminarContentView">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F2F4F6">
+
+        <!-- 툴바 -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/skyBlue"
+            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="start"
+                android:scaleType="centerInside"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/ic_arrow_back"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:textStyle="bold"
+                app:iconTint="@android:color/white"
+                android:contentDescription="@string/back_button" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textSize="35sp" />
+
+            <ImageButton
+                android:id="@+id/menu_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:scaleType="centerInside"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/ic_more_vert"
+                android:contentDescription="메뉴"
+                app:iconTint="@android:color/white"
+                tools:ignore="UsingOnClickInXml" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- 정보 행 -->
+        <LinearLayout
+            android:id="@+id/info_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/toolbar"
+            android:layout_marginTop="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <TextView
+                android:id="@+id/lecturer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="강연자 | "
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text=""
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textAlignment="viewEnd" />
+        </LinearLayout>
+
+        <!-- 구분선 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/info_row"
+            android:layout_marginTop="5dp"
+            android:background="#9B9D9F" />
+
+        <!-- 콘텐츠 -->
+        <ScrollView
+            android:id="@+id/content_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_below="@id/info_row"
+            android:layout_above="@id/btnApply"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <!-- 모든 콘텐츠를 감싸는 LinearLayout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/content_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
+
+                <!-- 강연료 -->
+                <TextView
+                    android:id="@+id/fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="강연료: 0원"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    android:textColor="#000000" />
+
+                <!-- 강연 위치 -->
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="위치: 서울"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    android:textColor="#000000" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <!-- 신청 버튼 -->
+        <Button
+            android:id="@+id/btnApply"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:text="신청하기"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textSize="25sp"
+            android:backgroundTint="@color/skyBlue"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:padding="10dp"
+            android:backgroundTintMode="src_in" />
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
