@@ -1,0 +1,202 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F4F6"
+    tools:context=".Chat.ChatListActivity">
+
+    <!-- ToolBar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/skyBlue"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center"
+            android:text="채팅"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Filter buttons -->
+    <LinearLayout
+        android:id="@+id/filter_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/filter_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="전체"
+            android:textColor="@color/black"
+            android:background="@drawable/filter_button_selector"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/filter_education"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="교육"
+            android:textColor="@color/black"
+            android:background="@drawable/filter_button_selector"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/filter_lecture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="강의"
+            android:textColor="@color/black"
+            android:background="@drawable/filter_button_selector"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+    </LinearLayout>
+
+    <!-- RecyclerView for chat list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_below="@id/filter_buttons"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:clipToPadding="false"
+        android:padding="8dp" />
+
+    <!-- Bottom Navigation Bar -->
+    <LinearLayout
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:padding="8dp">
+
+        <!-- First Menu Item -->
+        <LinearLayout
+            android:id="@+id/first_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/study"
+                app:tint="@android:color/darker_gray"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="교육 받기"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+        <!-- Second Menu Item -->
+        <LinearLayout
+            android:id="@+id/second_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/teach"
+                android:layout_marginTop="3dp"
+                app:tint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="강연자 신청"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:layout_marginTop="7dp"/>
+        </LinearLayout>
+
+        <!-- Third Menu Item -->
+        <LinearLayout
+            android:id="@+id/third_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:src="@drawable/chat"
+                android:layout_marginTop="3dp"
+                app:tint="@color/skyBlue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:text="채팅"
+                android:layout_marginTop="3dp"
+                android:textColor="@color/skyBlue"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Fourth Menu Item -->
+        <LinearLayout
+            android:id="@+id/fourth_menu_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:src="@drawable/setting"
+                android:layout_marginTop="3dp"
+                app:tint="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kangwon_tntnche"
+                android:text="설정"
+                android:layout_marginTop="3dp"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

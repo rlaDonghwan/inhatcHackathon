@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.hackathonproject.ChatActivity;
+import com.example.hackathonproject.Chat.ChatListActivity;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.Seminar.SeminarActivity;
 import com.example.hackathonproject.Setting.SettingsActivity;
@@ -71,7 +71,7 @@ public class EducationActivity extends AppCompatActivity {
         // 채팅 탭 클릭 시 ChatActivity로 이동
         LinearLayout thirdMenuItem = findViewById(R.id.third_menu_item);
         thirdMenuItem.setOnClickListener(v -> {
-            Intent intent = new Intent(EducationActivity.this, ChatActivity.class);
+            Intent intent = new Intent(EducationActivity.this, ChatListActivity.class);
             startActivity(intent);
         });
 

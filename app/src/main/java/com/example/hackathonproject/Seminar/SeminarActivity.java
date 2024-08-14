@@ -5,12 +5,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.hackathonproject.Chat.ChatListActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.example.hackathonproject.ChatActivity;
 import com.example.hackathonproject.Education.EducationActivity;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.Setting.SettingsActivity;
@@ -65,7 +65,7 @@ public class SeminarActivity extends AppCompatActivity {
 
         LinearLayout thirdMenuItem = findViewById(R.id.third_menu_item);
         thirdMenuItem.setOnClickListener(v -> {
-            Intent intent = new Intent(SeminarActivity.this, ChatActivity.class);
+            Intent intent = new Intent(SeminarActivity.this, ChatListActivity.class);
             startActivity(intent);
         });
 
