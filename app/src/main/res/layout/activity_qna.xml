@@ -32,11 +32,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:text="문의하기"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="35sp"
-            android:textStyle="bold" />
+            android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- ScrollView to hold the QnA posts -->
