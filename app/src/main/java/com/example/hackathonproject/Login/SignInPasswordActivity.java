@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.hackathonproject.MainActivity;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.AuthManager;
 

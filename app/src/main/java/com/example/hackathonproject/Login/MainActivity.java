@@ -1,4 +1,4 @@
-package com.example.hackathonproject;
+package com.example.hackathonproject.Login;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,8 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.Education.EducationActivity;
-import com.example.hackathonproject.Login.SessionManager;
-import com.example.hackathonproject.Login.StartActivity;
+import com.example.hackathonproject.R;
 
 public class MainActivity extends AppCompatActivity {
     private Button startButton;  // 교육 활동을 시작하는 버튼
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         logoutTextView = findViewById(R.id.logout_text);
         logoutTextView.setPaintFlags(logoutTextView.getPaintFlags() | TextPaint.UNDERLINE_TEXT_FLAG);
         logoutTextView.setOnClickListener(v -> {
-            sessionManager.clearSession();  // 세션 초기화 (로그아웃)
+            sessionManager.logout();  // 세션 초기화 (로그아웃)
             Toast.makeText(MainActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();  // 로그아웃 메시지 표시
             Intent intent = new Intent(MainActivity.this, StartActivity.class);  // 로그인 화면으로 이동
             startActivity(intent);
