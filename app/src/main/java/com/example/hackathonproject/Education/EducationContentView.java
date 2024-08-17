@@ -21,9 +21,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hackathonproject.Chat.ChatActivity;
-import com.example.hackathonproject.Login.SessionManager;
+import com.example.hackathonproject.db.ChatDAO;
+import com.example.hackathonproject.db.ChatRoomCallback;
 import com.example.hackathonproject.db.EducationDAO;
+import com.example.hackathonproject.db.DatabaseConnection;
 import com.example.hackathonproject.R;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class EducationContentView extends AppCompatActivity {
     private int postId;  // 게시글 ID를 저장할 변수
@@ -38,8 +43,6 @@ public class EducationContentView extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
         return pref.getInt("UserID", -1); // 로그인하지 않은 경우 -1 반환
     }
-
-
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -76,14 +79,63 @@ public class EducationContentView extends AppCompatActivity {
 
         postId = getIntent().getIntExtra("postId", -1);  // 인텐트로부터 게시글 ID 가져오기
         loadPostContent();  // 게시글 내용 로드 및 조회수 증가
+
+        // "신청하기" 버튼 클릭 시 채팅방 생성 및 ChatActivity로 이동
+        Button btnApply = findViewById(R.id.btnApply);
+        btnApply.setOnClickListener(v -> {
+            int loggedInUserId = getLoggedInUserId();
+            int otherUserId = currentPost.getUserId();  // 게시글 작성자의 ID
+
+            // 데이터베이스 연결 비동기 처리
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
+                @Override
+                public void onSuccess(Connection connection) {
+                    // 채팅방 생성 또는 기존 채팅방 검색
+                    ChatDAO chatDAO = new ChatDAO(connection);
+                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, "교육", new ChatDAO.ChatRoomCallback() {
+                        @Override
+                        public void onSuccess(int chatId) {
+                            // UI는 메인 스레드에서 실행
+                            runOnUiThread(() -> {
+                                if (chatId != -1) {
+                                    // 채팅 화면으로 이동
+                                    Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
+                                    intent.putExtra("chatId", chatId);
+                                    intent.putExtra("otherUserId", otherUserId);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(EducationContentView.this, "채팅방을 생성할 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(EducationContentView.this, "채팅방을 생성할 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(SQLException e) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EducationContentView.this, "데이터베이스 연결에 실패했습니다.", Toast.LENGTH_LONG).show();
+                    });
+                }
+            });
+
+
+        });
+
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
         super.onResume();
-        // 이제 onResume에서 새로고침을 호출하지 않으므로, 조회수는 onCreate에서만 증가합니다.
-        // refreshContent(); 이 호출은 제거되었습니다.
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -150,7 +202,6 @@ public class EducationContentView extends AppCompatActivity {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
         }
-
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 

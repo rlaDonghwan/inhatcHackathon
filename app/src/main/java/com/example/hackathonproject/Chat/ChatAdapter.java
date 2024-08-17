@@ -3,54 +3,67 @@ package com.example.hackathonproject.Chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackathonproject.R;
+import com.example.hackathonproject.db.ChatMessageDAO;
 
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
 
-    private List<ChatItem> chatList;
+    private List<ChatMessage> messages;
+    private int loggedInUserId;
 
-    public ChatAdapter(List<ChatItem> chatList) {
-        this.chatList = chatList;
+    public ChatAdapter(int loggedInUserId) {
+        this.loggedInUserId = loggedInUserId;
+    }
+
+    public void setMessages(List<ChatMessage> messages) {
+        this.messages = messages;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_message, parent, false);
+        return new MessageViewHolder(view);
     }
 
     @Override
-    public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item, parent, false);
-        return new ChatViewHolder(view);
+    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+        ChatMessage message = messages.get(position);
+
+        if (message.getSenderUserId() == loggedInUserId) {
+            holder.myMessageTextView.setVisibility(View.VISIBLE);
+            holder.otherMessageTextView.setVisibility(View.GONE);
+            holder.myMessageTextView.setText(message.getMessageText());
+        } else {
+            holder.myMessageTextView.setVisibility(View.GONE);
+            holder.otherMessageTextView.setVisibility(View.VISIBLE);
+            holder.otherMessageTextView.setText(message.getMessageText());
+        }
     }
 
-    @Override
-    public void onBindViewHolder(ChatViewHolder holder, int position) {
-        ChatItem chatItem = chatList.get(position);
-        holder.postTitle.setText(chatItem.getTitle());
-        holder.postDetails.setText(chatItem.getLastMessage());
-        holder.postLocation.setText(chatItem.getTimestamp());
-        // 새로운 메시지가 있을 경우 아이콘 표시
-        holder.newMessageIcon.setVisibility(chatItem.isNewMessage() ? View.VISIBLE : View.GONE);
-    }
 
     @Override
     public int getItemCount() {
-        return chatList.size();
+        return messages != null ? messages.size() : 0;
     }
 
-    class ChatViewHolder extends RecyclerView.ViewHolder {
-        TextView postTitle, postDetails, postLocation;
-        ImageView newMessageIcon;
+    static class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        ChatViewHolder(View itemView) {
+        TextView myMessageTextView;
+        TextView otherMessageTextView;
+
+        public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            postTitle = itemView.findViewById(R.id.postTitle);
-            postDetails = itemView.findViewById(R.id.postDetails);
-            postLocation = itemView.findViewById(R.id.postLocation);
-            newMessageIcon = itemView.findViewById(R.id.newMessageIcon);
+            myMessageTextView = itemView.findViewById(R.id.msgContent1);
+            otherMessageTextView = itemView.findViewById(R.id.msgContent2);
         }
     }
 }
