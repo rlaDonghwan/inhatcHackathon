@@ -48,6 +48,7 @@
         <activity android:name=".Setting.AboutB1A3Activity"/>
         <activity android:name=".Setting.EditProfileActivity"/>
         <activity android:name=".Setting.QnaActivity"/>
+        <activity android:name=".Setting.SettingPasswordActivity"/>
         <activity android:name=".Chat.ChatListActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".Seminar.SeminarWriteActivity" />
