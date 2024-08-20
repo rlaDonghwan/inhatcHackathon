@@ -78,17 +78,25 @@
 
     </LinearLayout>
 
-    <!-- ListView for chat list -->
-    <ListView
-        android:id="@+id/chat_list_view"
+    <!-- SwipeRefreshLayout with ListView -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_above="@id/bottom_navigation"
-        android:layout_below="@id/filter_buttons"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-        android:clipToPadding="false"
-        android:padding="8dp" />
+        android:layout_below="@id/filter_buttons">
+
+        <!-- ListView for chat list -->
+        <ListView
+            android:id="@+id/chat_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:clipToPadding="false"
+            android:padding="8dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Bottom Navigation Bar -->
     <LinearLayout

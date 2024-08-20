@@ -2,8 +2,10 @@ package com.example.hackathonproject.Chat;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,13 +24,15 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private static final String TAG = "ChatActivity";
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
     private EditText inputMessage;
     private ImageButton sendButton;
     private int chatId;
     private int loggedInUserId;
-    private int otherUserId; // 추가: 상대방 사용자 ID
+    private int otherUserId;
+    private int postId;
     private Connection connection;
 
     @Override
@@ -36,66 +40,85 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        // back_button 클릭 시 뒤로 가기
-        ImageButton backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> onBackPressed());
+        initializeUI();
 
         SessionManager sessionManager = new SessionManager(this);
         loggedInUserId = sessionManager.getUserId();
 
-        chatId = getIntent().getIntExtra("chatId", -1); // 추가: 전달된 chatId 사용
-        otherUserId = getIntent().getIntExtra("otherUserId", -1); // 추가: 전달된 otherUserId 사용
-        DatabaseConnection databaseConnection = new DatabaseConnection();
+        chatId = getIntent().getIntExtra("chatId", -1);
+        otherUserId = getIntent().getIntExtra("otherUserId", -1);
+        postId = getIntent().getIntExtra("postId", -1);
+        int currentUserId = getIntent().getIntExtra("currentUserId", -1);
 
-        // 비동기적으로 데이터베이스 연결
-        new ConnectDatabaseTask(databaseConnection).execute();
+        // 데이터베이스 연결을 시도하고 완료된 후 UI 초기화 및 데이터 로드
+        createOrRetrieveChatRoom(currentUserId, otherUserId);
     }
 
-    private class ConnectDatabaseTask extends AsyncTask<Void, Void, Connection> {
-        private DatabaseConnection databaseConnection;
-
-        public ConnectDatabaseTask(DatabaseConnection databaseConnection) {
-            this.databaseConnection = databaseConnection;
-        }
-
-        @Override
-        protected Connection doInBackground(Void... voids) {
-            try {
-                return databaseConnection.connect();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Connection conn) {
-            if (conn != null) {
-                connection = conn;
-                initializeChatUI();  // UI 초기화
-            } else {
-                Toast.makeText(ChatActivity.this, "데이터베이스 연결에 실패했습니다.", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-    }
-
-    private void initializeChatUI() {
+    private void initializeUI() {
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter(loggedInUserId);
-        recyclerView.setAdapter(chatAdapter);
-
         inputMessage = findViewById(R.id.inputMessage);
         sendButton = findViewById(R.id.sendButton);
 
-        loadChatMessages();
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> onBackPressed());
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        chatAdapter = new ChatAdapter(loggedInUserId);
+        recyclerView.setAdapter(chatAdapter);
+    }
+
+    private void createOrRetrieveChatRoom(int currentUserId, int otherUserId) {
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
+            @Override
+            public void onSuccess(Connection conn) {
+                connection = conn;
+                Log.d(TAG, "Database connection established.");
+                if (chatId == -1) {
+                    ChatDAO chatDAO = new ChatDAO(connection);
+                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, postId, null, new ChatDAO.ChatRoomCallback() {
+                        @Override
+                        public void onSuccess(int retrievedChatId) {
+                            runOnUiThread(() -> {
+                                chatId = retrievedChatId;
+                                initializeChatUI(currentUserId, otherUserId);
+                                loadChatMessages(); // 채팅 메시지를 로드합니다.
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> showErrorMessage("채팅방을 생성할 수 없습니다. 다시 시도해 주세요."));
+                            Log.e(TAG, "Error creating chat room: " + e.getMessage());
+                        }
+                    });
+                } else {
+                    // 기존 채팅방이 있을 때
+                    initializeChatUI(currentUserId, otherUserId);
+                    loadChatMessages();
+                }
+            }
+
+            @Override
+            public void onError(SQLException e) {
+                runOnUiThread(() -> showErrorMessage("데이터베이스 연결에 실패했습니다."));
+                Log.e(TAG, "Database connection error: " + e.getMessage());
+            }
+        });
+    }
+
+    private void initializeChatUI(int currentUserId, int otherUserId) {
         sendButton.setOnClickListener(v -> sendMessage());
+        TextView chatTitle = findViewById(R.id.chat_title);
+        chatTitle.setText("Chat between User " + currentUserId + " and User " + otherUserId);
     }
 
     private void loadChatMessages() {
-        new LoadMessagesTask().execute(chatId);
+        if (connection != null) {
+            new LoadMessagesTask().execute(chatId);
+        } else {
+            showErrorMessage("데이터베이스 연결이 설정되지 않았습니다.");
+        }
     }
 
     private class LoadMessagesTask extends AsyncTask<Integer, Void, List<ChatMessage>> {
@@ -104,17 +127,19 @@ public class ChatActivity extends AppCompatActivity {
             int chatId = params[0];
             if (connection != null) {
                 ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
-                return chatMessageDAO.getMessagesByChatId(chatId);  // 백그라운드에서 메시지 로드
+                return chatMessageDAO.getMessagesByChatId(chatId);
+            } else {
+                Log.e(TAG, "Connection is null in LoadMessagesTask.");
+                return null;
             }
-            return null;
         }
 
         @Override
         protected void onPostExecute(List<ChatMessage> messages) {
             if (messages != null) {
-                chatAdapter.setMessages(messages);  // UI 업데이트는 메인 스레드에서 실행
+                chatAdapter.setMessages(messages);
             } else {
-                Toast.makeText(ChatActivity.this, "메시지를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                showErrorMessage("메시지를 불러오는데 실패했습니다.");
             }
         }
     }
@@ -134,8 +159,13 @@ public class ChatActivity extends AppCompatActivity {
             String messageText = params[0];
             if (connection != null) {
                 ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
-                chatMessageDAO.addMessage(chatId, loggedInUserId, messageText);
-                return true;
+                if (chatId > 0) {
+                    chatMessageDAO.addMessage(chatId, loggedInUserId, messageText);
+                    return true;
+                } else {
+                    Log.e(TAG, "Invalid ChatID: " + chatId);
+                    return false;
+                }
             }
             return false;
         }
@@ -143,10 +173,26 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                inputMessage.setText("");  // 메시지 입력 필드 초기화
-                loadChatMessages();  // 채팅 메시지 갱신
+                inputMessage.setText("");
+                loadChatMessages();
             } else {
-                Toast.makeText(ChatActivity.this, "메시지 전송에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                showErrorMessage("메시지 전송에 실패했습니다.");
+            }
+        }
+    }
+
+    private void showErrorMessage(String message) {
+        runOnUiThread(() -> Toast.makeText(ChatActivity.this, message, Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                Log.e(TAG, "Error closing database connection: " + e.getMessage());
             }
         }
     }

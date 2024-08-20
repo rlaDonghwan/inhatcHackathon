@@ -6,20 +6,25 @@ public class Chat {
     private int userID2;
     private String lastMessage;
     private String lastMessageTime;
-    private String chatType;
-    private boolean newMessage;  // 새로운 메시지가 있는지 여부를 나타내는 필드 추가
-    private String otherUserName; // 상대방의 이름을 저장하는 필드 추가
+    private boolean newMessage;
+    private String otherUserName;  // 상대방 이름 필드
+    private Integer postID;        // 관련된 교육 게시글 ID (null 가능)
+    private Integer lectureID;     // 관련된 강연 ID (null 가능)
 
-    public Chat(int chatID, int userID1, int userID2, String lastMessage, String lastMessageTime, String chatType) {
+    // 생성자에서 chatType을 제거하여 인자 수를 맞춤
+    public Chat(int chatID, int userID1, int userID2, String lastMessage, String lastMessageTime, Integer postID, Integer lectureID) {
         this.chatID = chatID;
         this.userID1 = userID1;
         this.userID2 = userID2;
-        this.lastMessage = lastMessage;
-        this.lastMessageTime = lastMessageTime;
-        this.chatType = chatType;
-        this.newMessage = false;  // 기본값으로 새로운 메시지가 없다고 설정
+        this.lastMessage = (lastMessage != null) ? lastMessage : "";
+        this.lastMessageTime = (lastMessageTime != null) ? lastMessageTime : "";
+        this.newMessage = false;
+        this.postID = postID;
+        this.lectureID = lectureID;
+        this.otherUserName = ""; // 기본값 설정
     }
 
+    // Getters and Setters
     public int getChatID() {
         return chatID;
     }
@@ -40,10 +45,6 @@ public class Chat {
         return lastMessageTime;
     }
 
-    public String getChatType() {
-        return chatType;
-    }
-
     public int getOtherUserID(int currentUserId) {
         return (userID1 == currentUserId) ? userID2 : userID1;
     }
@@ -62,5 +63,21 @@ public class Chat {
 
     public void setOtherUserName(String otherUserName) {
         this.otherUserName = otherUserName;
+    }
+
+    public Integer getPostID() {
+        return postID;
+    }
+
+    public void setPostID(Integer postID) {
+        this.postID = postID;
+    }
+
+    public Integer getLectureID() {
+        return lectureID;
+    }
+
+    public void setLectureID(Integer lectureID) {
+        this.lectureID = lectureID;
     }
 }
