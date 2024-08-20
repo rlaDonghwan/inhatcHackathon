@@ -2,7 +2,7 @@
     <!-- 페이지 타이틀 -->
     <string name="app_name">디지털 손주</string>
     <string name="projectName">디지털 손주</string>
-    <string name="qna">문의하기</string>
+    <string name="faq">자주 묻는 질문</string>
     <string name="eduTitle">교육 받기</string>
     <string name="seminorTitle">강연자 신청</string>
     <string name="settingTitle">설정</string>
