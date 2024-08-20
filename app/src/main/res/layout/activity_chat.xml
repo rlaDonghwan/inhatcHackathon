@@ -3,10 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F4F6"
-    tools:context=".Chat.ChatListActivity">
-
-    <!-- Custom Appbar Widget -->
+    android:background="@color/primaryBackground"
+    tools:context=".Chat.ChatActivity">
 
     <!-- ToolBar -->
     <androidx.appcompat.widget.Toolbar
@@ -30,19 +28,20 @@
             app:iconTint="@android:color/white" />
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/chat_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="OOO 강사님"
+            android:text="채팅 상대방 이름"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 게시글 -->
-    <ScrollView
+    <!-- RecyclerView for chat messages -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_above="@id/messageInputLayout"

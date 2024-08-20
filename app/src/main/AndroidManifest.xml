@@ -40,19 +40,20 @@
         <activity android:name=".Login.SignUpActivity" />
         <activity android:name=".Login.ForgotPasswordActivity" />
         <activity android:name=".Login.ChangePasswordActivity" />
+        <activity android:name=".Login.MainActivity" />
         <activity android:name=".Education.EducationActivity" />
         <activity android:name=".Education.WriteActivity"/>
         <activity android:name=".Education.EducationContentView"/>
-        <activity android:name=".Seminar.SeminarActivity"/>
         <activity android:name=".Setting.SettingsActivity"/>
         <activity android:name=".Setting.AboutB1A3Activity"/>
         <activity android:name=".Setting.EditProfileActivity"/>
         <activity android:name=".Setting.QnaActivity"/>
-        <activity android:name=".Chat.ChatActivity"/>
-        <activity android:name=".Chat.ChatListActivity"/>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Seminar.SeminarActivity"/>
         <activity android:name=".Seminar.SeminarWriteActivity" />
         <activity android:name=".Seminar.SeminarContentView"/>
+        <activity android:name=".Chat.ChatListActivity"/>
+        <activity android:name=".Chat.ChatActivity"/>
+
 
     </application>
 </manifest>
