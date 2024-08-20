@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Left Group: Title and Author -->
+        <!-- 왼쪽 그룹: 이름과 마지막 메시지 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,48 +22,52 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:orientation="horizontal">
 
+                <!-- 상대방 이름 -->
                 <TextView
-                    android:id="@+id/postTitle2"
+                    android:id="@+id/otherUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kangwon_tntnche"
-                    android:text="하이 디지털"
+                    android:text="상대방 이름"
                     android:textColor="#000000"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
+                <!-- 새 메시지 알림 아이콘 -->
                 <ImageView
+                    android:id="@+id/newMessageIcon"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_marginStart="8dp"
-                    android:background="@drawable/ic_new_circle"
-                    android:contentDescription="Blue Circle" />
+                    android:src="@drawable/ic_new_circle"
+                    android:contentDescription="새 메시지 알림" />
             </LinearLayout>
 
+            <!-- 마지막 메시지 내용 -->
             <TextView
-                android:id="@+id/postDetails2"
+                android:id="@+id/lastMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="새 메시지"
+                android:text="마지막 메시지 내용"
                 android:textColor="@color/gray"
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <!-- Right Group: Location and Views -->
+        <!-- 오른쪽 그룹: 마지막 메시지 시간 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:orientation="vertical">
 
+            <!-- 마지막 메시지 시간 -->
             <TextView
-                android:id="@+id/postLocation2"
+                android:id="@+id/lastMessageTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20xx . 05. 11"
+                android:text="2024.08.17 14:30"
                 android:textColor="@color/gray"
                 android:textSize="14sp" />
 

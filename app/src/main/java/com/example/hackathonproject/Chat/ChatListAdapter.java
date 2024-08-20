@@ -41,34 +41,41 @@ public class ChatListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.chat_list_item, parent, false);
+            holder = new ViewHolder();
+            holder.otherUserName = convertView.findViewById(R.id.otherUserName);
+            holder.lastMessage = convertView.findViewById(R.id.lastMessage);
+            holder.lastMessageTime = convertView.findViewById(R.id.lastMessageTime);
+            holder.newMessageIcon = convertView.findViewById(R.id.newMessageIcon);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-
-        // XML 레이아웃 파일에서 뷰 요소 찾기
-        TextView otherUserName = convertView.findViewById(R.id.otherUserName);
-        TextView lastMessage = convertView.findViewById(R.id.lastMessage);
-        TextView lastMessageTime = convertView.findViewById(R.id.lastMessageTime);
-        ImageView newMessageIcon = convertView.findViewById(R.id.newMessageIcon);
 
         Chat chat = chatList.get(position);
 
         // 상대방의 이름 설정
-        otherUserName.setText(chat.getOtherUserName()); // 상대방 이름 설정
+        holder.otherUserName.setText(chat.getOtherUserName());
 
         // 마지막 메시지 내용 설정
-        lastMessage.setText(chat.getLastMessage());
+        holder.lastMessage.setText(chat.getLastMessage() != null ? chat.getLastMessage() : "");
 
         // 마지막 메시지 시간 설정
-        lastMessageTime.setText(chat.getLastMessageTime());
+        holder.lastMessageTime.setText(chat.getLastMessageTime() != null ? chat.getLastMessageTime() : "");
 
         // 새 메시지가 있는지 여부에 따라 아이콘 표시
-        if (chat.isNewMessage()) {
-            newMessageIcon.setVisibility(View.VISIBLE);
-        } else {
-            newMessageIcon.setVisibility(View.GONE);
-        }
+        holder.newMessageIcon.setVisibility(chat.isNewMessage() ? View.VISIBLE : View.GONE);
 
         return convertView;
+    }
+
+    static class ViewHolder {
+        TextView otherUserName;
+        TextView lastMessage;
+        TextView lastMessageTime;
+        ImageView newMessageIcon;
     }
 }

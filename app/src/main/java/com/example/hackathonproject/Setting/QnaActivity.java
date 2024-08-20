@@ -32,7 +32,6 @@ public class QnaActivity extends AppCompatActivity {
 
         // Toolbar 제목 설정을 위한 TextView 찾기 및 설정
         titleTextView = findViewById(R.id.toolbar_title);
-        titleTextView.setText(getString(R.string.qna));
     }
 
     @Override

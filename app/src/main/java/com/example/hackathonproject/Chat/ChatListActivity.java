@@ -3,6 +3,7 @@ package com.example.hackathonproject.Chat;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ import com.example.hackathonproject.Login.SessionManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import android.os.Bundle;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout; // 이 라인을 추가
 
 public class ChatListActivity extends AppCompatActivity {
 
@@ -28,6 +31,7 @@ public class ChatListActivity extends AppCompatActivity {
     private ChatDAO chatDAO;
     private ChatListAdapter chatListAdapter;
     private int loggedInUserId;
+    private SwipeRefreshLayout swipeRefreshLayout; // 스와이프 새로고침 레이아웃 변수 추가
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,13 @@ public class ChatListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_list);
 
         chatListView = findViewById(R.id.chat_list_view);
+
+        // SwipeRefreshLayout 초기화
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // 새로고침 시 채팅 목록 다시 로드
+            new LoadChatListTask(new DatabaseConnection()).execute();
+        });
 
         SessionManager sessionManager = new SessionManager(this);
         loggedInUserId = sessionManager.getUserId();
@@ -87,15 +98,27 @@ public class ChatListActivity extends AppCompatActivity {
         chatListView.setOnItemClickListener((parent, view, position, id) -> {
             Chat selectedChat = chatList.get(position);
             Intent intent = new Intent(ChatListActivity.this, ChatActivity.class);
-            intent.putExtra("chatId", selectedChat.getChatID());
-            intent.putExtra("otherUserId", selectedChat.getOtherUserID(loggedInUserId));
+            intent.putExtra("chatId", selectedChat.getChatID()); // 선택한 채팅의 ID
+            intent.putExtra("otherUserId", selectedChat.getOtherUserID(loggedInUserId)); // 선택한 채팅의 상대방 ID
+            intent.putExtra("postId", selectedChat.getPostID()); // 선택한 채팅의 게시글 ID (만약 필요하다면)
+            intent.putExtra("currentUserId", loggedInUserId); // 현재 사용자 ID 전달
+
+            // 로그 추가
+            Log.d("ChatListActivity", "Opening chat with chatId: " + selectedChat.getChatID() +
+                    " otherUserId: " + selectedChat.getOtherUserID(loggedInUserId) +
+                    " postId: " + selectedChat.getPostID() +
+                    " currentUserId: " + loggedInUserId);
+
             startActivity(intent);
         });
+
+
+
     }
 
-    // 비동기적으로 채팅 목록을 로드하는 작업
     private class LoadChatListTask extends AsyncTask<Void, Void, List<Chat>> {
         private DatabaseConnection databaseConnection;
+        private Connection connection;
 
         public LoadChatListTask(DatabaseConnection databaseConnection) {
             this.databaseConnection = databaseConnection;
@@ -103,28 +126,41 @@ public class ChatListActivity extends AppCompatActivity {
 
         @Override
         protected List<Chat> doInBackground(Void... voids) {
+            Log.d("LoadChatListTask", "doInBackground started");
+            List<Chat> chatList = null;
             try {
-                Connection connection = databaseConnection.connect();
-                chatDAO = new ChatDAO(connection);
-                return chatDAO.getAllChatsForUser(loggedInUserId);
+                connection = databaseConnection.connect();
+                if (connection != null) {
+                    chatDAO = new ChatDAO(connection);
+                    chatList = chatDAO.getAllChatsForUser(loggedInUserId);
+                }
             } catch (SQLException e) {
+                Log.e("LoadChatListTask", "SQLException: " + e.getMessage());
                 e.printStackTrace();
-                return null;
             }
+            return chatList;
         }
 
         @Override
         protected void onPostExecute(List<Chat> chats) {
-            if (chats != null) {
+            Log.d("LoadChatListTask", "onPostExecute started");
+            swipeRefreshLayout.setRefreshing(false); // 새로고침 완료
+            if (chats != null && !chats.isEmpty()) {
                 chatList = chats;
                 chatListAdapter = new ChatListAdapter(ChatListActivity.this, chatList, loggedInUserId);
                 chatListView.setAdapter(chatListAdapter);
+                Log.d("LoadChatListTask", "Chat list loaded successfully with " + chats.size() + " items.");
             } else {
-                // 채팅 목록을 로드하는 데 실패했을 때의 처리
+                Log.e("LoadChatListTask", "Failed to load chat list or chat list is empty.");
+                if (chats == null) {
+                    Log.e("LoadChatListTask", "Chats list is null.");
+                } else {
+                    Log.e("LoadChatListTask", "Chats list is empty.");
+                }
             }
         }
-    }
 
+    }
     // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메소드
     private void setFilter(TextView selectedButton, String filterType) {
         resetFilterButtons();

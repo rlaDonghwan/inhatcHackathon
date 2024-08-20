@@ -11,12 +11,11 @@ public class ChatMessage {
     private Timestamp sentTime;
 
     // Getter and Setter methods
-
     public int getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(int messageId) {
+    public void setMessageId(int messageId) {  // 이 메서드를 추가합니다.
         this.messageId = messageId;
     }
 
