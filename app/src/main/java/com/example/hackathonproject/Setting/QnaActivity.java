@@ -14,7 +14,7 @@ public class QnaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qna);
+        setContentView(R.layout.activity_faq);
 
         // Toolbar 설정
         Toolbar toolbar = findViewById(R.id.toolbar);

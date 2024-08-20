@@ -51,6 +51,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- 프로필 -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="115dp"
@@ -83,6 +84,7 @@
                         android:gravity="center_vertical"
                         android:scaleType="centerCrop" />
 
+                    <!-- 봉사시간 및 이름 -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -90,6 +92,7 @@
                         android:layout_alignParentStart="true"
                         android:orientation="vertical">
 
+                        <!-- 봉사시간 텍스트 - 시간은 따로 집계될 수 있게 텍스트 나눠놓음 -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -124,25 +127,41 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
                                 android:layout_marginLeft="5dp"
-                                android:text="시간"
+                                android:text="시간 / 원"
                                 android:fontFamily="@font/omyu_pretty"
                                 android:textSize="20sp"
                                 android:textColor="#757575" />
 
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/question"
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="start"
-                            android:layout_marginTop="5dp"
-                            android:fontFamily="@font/omyu_pretty"
-                            android:text="홍길동"
-                            android:textColor="#000"
-                            android:textSize="40sp"
-                            android:textStyle="bold" />
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:orientation="horizontal">
 
+                            <!-- 사용자 이름 -->
+                            <TextView
+                                android:id="@+id/question"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/omyu_pretty"
+                                android:text="홍길동"
+                                android:textColor="#000"
+                                android:textSize="40sp"
+                                android:textStyle="bold" />
+
+                            <!-- 인증 마크 -->
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="8dp"
+                                android:background="@drawable/authorization"
+                                android:scaleType="centerCrop" />
+
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
