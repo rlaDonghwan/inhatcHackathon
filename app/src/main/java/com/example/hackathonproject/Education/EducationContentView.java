@@ -21,9 +21,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hackathonproject.Chat.ChatActivity;
-import com.example.hackathonproject.Login.SessionManager;
-import com.example.hackathonproject.db.EducationDAO;
+import com.example.hackathonproject.db.ChatDAO;
+import com.example.hackathonproject.db.DatabaseConnection;
 import com.example.hackathonproject.R;
+import com.example.hackathonproject.db.EducationDAO;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class EducationContentView extends AppCompatActivity {
     private int postId;  // 게시글 ID를 저장할 변수
@@ -39,9 +43,6 @@ public class EducationContentView extends AppCompatActivity {
         return pref.getInt("UserID", -1); // 로그인하지 않은 경우 -1 반환
     }
 
-
-
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,40 +76,97 @@ public class EducationContentView extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
         postId = getIntent().getIntExtra("postId", -1);  // 인텐트로부터 게시글 ID 가져오기
+        if (postId == -1) {
+            Toast.makeText(this, "유효하지 않은 게시글 ID입니다.", Toast.LENGTH_SHORT).show();
+            finish(); // 유효하지 않은 postId로 인해 액티비티를 종료
+            return;
+        }
         loadPostContent();  // 게시글 내용 로드 및 조회수 증가
+
+        // "신청하기" 버튼 클릭 시 채팅방 생성 및 ChatActivity로 이동
+        Button btnApply = findViewById(R.id.btnApply);
+        btnApply.setOnClickListener(v -> {
+            int loggedInUserId = getLoggedInUserId();
+            int otherUserId = currentPost.getUserId();  // 게시글 작성자의 ID
+            int postId = currentPost.getPostId();  // 현재 게시글 ID
+
+            if (postId <= 0) {
+                Toast.makeText(EducationContentView.this, "잘못된 게시글 ID입니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
+                return;
+            }
+            // 데이터베이스 연결 비동기 처리
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
+                @Override
+                public void onSuccess(Connection connection) {
+                    ChatDAO chatDAO = new ChatDAO(connection);
+                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, postId, null, new ChatDAO.ChatRoomCallback() {
+                        @Override
+                        public void onSuccess(int chatId) {
+                            runOnUiThread(() -> {
+                                if (chatId != -1) {
+                                    // 채팅 화면으로 이동하면서 채팅방에 대한 정보를 전달
+                                    Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
+                                    intent.putExtra("chatId", chatId);
+                                    intent.putExtra("otherUserId", otherUserId);
+                                    intent.putExtra("postId", postId);
+                                    intent.putExtra("currentUserId", loggedInUserId);  // 현재 사용자 ID 전달
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(EducationContentView.this, "채팅방을 생성할 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(EducationContentView.this, "채팅방을 생성할 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(SQLException e) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(EducationContentView.this, "데이터베이스 연결에 실패했습니다.", Toast.LENGTH_LONG).show();
+                    });
+                }
+            });
+        });
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
         super.onResume();
-        // 이제 onResume에서 새로고침을 호출하지 않으므로, 조회수는 onCreate에서만 증가합니다.
-        // refreshContent(); 이 호출은 제거되었습니다.
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 새로고침 메서드
     private void refreshContent() {
         loadPostContent();  // 게시글 내용 로드
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 내용을 로드하는 메서드
     private void loadPostContent() {
         new LoadPostTask().execute(postId); // 비동기 작업으로 데이터베이스에서 게시글 내용 불러오기
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @SuppressLint("StaticFieldLeak")
     private class LoadPostTask extends AsyncTask<Integer, Void, EducationPost> {
         @Override
         protected EducationPost doInBackground(Integer... params) {
             int postId = params[0];
-            EducationPost post = educationDAO.getEducationPostById(postId);  // 게시글 ID로 게시글 가져오기
-            if (post != null) {
-                educationDAO.incrementPostViews(postId); // 조회수 증가
+            try {
+                EducationPost post = educationDAO.getEducationPostById(postId);  // 게시글 ID로 게시글 가져오기
+                if (post != null) {
+                    educationDAO.incrementPostViews(postId); // 조회수 증가
+                }
+                return post;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
-            return post;
         }
 
         @Override
@@ -140,9 +198,9 @@ public class EducationContentView extends AppCompatActivity {
                     // 사용자가 다른 사람의 글을 본 경우
                     btnApply.setText("신청하기");
                     btnApply.setOnClickListener(v -> {
-                        // 채팅 화면으로 이동하는 코드 추가
                         Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
                         intent.putExtra("otherUserId", post.getUserId()); // 게시글 작성자의 ID를 채팅 화면으로 전달
+                        intent.putExtra("postId", postId); // 현재 게시글 ID를 전달
                         startActivity(intent);
                     });
                 }
@@ -150,9 +208,7 @@ public class EducationContentView extends AppCompatActivity {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
         }
-
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
@@ -183,7 +239,6 @@ public class EducationContentView extends AppCompatActivity {
         });
         popup.show();  // 팝업 메뉴 표시
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 삭제를 확인하는 메서드
     private void confirmDeletePost() {
@@ -198,7 +253,6 @@ public class EducationContentView extends AppCompatActivity {
                 .setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 삭제 메서드
     @SuppressLint("StaticFieldLeak")
@@ -206,7 +260,12 @@ public class EducationContentView extends AppCompatActivity {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
-                return educationDAO.deleteEducationPost(postId);  // 데이터베이스에서 게시글 삭제
+                try {
+                    return educationDAO.deleteEducationPost(postId);  // 데이터베이스에서 게시글 삭제
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
 
             @Override
@@ -220,21 +279,18 @@ public class EducationContentView extends AppCompatActivity {
             }
         }.execute();  // 비동기 작업 실행
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public boolean onSupportNavigateUp() {
         navigateBackToEducationActivity();  // 상단 바의 뒤로가기 버튼을 클릭 시 처리
         return true;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         navigateBackToEducationActivity();  // 디바이스의 뒤로가기 버튼을 클릭 시 처리
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private void navigateBackToEducationActivity() {
         Intent intent = new Intent(this, EducationActivity.class);
@@ -242,5 +298,4 @@ public class EducationContentView extends AppCompatActivity {
         startActivity(intent);  // EducationActivity 시작
         finish();  // 현재 액티비티 종료
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

@@ -1,14 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- app은 cardView에 대한 app namespace 정의 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F4F6"
-    tools:context=".Chat.ChatListActivity">
-
-    <!-- Custom Appbar Widget -->
+    android:background="@color/primaryBackground"
+    tools:context=".Chat.ChatActivity">
 
     <!-- ToolBar -->
     <androidx.appcompat.widget.Toolbar
@@ -32,157 +28,55 @@
             app:iconTint="@android:color/white" />
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/chat_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="OOO 강사님"
+            android:text="채팅 상대방 이름"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 게시글 -->
-    <ScrollView
+    <!-- RecyclerView for chat messages -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/messageInputLayout"
         android:layout_below="@id/toolbar"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:layout_weight="1"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <!-- Input field for typing messages -->
+    <LinearLayout
+        android:id="@+id/messageInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@android:color/white">
+
+        <EditText
+            android:id="@+id/inputMessage"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:hint="메시지 입력"
+            android:padding="10dp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- First Message -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/message2"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"> <!-- 여기서 오른쪽 정렬을 적용 -->
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <!-- Right Group: Location and Views -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/msgContent2"
-                                android:layout_width="267dp"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/im_hyemin_bold"
-                                android:text="안녕하세요.\n프로그램 교육 받고싶어서 문의 드립니다!"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Second Message -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/message1"
-                    android:layout_width="306dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="#BADCE9"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"> <!-- 여기서 오른쪽 정렬을 적용 -->
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <!-- Left Group: Location and Views -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/msgContent1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/im_hyemin_bold"
-                                android:text="안녕하세요!\n장소는 OOO이고, 가능하신 시간대랑 참여인원 말씀해주시면 맞춰서 수업 준비하겠습니다!"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
-            </RelativeLayout>
-
-            <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <!-- First Message -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/message3"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"> <!-- 여기서 오른쪽 정렬을 적용 -->
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <!-- Right Group: Location and Views -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/msgContent3"
-                            android:layout_width="267dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/im_hyemin_bold"
-                            android:text="저희 수업 인원은 XX명이구요, 다음주 금요일 가능합니다."
-                            android:textColor="@android:color/black"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-
-        </LinearLayout>
-    </ScrollView>
+        <ImageButton
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="Send"
+            android:src="@drawable/ic_send"
+            app:tint="@color/skyBlue" />
+    </LinearLayout>
 
 </RelativeLayout>

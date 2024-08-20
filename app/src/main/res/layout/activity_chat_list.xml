@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F4F6"
+    android:background="@color/primaryBackground"
     tools:context=".Chat.ChatListActivity">
 
     <!-- ToolBar -->
@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="채팅"
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Filter buttons -->
@@ -37,52 +37,66 @@
         android:background="@color/white"
         android:padding="8dp">
 
-        <Button
-            android:id="@+id/filter_all"
+        <!-- 전체 Button -->
+        <TextView
+            android:id="@+id/button_all"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/round_button_background_selected"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="전체"
-            android:textColor="@color/black"
-            android:background="@drawable/filter_button_selector"
-            android:textSize="14sp"
-            android:padding="10dp" />
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/filter_education"
+        <!-- 판매 Button -->
+        <TextView
+            android:id="@+id/button_sell"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="교육"
-            android:textColor="@color/black"
-            android:background="@drawable/filter_button_selector"
-            android:textSize="14sp"
-            android:padding="10dp" />
+            android:background="@drawable/round_button_background"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="판매"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/filter_lecture"
+        <!-- 구매 Button -->
+        <TextView
+            android:id="@+id/button_buy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="강의"
-            android:textColor="@color/black"
-            android:background="@drawable/filter_button_selector"
-            android:textSize="14sp"
-            android:padding="10dp" />
+            android:background="@drawable/round_button_background"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="구매"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
-    <!-- RecyclerView for chat list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <!-- SwipeRefreshLayout with ListView -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_above="@id/bottom_navigation"
-        android:layout_below="@id/filter_buttons"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-        android:clipToPadding="false"
-        android:padding="8dp" />
+        android:layout_below="@id/filter_buttons">
+
+        <!-- ListView for chat list -->
+        <ListView
+            android:id="@+id/chat_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:clipToPadding="false"
+            android:padding="8dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Bottom Navigation Bar -->
     <LinearLayout

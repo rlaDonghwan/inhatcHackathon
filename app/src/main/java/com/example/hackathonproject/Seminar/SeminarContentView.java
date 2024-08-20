@@ -20,6 +20,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.SeminarDAO;
 
+import java.text.DecimalFormat;
+
 public class SeminarContentView extends AppCompatActivity {
     private int lectureId;  // 강연 ID를 저장할 변수
     private TextView contentTextView, titleTextView, lecturerNameTextView, dateTextView, feeTextView, locationTextView;  // UI 요소들
@@ -48,6 +50,7 @@ public class SeminarContentView extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
 
+        // UI 요소 초기화
         titleTextView = findViewById(R.id.toolbar_title);  // 제목 텍스트뷰
         contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
         lecturerNameTextView = findViewById(R.id.lecturer_name);  // 강연자 이름 텍스트뷰
@@ -56,13 +59,15 @@ public class SeminarContentView extends AppCompatActivity {
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
 
-        menuButton.setOnClickListener(this::showPopupMenu);  // 메뉴 버튼 클릭 시 팝업 메뉴 표시
+        // 메뉴 버튼 클릭 시 팝업 메뉴 표시
+        menuButton.setOnClickListener(this::showPopupMenu);
 
         // SwipeRefreshLayout 초기화 및 새로고침 리스너 설정
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
-        lectureId = getIntent().getIntExtra("lectureId", -1);  // 인텐트로부터 강연 ID 가져오기
+        // Intent로부터 강연 ID 가져오기
+        lectureId = getIntent().getIntExtra("lectureId", -1);
         loadLectureContent();  // 강연 내용 로드 및 조회수 증가
     }
 
@@ -81,6 +86,7 @@ public class SeminarContentView extends AppCompatActivity {
         new LoadLectureTask().execute(lectureId); // 비동기 작업으로 데이터베이스에서 강연 내용 불러오기
     }
 
+    // 비동기 작업으로 강연 내용을 로드하는 클래스
     @SuppressLint("StaticFieldLeak")
     private class LoadLectureTask extends AsyncTask<Integer, Void, SeminarPost> {
         @Override
@@ -97,15 +103,21 @@ public class SeminarContentView extends AppCompatActivity {
         protected void onPostExecute(SeminarPost post) {
             swipeRefreshLayout.setRefreshing(false);  // 새로고침 완료
             if (post != null) {
+                // 강연 내용 UI에 설정
                 currentPost = post;  // 현재 강연 객체 저장
                 titleTextView.setText(post.getTitle());  // 제목 설정
                 contentTextView.setText(post.getContent());  // 내용 설정
-                lecturerNameTextView.setText("강연자 | " + post.getUserId());  // 강연자 설정
+                lecturerNameTextView.setText("강연자 | " + post.getUserName());  // 사용자 이름 설정
+
                 dateTextView.setText(post.getCreatedAt().substring(0, 16));  // 작성 날짜 설정
-                feeTextView.setText("강연료: " + post.getFee() + "원");  // 강연료 설정
+
+                DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
+                feeTextView.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
+
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
             } else {
-                Toast.makeText(SeminarContentView.this, "강연을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
+                // 강연 로드 실패 시 메시지 표시
+                Toast.makeText(SeminarContentView.this, "강연을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -113,13 +125,15 @@ public class SeminarContentView extends AppCompatActivity {
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
+        // 팝업 메뉴에 항목 추가
         popup.getMenu().add(0, 0, 0, "강연 수정");  // 수정 메뉴 추가
         popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제");  // 삭제 메뉴 추가
 
+        // 팝업 메뉴 항목 클릭 시 처리
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case 0:
-                    // 강연 수정 선택 시 현재 강연의 데이터를 인텐트에 담아 SeminarWriteActivity로 전달
+                    // 강연 수정 선택 시, SeminarWriteActivity로 이동
                     if (currentPost != null) {
                         Intent intent = new Intent(SeminarContentView.this, SeminarWriteActivity.class);
                         intent.putExtra("lectureId", currentPost.getLectureId());  // 강연 ID 전달
@@ -130,7 +144,8 @@ public class SeminarContentView extends AppCompatActivity {
                     }
                     return true;
                 case 1:
-                    confirmDeleteLecture();  // 삭제 확인 다이얼로그 표시
+                    // 삭제 확인 다이얼로그 표시
+                    confirmDeleteLecture();
                     return true;
                 default:
                     return false;
@@ -174,18 +189,21 @@ public class SeminarContentView extends AppCompatActivity {
         }.execute();  // 비동기 작업 실행
     }
 
+    // 상단 바의 뒤로가기 버튼을 클릭 시 호출
     @Override
     public boolean onSupportNavigateUp() {
-        navigateBackToSeminarActivity();  // 상단 바의 뒤로가기 버튼을 클릭 시 처리
+        navigateBackToSeminarActivity();
         return true;
     }
 
+    // 디바이스의 뒤로가기 버튼을 클릭 시 호출
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        navigateBackToSeminarActivity();  // 디바이스의 뒤로가기 버튼을 클릭 시 처리
+        navigateBackToSeminarActivity();
     }
 
+    // SeminarActivity로 돌아가는 메서드
     private void navigateBackToSeminarActivity() {
         Intent intent = new Intent(this, SeminarActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);  // 기존의 SeminarActivity를 재사용
