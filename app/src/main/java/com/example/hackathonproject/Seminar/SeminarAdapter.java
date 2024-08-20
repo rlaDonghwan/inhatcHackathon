@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.hackathonproject.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class SeminarAdapter extends RecyclerView.Adapter<SeminarAdapter.SeminarViewHolder> {
@@ -35,32 +36,35 @@ public class SeminarAdapter extends RecyclerView.Adapter<SeminarAdapter.SeminarV
         // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
         SeminarPost post = seminarPosts.get(position);
         holder.postTitle.setText(post.getTitle()); // 제목 설정
-        holder.postDetails.setText("작성자 ID: " + post.getUserId() + " | " + post.getCreatedAt());  // 작성자 ID 및 작성 시간 설정
+        holder.postDetails.setText("작성자: " + post.getUserName() + " | " + post.getCreatedAt());  // 작성자 이름 및 작성 시간 설정
         holder.postLocation.setText("위치: " + post.getLocation()); // 위치 설정
         holder.postViews.setText("조회수: " + post.getViews());  // 조회수 설정
-        holder.postFee.setText("강연료: " + post.getFee() + "원");  // 강연료 설정
+
+        // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용
+        DecimalFormat df = new DecimalFormat("#,###");
+        holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
     }
 
     // 어댑터에서 관리하는 아이템의 개수 반환
     @Override
     public int getItemCount() {
-        return seminarPosts.size();
+        return seminarPosts.size();  // 세미나 게시글 리스트의 크기 반환
     }
 
     // 데이터를 업데이트하고 RecyclerView를 갱신하는 메서드
     public void updateData(List<SeminarPost> posts) {
         this.seminarPosts = posts;
-        notifyDataSetChanged(); // 데이터 변경을 알림
+        notifyDataSetChanged(); // 데이터 변경을 알림 (화면 갱신)
     }
 
     // 아이템 클릭 리스너 설정
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+        this.listener = listener;  // 외부에서 리스너를 설정할 수 있게 함
     }
 
     // 아이템 클릭 리스너 인터페이스 정의
     public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int position);  // 아이템 클릭 시 호출되는 메서드
     }
 
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
@@ -80,7 +84,7 @@ public class SeminarAdapter extends RecyclerView.Adapter<SeminarAdapter.SeminarV
             itemView.setOnClickListener(v -> {
                 if (listener != null) { // 리스너가 설정되어 있는지 확인
                     int position = getAdapterPosition(); // 현재 클릭된 위치를 가져옴
-                    if (position != RecyclerView.NO_POSITION) {
+                    if (position != RecyclerView.NO_POSITION) {  // 유효한 위치인지 확인
                         listener.onItemClick(v, position); // 클릭 이벤트 처리
                     }
                 }

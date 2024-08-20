@@ -14,7 +14,7 @@ public class DatabaseConnection {
     private static final String USER = "admin"; // 데이터베이스 사용자명
     private static final String PASSWORD = "inhatc2024"; // 데이터베이스 비밀번호
 
-    // 동기적으로 데이터베이스에 연결하는 메서드
+    // 데이터베이스 연결 메서드
     public Connection connect() throws SQLException {
         Connection conn = null;
         try {
@@ -60,6 +60,3 @@ public class DatabaseConnection {
     public interface DatabaseCallback {
         void onSuccess(Connection connection);
 
-        void onError(SQLException e);
-    }
-}

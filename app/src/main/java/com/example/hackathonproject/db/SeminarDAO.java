@@ -41,8 +41,8 @@ public class SeminarDAO {
     // 모든 강연 게시글을 가져오는 메서드
     public List<SeminarPost> getAllSeminarPosts() {
         List<SeminarPost> postList = new ArrayList<>();
-        String sql = "SELECT LectureID, UserID, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
-                "FROM Lecture";
+        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
+                "FROM Lecture l JOIN User u ON l.UserID = u.UserID";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -50,6 +50,7 @@ public class SeminarDAO {
             while (rs.next()) {
                 int lectureId = rs.getInt("LectureID");
                 int userId = rs.getInt("UserID");
+                String userName = rs.getString("Name");  // 작성자 이름 가져오기
                 String title = rs.getString("Title");
                 String content = rs.getString("Content");
                 String location = rs.getString("Location");
@@ -58,7 +59,7 @@ public class SeminarDAO {
                 String createdAt = rs.getString("CreatedAt");
                 String completedAt = rs.getString("CompletedAt");
 
-                postList.add(new SeminarPost(lectureId, userId, title, content, location, createdAt, completedAt, fee, views));
+                postList.add(new SeminarPost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views));
             }
         } catch (SQLException e) {
             Log.e(TAG, "Failed to load posts", e);
@@ -68,8 +69,8 @@ public class SeminarDAO {
 
     // 특정 ID의 강연 게시글을 가져오는 메서드
     public SeminarPost getSeminarPostById(int lectureId) {
-        String sql = "SELECT LectureID, UserID, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
-                "FROM Lecture WHERE LectureID = ?";
+        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
+                "FROM Lecture l JOIN User u ON l.UserID = u.UserID WHERE LectureID = ?";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -77,6 +78,7 @@ public class SeminarDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     int userId = rs.getInt("UserID");
+                    String userName = rs.getString("Name");  // 작성자 이름 가져오기
                     String title = rs.getString("Title");
                     String content = rs.getString("Content");
                     String location = rs.getString("Location");
@@ -85,7 +87,7 @@ public class SeminarDAO {
                     String createdAt = rs.getString("CreatedAt");
                     String completedAt = rs.getString("CompletedAt");
 
-                    return new SeminarPost(lectureId, userId, title, content, location, createdAt, completedAt, fee, views);
+                    return new SeminarPost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views);
                 }
             }
         } catch (SQLException e) {
