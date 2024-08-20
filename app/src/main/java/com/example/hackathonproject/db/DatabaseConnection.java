@@ -1,5 +1,7 @@
 package com.example.hackathonproject.db;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -12,7 +14,7 @@ public class DatabaseConnection {
     private static final String USER = "admin"; // 데이터베이스 사용자명
     private static final String PASSWORD = "inhatc2024"; // 데이터베이스 비밀번호
 
-    // 데이터베이스 연결 메서드
+    // 동기적으로 데이터베이스에 연결하는 메서드
     public Connection connect() throws SQLException {
         Connection conn = null;
         try {
@@ -24,7 +26,40 @@ public class DatabaseConnection {
         }
         return conn; // 연결 객체 반환
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 비동기적으로 데이터베이스에 연결하는 메서드
+    @SuppressLint("StaticFieldLeak")
+    public void connectAsync(DatabaseCallback callback) {
+        new AsyncTask<Void, Void, Connection>() {
+            private SQLException exception;
+
+            @Override
+            protected Connection doInBackground(Void... voids) {
+                try {
+                    return DriverManager.getConnection(URL, USER, PASSWORD); // 데이터베이스에 연결 시도
+                } catch (SQLException e) {
+                    exception = e;
+                    Log.e(TAG, "Failed to connect to database", e); // 연결 실패 시 로그 출력
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Connection connection) {
+                if (connection != null) {
+                    Log.d(TAG, "Database connected!"); // 연결 성공 시 로그 출력
+                    callback.onSuccess(connection); // 성공 콜백 호출
+                } else {
+                    callback.onError(exception); // 실패 콜백 호출
+                }
+            }
+        }.execute();
+    }
+
+    // DatabaseCallback 인터페이스 정의
+    public interface DatabaseCallback {
+        void onSuccess(Connection connection);
+
+        void onError(SQLException e);
+    }
 }
-
-
