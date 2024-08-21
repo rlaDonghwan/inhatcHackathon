@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.hackathonproject.Setting.EditProfileActivity;
 import com.example.hackathonproject.db.AuthManager;
 import com.example.hackathonproject.R;
 
@@ -49,12 +50,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         ImageButton backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
-        });
+        backButton.setOnClickListener(v ->onBackPressed());
+//        {
+//            Intent intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            startActivity(intent);
+//            finish();
+//        });
 
         emailAddressTextController = findViewById(R.id.emailAddressTextController);
         textController = findViewById(R.id.textController);
@@ -134,6 +136,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent;
+        String previousActivity = getIntent().getStringExtra("previousActivity");
+
+        if ("EditProfileActivity".equals(previousActivity)) {
+            intent = new Intent(ForgotPasswordActivity.this, EditProfileActivity.class);
+        } else {
+            intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+
+        super.onBackPressed(); // 기본 동작을 호출하여 경고를 해결합니다.
+    }
+
+
 
     private void sendSMSVerificationCode(String phoneNumber) {
         generatedCode = generateVerificationCode();
