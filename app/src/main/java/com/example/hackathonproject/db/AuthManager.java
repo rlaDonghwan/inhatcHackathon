@@ -75,4 +75,16 @@ public class AuthManager {
         return age < 65 ? "청년" : "노인"; // 65세 미만은 청년, 65세 이상은 노인으로 역할 설정
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 이름 변경 메서드
+    public boolean changeUserName(int userId, String newName) throws SQLException {
+        return userDAO.updateUserName(userId, newName);
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 계정 삭제 메서드
+    public boolean deleteUserAccount(int userId) throws SQLException {
+        return userDAO.deleteUser(userId);
+    }
+
 }

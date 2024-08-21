@@ -80,6 +80,19 @@
             android:textColor="@color/gray"
             android:layout_marginTop="4dp" />
 
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/skyBlue"
+            android:text="저장"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center" />
+
+
         <!-- 비밀번호 변경 -->
         <TextView
             android:layout_width="wrap_content"
