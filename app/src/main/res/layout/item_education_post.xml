@@ -50,7 +50,6 @@
                 android:id="@+id/postLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="위치: 전국"
                 android:textSize="14sp"
                 android:textColor="@color/gray"
                 android:gravity="end"/>
