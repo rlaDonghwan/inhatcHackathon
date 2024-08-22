@@ -13,14 +13,15 @@ import com.example.hackathonproject.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
 
     private List<ChatMessage> messages;
     private int loggedInUserId;
+    private int otherUserId; // 상대방의 사용자 ID
 
-    public ChatAdapter(int loggedInUserId) {
+    public ChatAdapter(int loggedInUserId, int otherUserId) { // 상대방 ID를 추가로 받습니다.
         this.loggedInUserId = loggedInUserId;
+        this.otherUserId = otherUserId; // 초기화
         this.messages = new ArrayList<>();
     }
 
@@ -43,21 +44,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         ChatMessage message = messages.get(position);
 
         if (message.getSenderUserId() == loggedInUserId) {
-            // 로그인한 사용자가 보낸 메시지
-            holder.myMessageContainer.setVisibility(View.VISIBLE);
-            holder.otherMessageContainer.setVisibility(View.GONE);
-
+            // 내가 보낸 메시지
+            holder.myMessageTextView.setVisibility(View.VISIBLE);
+            holder.otherMessageTextView.setVisibility(View.GONE);
             holder.myMessageTextView.setText(message.getMessageText());
-            holder.myMessageTimeTextView.setText(message.getFormattedTime());
-        } else {
+        } else if (message.getSenderUserId() == otherUserId) {
             // 상대방이 보낸 메시지
-            holder.myMessageContainer.setVisibility(View.GONE);
-            holder.otherMessageContainer.setVisibility(View.VISIBLE);
-
+            holder.myMessageTextView.setVisibility(View.GONE);
+            holder.otherMessageTextView.setVisibility(View.VISIBLE);
             holder.otherMessageTextView.setText(message.getMessageText());
-            holder.otherMessageTimeTextView.setText(message.getFormattedTime());
         }
     }
+
 
     @Override
     public int getItemCount() {
