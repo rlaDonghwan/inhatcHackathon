@@ -10,6 +10,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +49,17 @@ public class ChatDAO {
 
                     String otherUserName = userId == userId1 ? resultSet.getString("UserName2") : resultSet.getString("UserName1");
 
+                    // KST로 시간을 변환
+                    LocalDateTime lastMessageTimeKST = null;
+                    if (lastMessageTime != null) {
+                        lastMessageTime = lastMessageTime.split("\\.")[0]; // ".0" 부분을 제거
+                        lastMessageTimeKST = LocalDateTime.parse(lastMessageTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                .atZone(ZoneId.of("Asia/Seoul"))
+                                .toLocalDateTime();
+                    }
+
                     // Chat 객체 생성 시 lectureId를 포함하도록 수정
-                    Chat chat = new Chat(chatId, userId1, userId2, lastMessage, lastMessageTime, postId, lectureId);
+                    Chat chat = new Chat(chatId, userId1, userId2, lastMessage, lastMessageTimeKST != null ? lastMessageTimeKST.toString() : null, postId, lectureId);
 
                     chat.setOtherUserName(otherUserName);
                     chatList.add(chat);
@@ -58,7 +70,6 @@ public class ChatDAO {
         }
         return chatList;
     }
-
 
     // 채팅방을 가져오거나 새로 생성하는 메서드
     public void getOrCreateChatRoom(int userId1, int userId2, Integer postId, Integer lectureId, ChatRoomCallback callback) {

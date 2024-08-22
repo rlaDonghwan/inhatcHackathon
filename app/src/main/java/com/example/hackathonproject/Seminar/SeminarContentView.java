@@ -21,6 +21,10 @@ import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.SeminarDAO;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class SeminarContentView extends AppCompatActivity {
     private int lectureId;  // 강연 ID를 저장할 변수
@@ -108,8 +112,8 @@ public class SeminarContentView extends AppCompatActivity {
                 titleTextView.setText(post.getTitle());  // 제목 설정
                 contentTextView.setText(post.getContent());  // 내용 설정
                 lecturerNameTextView.setText("강연자 | " + post.getUserName());  // 사용자 이름 설정
-
-                dateTextView.setText(post.getCreatedAt().substring(0, 16));  // 작성 날짜 설정
+                String formattedTime = formatTimeAgo(post.getCreatedAt());
+                dateTextView.setText(formattedTime);  // 작성 날짜 설정
 
                 DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
                 feeTextView.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
@@ -121,6 +125,33 @@ public class SeminarContentView extends AppCompatActivity {
             }
         }
     }
+
+    private String formatTimeAgo(String createdAt) {
+        // "2024-08-19 18:03:19.0"에서 ".0" 제거
+        if (createdAt != null && createdAt.endsWith(".0")) {
+            createdAt = createdAt.substring(0, createdAt.length() - 2);
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime postTime = LocalDateTime.parse(createdAt, formatter);
+
+        // 현재 시간을 KST로 가져옴
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        // 작성 시간과 현재 시간의 차이 계산
+        long minutes = ChronoUnit.MINUTES.between(postTime, now);
+        long hours = ChronoUnit.HOURS.between(postTime, now);
+        long days = ChronoUnit.DAYS.between(postTime, now);
+
+        if (minutes < 60) {
+            return minutes + "분 전";
+        } else if (hours < 24) {
+            return hours + "시간 전";
+        } else {
+            return days + "일 전";
+        }
+    }
+
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {

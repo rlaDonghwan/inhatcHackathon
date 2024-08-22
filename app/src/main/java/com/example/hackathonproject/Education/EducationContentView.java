@@ -28,6 +28,10 @@ import com.example.hackathonproject.db.EducationDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class EducationContentView extends AppCompatActivity {
     private int postId;  // 게시글 ID를 저장할 변수
@@ -169,6 +173,7 @@ public class EducationContentView extends AppCompatActivity {
             }
         }
 
+
         @Override
         protected void onPostExecute(EducationPost post) {
             swipeRefreshLayout.setRefreshing(false);  // 새로고침 완료
@@ -177,7 +182,8 @@ public class EducationContentView extends AppCompatActivity {
                 titleTextView.setText(post.getTitle());  // 제목 설정
                 contentTextView.setText(post.getContent());  // 내용 설정
                 teacherNameTextView.setText("작성자 | " + post.getUserName());  // 작성자 설정
-                dateTextView.setText(post.getCreatedAt().toString().substring(0, 16));  // 작성 날짜 설정
+                String formattedTime = formatTimeAgo(post.getCreatedAt());
+                dateTextView.setText(formattedTime);  // 작성 날짜 설정
 
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);
@@ -207,6 +213,32 @@ public class EducationContentView extends AppCompatActivity {
             } else {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
+        }
+    }
+
+    private String formatTimeAgo(String createdAt) {
+        // "2024-08-19 18:03:19.0"에서 ".0" 제거
+        if (createdAt != null && createdAt.endsWith(".0")) {
+            createdAt = createdAt.substring(0, createdAt.length() - 2);
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime postTime = LocalDateTime.parse(createdAt, formatter);
+
+        // 현재 시간을 KST로 가져옴
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        // 작성 시간과 현재 시간의 차이 계산
+        long minutes = ChronoUnit.MINUTES.between(postTime, now);
+        long hours = ChronoUnit.HOURS.between(postTime, now);
+        long days = ChronoUnit.DAYS.between(postTime, now);
+
+        if (minutes < 60) {
+            return minutes + "분 전";
+        } else if (hours < 24) {
+            return hours + "시간 전";
+        } else {
+            return days + "일 전";
         }
     }
 

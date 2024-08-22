@@ -1,21 +1,21 @@
 package com.example.hackathonproject.Chat;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ChatMessage {
-
     private int messageId;
     private int chatId;
     private int senderUserId;
     private String messageText;
-    private Timestamp sentTime;
+    private LocalDateTime sentTime;
 
-    // Getter and Setter methods
+    // Existing Getters and Setters
     public int getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(int messageId) {  // 이 메서드를 추가합니다.
+    public void setMessageId(int messageId) {
         this.messageId = messageId;
     }
 
@@ -43,11 +43,17 @@ public class ChatMessage {
         this.messageText = messageText;
     }
 
-    public Timestamp getSentTime() {
+    public LocalDateTime getSentTime() {
         return sentTime;
     }
 
-    public void setSentTime(Timestamp sentTime) {
+    public void setSentTime(LocalDateTime sentTime) {
         this.sentTime = sentTime;
+    }
+
+    // Method to get formatted time
+    public String getFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("a h:mm");
+        return sentTime.format(formatter);
     }
 }

@@ -19,7 +19,11 @@ import com.example.hackathonproject.db.DatabaseConnection;
 import com.example.hackathonproject.Login.SessionManager;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -34,6 +38,7 @@ public class ChatActivity extends AppCompatActivity {
     private int otherUserId;
     private int postId;
     private Connection connection;
+    private String otherUserName; // 상대방 이름을 저장할 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,29 +79,40 @@ public class ChatActivity extends AppCompatActivity {
             public void onSuccess(Connection conn) {
                 connection = conn;
                 Log.d(TAG, "Database connection established.");
-                if (chatId == -1) {
-                    ChatDAO chatDAO = new ChatDAO(connection);
-                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, postId, null, new ChatDAO.ChatRoomCallback() {
-                        @Override
-                        public void onSuccess(int retrievedChatId) {
-                            runOnUiThread(() -> {
-                                chatId = retrievedChatId;
-                                initializeChatUI(currentUserId, otherUserId);
-                                loadChatMessages(); // 채팅 메시지를 로드합니다.
-                            });
-                        }
+                fetchOtherUserName(otherUserId, new UserNameCallback() {
+                    @Override
+                    public void onUserNameRetrieved(String userName) {
+                        otherUserName = userName; // 상대방 이름 저장
+                        if (chatId == -1) {
+                            ChatDAO chatDAO = new ChatDAO(connection);
+                            chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, postId, null, new ChatDAO.ChatRoomCallback() {
+                                @Override
+                                public void onSuccess(int retrievedChatId) {
+                                    runOnUiThread(() -> {
+                                        chatId = retrievedChatId;
+                                        initializeChatUI(currentUserId, otherUserName);
+                                        loadChatMessages(); // 채팅 메시지를 로드합니다.
+                                    });
+                                }
 
-                        @Override
-                        public void onError(Exception e) {
-                            runOnUiThread(() -> showErrorMessage("채팅방을 생성할 수 없습니다. 다시 시도해 주세요."));
-                            Log.e(TAG, "Error creating chat room: " + e.getMessage());
+                                @Override
+                                public void onError(Exception e) {
+                                    runOnUiThread(() -> showErrorMessage("채팅방을 생성할 수 없습니다. 다시 시도해 주세요."));
+                                    Log.e(TAG, "Error creating chat room: " + e.getMessage());
+                                }
+                            });
+                        } else {
+                            // 기존 채팅방이 있을 때
+                            initializeChatUI(currentUserId, otherUserName);
+                            loadChatMessages();
                         }
-                    });
-                } else {
-                    // 기존 채팅방이 있을 때
-                    initializeChatUI(currentUserId, otherUserId);
-                    loadChatMessages();
-                }
+                    }
+
+                    @Override
+                    public void onError(SQLException e) {
+                        runOnUiThread(() -> showErrorMessage("상대방 이름을 불러오는 데 실패했습니다."));
+                    }
+                });
             }
 
             @Override
@@ -107,10 +123,41 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void initializeChatUI(int currentUserId, int otherUserId) {
+    private void fetchOtherUserName(int userId, UserNameCallback callback) {
+        new AsyncTask<Void, Void, String>() {
+            private SQLException exception;
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                String userName = null;
+                try {
+                    Statement statement = connection.createStatement();
+                    String query = "SELECT Name FROM User WHERE UserID = " + userId;
+                    ResultSet resultSet = statement.executeQuery(query);
+                    if (resultSet.next()) {
+                        userName = resultSet.getString("Name");
+                    }
+                } catch (SQLException e) {
+                    exception = e;
+                }
+                return userName;
+            }
+
+            @Override
+            protected void onPostExecute(String userName) {
+                if (exception != null) {
+                    callback.onError(exception);
+                } else {
+                    callback.onUserNameRetrieved(userName);
+                }
+            }
+        }.execute();
+    }
+
+    private void initializeChatUI(int currentUserId, String otherUserName) {
         sendButton.setOnClickListener(v -> sendMessage());
         TextView chatTitle = findViewById(R.id.chat_title);
-        chatTitle.setText("Chat between User " + currentUserId + " and User " + otherUserId);
+        chatTitle.setText(otherUserName + "님");
     }
 
     private void loadChatMessages() {
@@ -125,11 +172,17 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         protected List<ChatMessage> doInBackground(Integer... params) {
             int chatId = params[0];
-            if (connection != null) {
-                ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
-                return chatMessageDAO.getMessagesByChatId(chatId);
-            } else {
-                Log.e(TAG, "Connection is null in LoadMessagesTask.");
+
+            try (Connection conn = new DatabaseConnection().connect()) { // 새 연결 열기
+                if (conn != null) {
+                    ChatMessageDAO chatMessageDAO = new ChatMessageDAO(conn);
+                    return chatMessageDAO.getMessagesByChatId(chatId);
+                } else {
+                    Log.e(TAG, "Failed to establish a database connection in LoadMessagesTask.");
+                    return null;
+                }
+            } catch (SQLException e) {
+                Log.e(TAG, "Error while loading messages: " + e.getMessage());
                 return null;
             }
         }
@@ -144,10 +197,13 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+
     private void sendMessage() {
         String messageText = inputMessage.getText().toString().trim();
         if (!messageText.isEmpty()) {
-            new SendMessageTask().execute(messageText);
+            // 현재 시간을 KST로 가져옴
+            ZonedDateTime kstTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+            new SendMessageTask().execute(messageText, kstTime.toString());
         } else {
             Toast.makeText(ChatActivity.this, "메시지를 입력하세요.", Toast.LENGTH_SHORT).show();
         }
@@ -157,11 +213,14 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(String... params) {
             String messageText = params[0];
+            String kstTimeString = params[1];
+
+            ZonedDateTime kstTime = ZonedDateTime.parse(kstTimeString); // 문자열을 ZonedDateTime으로 변환
+
             if (connection != null) {
                 ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
                 if (chatId > 0) {
-                    chatMessageDAO.addMessage(chatId, loggedInUserId, messageText);
-                    return true;
+                    return chatMessageDAO.addMessage(chatId, loggedInUserId, messageText, kstTime);
                 } else {
                     Log.e(TAG, "Invalid ChatID: " + chatId);
                     return false;
@@ -195,5 +254,11 @@ public class ChatActivity extends AppCompatActivity {
                 Log.e(TAG, "Error closing database connection: " + e.getMessage());
             }
         }
+    }
+
+    // 콜백 인터페이스 정의
+    interface UserNameCallback {
+        void onUserNameRetrieved(String userName);
+        void onError(SQLException e);
     }
 }

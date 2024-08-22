@@ -33,9 +33,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="작성자 | 게시시간"
+                android:text="게시시간"
                 android:textColor="@color/gray"
                 android:textSize="14sp" />
+
         </LinearLayout>
 
         <!-- Right Group: Location, Views, and Fee -->
@@ -46,14 +47,6 @@
             android:layout_alignParentEnd="true"
             android:gravity="end">
 
-            <TextView
-                android:id="@+id/postLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="위치: 전국"
-                android:textSize="14sp"
-                android:textColor="@color/gray"
-                android:gravity="end"/>
 
             <TextView
                 android:id="@+id/postViews"

@@ -7,6 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +40,7 @@ public class ChatMessageDAO {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, chatId);
 
-            Log.d(TAG, "Executing query: " + statement.toString()); // 쿼리 로그
+            Log.d(TAG, "Executing query: " + statement.toString());
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -45,15 +50,21 @@ public class ChatMessageDAO {
                 message.setChatId(resultSet.getInt("ChatID"));
                 message.setSenderUserId(resultSet.getInt("SenderUserID"));
                 message.setMessageText(resultSet.getString("MessageText"));
-                message.setSentTime(resultSet.getTimestamp("SentTime"));
 
-                Log.d(TAG, "Fetched message: " + message.getMessageText()); // 메시지 로그
+                // Convert the TIMESTAMP from the database to LocalDateTime with KST timezone
+                Timestamp timestamp = resultSet.getTimestamp("SentTime");
+                if (timestamp != null) {
+                    LocalDateTime sentTime = timestamp.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                    message.setSentTime(sentTime);
+                }
+
+                Log.d(TAG, "Fetched message: " + message.getMessageText());
 
                 messages.add(message);
             }
 
             if (messages.isEmpty()) {
-                Log.w(TAG, "No messages found for ChatID: " + chatId); // 메시지가 없을 경우 경고 로그
+                Log.w(TAG, "No messages found for ChatID: " + chatId);
             }
 
         } catch (SQLException e) {
@@ -63,50 +74,46 @@ public class ChatMessageDAO {
         return messages;
     }
 
+    public boolean addMessage(int chatId, int senderUserId, String messageText, ZonedDateTime kstTime) {
+        String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, ?)";
 
+        try (Connection conn = this.connection != null && !this.connection.isClosed() ? this.connection : new DatabaseConnection().connect();
+             PreparedStatement statement = conn.prepareStatement(query)) {
 
-    public void addMessage(int chatId, int senderUserId, String messageText) {
-        if (connection == null) {
-            Log.e(TAG, "Connection is null, cannot add message.");
-            return;
-        }
-
-        try {
-            // 메시지 추가
-            String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, NOW())";
-            PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, chatId);
             statement.setInt(2, senderUserId);
             statement.setString(3, messageText);
+
+            // ZonedDateTime을 포맷팅된 문자열로 변환하여 저장
+            String formattedDateTime = kstTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            statement.setString(4, formattedDateTime); // DATETIME 형식으로 저장
 
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
                 Log.i(TAG, "Message successfully added.");
 
-                // 채팅방의 마지막 메시지와 시간을 업데이트
-                String updateChatQuery = "UPDATE Chat SET LastMessage = ?, LastMessageTime = NOW() WHERE ChatID = ?";
-                PreparedStatement updateChatStmt = connection.prepareStatement(updateChatQuery);
-                updateChatStmt.setString(1, messageText);
-                updateChatStmt.setInt(2, chatId);
-                updateChatStmt.executeUpdate();
+                // Update the LastMessage and LastMessageTime in the Chat table
+                String updateChatQuery = "UPDATE Chat SET LastMessage = ?, LastMessageTime = ? WHERE ChatID = ?";
+                try (PreparedStatement updateChatStmt = conn.prepareStatement(updateChatQuery)) {
+                    updateChatStmt.setString(1, messageText);
+                    updateChatStmt.setString(2, formattedDateTime); // 같은 KST 시간 사용
+                    updateChatStmt.setInt(3, chatId);
+                    updateChatStmt.executeUpdate();
 
-                if (!connection.getAutoCommit()) {
-                    connection.commit();  // 트랜잭션이 수동 관리되는 경우 커밋
+                    if (!conn.getAutoCommit()) {
+                        conn.commit();
+                    }
                 }
+                return true;
             } else {
                 Log.e(TAG, "Failed to add message.");
+                return false;
             }
         } catch (SQLException e) {
             Log.e(TAG, "Error while adding message: " + e.getMessage());
             e.printStackTrace();
-            try {
-                if (!connection.getAutoCommit()) {
-                    connection.rollback();  // 트랜잭션 실패 시 롤백
-                }
-            } catch (SQLException rollbackEx) {
-                Log.e(TAG, "Error during rollback: " + rollbackEx.getMessage());
-            }
+            return false;
         }
     }
 

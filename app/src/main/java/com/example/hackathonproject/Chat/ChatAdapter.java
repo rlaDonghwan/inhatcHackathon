@@ -3,13 +3,13 @@ package com.example.hackathonproject.Chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackathonproject.R;
-import com.example.hackathonproject.db.ChatMessageDAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +21,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
     public ChatAdapter(int loggedInUserId) {
         this.loggedInUserId = loggedInUserId;
-        this.messages = new ArrayList<>(); // 메시지 리스트 초기화
+        this.messages = new ArrayList<>();
     }
 
     public void setMessages(List<ChatMessage> messages) {
         if (messages != null) {
             this.messages = messages;
-            notifyDataSetChanged(); // 데이터 변경 시 어댑터에 알림
+            notifyDataSetChanged();
         }
     }
 
@@ -42,16 +42,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         ChatMessage message = messages.get(position);
 
-        // 메시지의 송신자가 로그인한 사용자일 경우
         if (message.getSenderUserId() == loggedInUserId) {
-            holder.myMessageTextView.setVisibility(View.VISIBLE);
-            holder.otherMessageTextView.setVisibility(View.GONE);
+            // 로그인한 사용자가 보낸 메시지
+            holder.myMessageContainer.setVisibility(View.VISIBLE);
+            holder.otherMessageContainer.setVisibility(View.GONE);
+
             holder.myMessageTextView.setText(message.getMessageText());
+            holder.myMessageTimeTextView.setText(message.getFormattedTime());
         } else {
-            // 다른 사용자가 보낸 메시지일 경우
-            holder.myMessageTextView.setVisibility(View.GONE);
-            holder.otherMessageTextView.setVisibility(View.VISIBLE);
+            // 상대방이 보낸 메시지
+            holder.myMessageContainer.setVisibility(View.GONE);
+            holder.otherMessageContainer.setVisibility(View.VISIBLE);
+
             holder.otherMessageTextView.setText(message.getMessageText());
+            holder.otherMessageTimeTextView.setText(message.getFormattedTime());
         }
     }
 
@@ -62,13 +66,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout myMessageContainer;
+        LinearLayout otherMessageContainer;
         TextView myMessageTextView;
+        TextView myMessageTimeTextView;
         TextView otherMessageTextView;
+        TextView otherMessageTimeTextView;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            myMessageTextView = itemView.findViewById(R.id.msgContent1);
-            otherMessageTextView = itemView.findViewById(R.id.msgContent2);
+            myMessageContainer = itemView.findViewById(R.id.myMessageContainer);
+            otherMessageContainer = itemView.findViewById(R.id.otherMessageContainer);
+            myMessageTextView = itemView.findViewById(R.id.msgContent2);
+            myMessageTimeTextView = itemView.findViewById(R.id.msgTime2);
+            otherMessageTextView = itemView.findViewById(R.id.msgContent1);
+            otherMessageTimeTextView = itemView.findViewById(R.id.msgTime1);
         }
     }
 }
