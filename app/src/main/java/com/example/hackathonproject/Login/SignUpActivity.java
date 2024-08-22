@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.widget.Button;
@@ -22,6 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText etName, etPassword, etPhoneNum, etBirthYear, etMonth, etDay;
     private CheckBox cbIsOrganization;
     private AuthManager authManager;
+    private Button btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +39,16 @@ public class SignUpActivity extends AppCompatActivity {
         etMonth = findViewById(R.id.month_input);
         etDay = findViewById(R.id.day_input);
         cbIsOrganization = findViewById(R.id.checkbox);
-        Button btnRegister = findViewById(R.id.sign_up_button);
+        btnRegister = findViewById(R.id.sign_up_button);
 
+        // 전화번호 입력 필드에 최대 13자리 제한 및 형식화 적용
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         etPhoneNum.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
+        // 생년월일 입력 필드의 자동 이동 설정
+        setupFieldAutoMove();
+
+        // 회원가입 버튼 클릭 시 동작 정의
         btnRegister.setOnClickListener(v -> {
             String name = etName.getText().toString();
             String password = etPassword.getText().toString();
@@ -51,15 +58,76 @@ public class SignUpActivity extends AppCompatActivity {
             String day = etDay.getText().toString();
             boolean isOrganization = cbIsOrganization.isChecked();
 
+            // 모든 필드가 입력되었는지 확인
             if (name.isEmpty() || password.isEmpty() || phoneNum.isEmpty() || birthYear.isEmpty() || month.isEmpty() || day.isEmpty()) {
                 Toast.makeText(SignUpActivity.this, "모든 필드를 입력하세요", Toast.LENGTH_SHORT).show();
             } else {
+                // 한 자리 입력의 경우 앞에 0을 추가
+                month = month.length() == 1 ? "0" + month : month;
+                day = day.length() == 1 ? "0" + day : day;
+
                 String birthDate = birthYear + month + day;
                 new RegisterUserTask().execute(name, password, phoneNum, birthDate, isOrganization);
             }
         });
     }
 
+    // 입력 필드 자동 이동 설정
+    private void setupFieldAutoMove() {
+        etBirthYear.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        etMonth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        etDay.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+
+        // 연도 입력 완료 후 월 입력으로 자동 이동
+        etBirthYear.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 4) {
+                    etMonth.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // 월 입력 완료 후 일 입력으로 자동 이동
+        etMonth.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2) {
+                    etDay.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // 일 입력 완료 후 회원가입 버튼으로 자동 이동
+        etDay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2) {
+                    btnRegister.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    // 비동기로 회원가입 작업을 수행하는 클래스
     private class RegisterUserTask extends AsyncTask<Object, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Object... params) {

@@ -45,7 +45,7 @@ public class EducationDAO {
     // 모든 교육 게시글을 가져오는 메서드
     public List<EducationPost> getAllEducationPosts() {
         List<EducationPost> postList = new ArrayList<>(); // 게시글 목록을 담을 리스트
-        String sql = "SELECT e.PostID, e.Title, e.Category, e.Content, e.Location, e.Views, e.CreatedAt, u.Name " +
+        String sql = "SELECT e.PostID, e.Title, e.Category, e.Content, e.Location, e.Views, e.CreatedAt, u.Name, e.UserID " +
                 "FROM EducationPost e JOIN User u ON e.UserID = u.UserID"; // SQL 쿼리
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -59,14 +59,16 @@ public class EducationDAO {
                 int views = rs.getInt("Views");
                 String createdAt = rs.getString("CreatedAt"); // KST로 저장된 시간을 그대로 가져옴
                 String userName = rs.getString("Name");
+                int userId = rs.getInt("UserID");  // userId 추가
 
-                postList.add(new EducationPost(postId, title, category, content, location, views, createdAt, userName)); // 리스트에 게시글 추가
+                postList.add(new EducationPost(postId, title, category, content, location, views, createdAt, userName, userId)); // userId 추가
             }
         } catch (SQLException e) {
             Log.e(TAG, "Failed to load posts", e); // 오류 로그 출력
         }
         return postList; // 게시글 리스트 반환
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 교육 게시글을 가져오는 메서드
@@ -83,18 +85,20 @@ public class EducationDAO {
                     String content = rs.getString("Content");
                     String location = rs.getString("Location");
                     int views = rs.getInt("Views");
-                    String createdAt = rs.getString("CreatedAt"); // KST로 저장된 시간을 그대로 가져옴
-                    int userId = rs.getInt("UserID");
+                    String createdAt = rs.getString("CreatedAt");
+                    int userId = rs.getInt("UserID");  // <---- 여기에 추가
 
-                    String userName = getUserNameById(userId); // 사용자 이름 가져오기
-                    return new EducationPost(id, title, category, content, location, views, createdAt, userName); // 게시글 객체 생성 후 반환
+                    String userName = getUserNameById(userId);
+                    return new EducationPost(id, title, category, content, location, views, createdAt, userName, userId);
+
                 }
             }
         } catch (SQLException e) {
-            Log.e(TAG, "Failed to load post by ID", e); // 오류 로그 출력
+            Log.e(TAG, "Failed to load post by ID", e);
         }
-        return null; // 게시글이 없으면 null 반환
+        return null;
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 조회수를 증가시키는 메서드

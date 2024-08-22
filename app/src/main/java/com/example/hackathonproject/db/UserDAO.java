@@ -12,6 +12,7 @@ public class UserDAO {
     private static final String TAG = "UserDAO"; // 로그 태그
     private DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
 
+
     // 사용자가 존재하는지 확인하는 메서드
     public boolean isUserExist(String phoneNum) throws SQLException {
         String sql = "SELECT COUNT(*) FROM User WHERE PhoneNumber = ?"; // 전화번호로 사용자 존재 여부 확인
@@ -118,4 +119,38 @@ public class UserDAO {
         }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 사용자 이름을 업데이트하는 메서드
+    public boolean updateUserName(int userId, String newName) throws SQLException {
+        String sql = "UPDATE User SET Name = ? WHERE UserID = ?";
+
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newName);
+            pstmt.setInt(2, userId);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to update user name", e);
+            throw e;
+        }
+    }
+
+    // 계정 삭제 메서드
+    public boolean deleteUser(int userId) throws SQLException {
+        String sql = "DELETE FROM User WHERE UserID = ?";
+
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to delete user", e);
+            throw e;
+        }
+    }
+
 }
