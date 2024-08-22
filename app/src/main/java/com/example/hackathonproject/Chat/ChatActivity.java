@@ -68,9 +68,15 @@ public class ChatActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter(loggedInUserId);
+
+        // Intent로부터 상대방 ID를 가져옵니다.
+        int otherUserId = getIntent().getIntExtra("otherUserId", -1);
+
+        // 두 개의 인자를 전달하여 ChatAdapter를 초기화합니다.
+        chatAdapter = new ChatAdapter(loggedInUserId, otherUserId);
         recyclerView.setAdapter(chatAdapter);
     }
+
 
     private void createOrRetrieveChatRoom(int currentUserId, int otherUserId) {
         DatabaseConnection databaseConnection = new DatabaseConnection();
