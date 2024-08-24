@@ -3,7 +3,6 @@ package com.example.hackathonproject.Chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,15 +12,16 @@ import com.example.hackathonproject.R;
 
 import java.util.ArrayList;
 import java.util.List;
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
+
+public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<ChatMessage> messages;
     private int loggedInUserId;
-    private int otherUserId; // 상대방의 사용자 ID
+    private static final int VIEW_TYPE_MY_MESSAGE = 1;
+    private static final int VIEW_TYPE_OTHER_MESSAGE = 2;
 
-    public ChatAdapter(int loggedInUserId, int otherUserId) { // 상대방 ID를 추가로 받습니다.
+    public ChatAdapter(int loggedInUserId) {
         this.loggedInUserId = loggedInUserId;
-        this.otherUserId = otherUserId; // 초기화
         this.messages = new ArrayList<>();
     }
 
@@ -32,53 +32,74 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         }
     }
 
-    @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_message, parent, false);
-        return new MessageViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+    public int getItemViewType(int position) {
         ChatMessage message = messages.get(position);
-
         if (message.getSenderUserId() == loggedInUserId) {
-            // 내가 보낸 메시지
-            holder.myMessageTextView.setVisibility(View.VISIBLE);
-            holder.otherMessageTextView.setVisibility(View.GONE);
-            holder.myMessageTextView.setText(message.getMessageText());
-        } else if (message.getSenderUserId() == otherUserId) {
-            // 상대방이 보낸 메시지
-            holder.myMessageTextView.setVisibility(View.GONE);
-            holder.otherMessageTextView.setVisibility(View.VISIBLE);
-            holder.otherMessageTextView.setText(message.getMessageText());
+            return VIEW_TYPE_MY_MESSAGE;
+        } else {
+            return VIEW_TYPE_OTHER_MESSAGE;
         }
     }
 
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_MY_MESSAGE) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_message, parent, false);
+            return new MyMessageViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_other_message, parent, false);
+            return new OtherMessageViewHolder(view);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ChatMessage message = messages.get(position);
+        if (holder instanceof MyMessageViewHolder) {
+            ((MyMessageViewHolder) holder).bind(message);
+        } else {
+            ((OtherMessageViewHolder) holder).bind(message);
+        }
+    }
 
     @Override
     public int getItemCount() {
-        return (messages != null) ? messages.size() : 0;
+        return messages.size();
     }
 
-    static class MessageViewHolder extends RecyclerView.ViewHolder {
+    static class MyMessageViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout myMessageContainer;
-        LinearLayout otherMessageContainer;
         TextView myMessageTextView;
         TextView myMessageTimeTextView;
+
+        MyMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            myMessageTextView = itemView.findViewById(R.id.msgContent2);
+            myMessageTimeTextView = itemView.findViewById(R.id.msgTime2);
+        }
+
+        void bind(ChatMessage message) {
+            myMessageTextView.setText(message.getMessageText());
+            myMessageTimeTextView.setText(message.getSentTime().toString());
+        }
+    }
+
+    static class OtherMessageViewHolder extends RecyclerView.ViewHolder {
+
         TextView otherMessageTextView;
         TextView otherMessageTimeTextView;
 
-        public MessageViewHolder(@NonNull View itemView) {
+        OtherMessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            myMessageContainer = itemView.findViewById(R.id.myMessageContainer);
-            otherMessageContainer = itemView.findViewById(R.id.otherMessageContainer);
-            myMessageTextView = itemView.findViewById(R.id.msgContent2);
-            myMessageTimeTextView = itemView.findViewById(R.id.msgTime2);
             otherMessageTextView = itemView.findViewById(R.id.msgContent1);
             otherMessageTimeTextView = itemView.findViewById(R.id.msgTime1);
+        }
+
+        void bind(ChatMessage message) {
+            otherMessageTextView.setText(message.getMessageText());
+            otherMessageTimeTextView.setText(message.getSentTime().toString());
         }
     }
 }
