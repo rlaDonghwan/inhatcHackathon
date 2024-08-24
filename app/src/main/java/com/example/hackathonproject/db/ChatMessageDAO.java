@@ -33,7 +33,7 @@ public class ChatMessageDAO {
         }
     }
 
-    public List<ChatMessage> getMessagesByChatId(int chatId) throws SQLException {
+    public List<ChatMessage> getMessagesByChatId(int chatId, int loggedInUserId) throws SQLException {
         List<ChatMessage> messages = new ArrayList<>();
         String query = "SELECT MessageID, ChatID, SenderUserID, MessageText, SentTime FROM ChatMessage WHERE ChatID = ?";
 
@@ -55,7 +55,8 @@ public class ChatMessageDAO {
                         message.setSentTime(sentTime);
                     }
 
-                    Log.d(TAG, "Fetched message: " + message.getMessageText());
+                    // Add the loggedInUserId to the log
+                    Log.d("ChatAdapter", "Message: " + message.getMessageText() + ", Sender: " + message.getSenderUserId() + ", LoggedInUser: " + loggedInUserId);
 
                     messages.add(message);
                 }
@@ -63,7 +64,6 @@ public class ChatMessageDAO {
         }
         return messages;
     }
-
 
     public boolean addMessage(int chatId, int senderUserId, String messageText, ZonedDateTime kstTime) {
         String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, ?)";
@@ -83,6 +83,9 @@ public class ChatMessageDAO {
 
             if (rowsAffected > 0) {
                 Log.i(TAG, "Message successfully added.");
+
+                // 메시지 추가 후 로그 출력
+                Log.d("ChatAdapter", "Message: " + messageText + ", Sender: " + senderUserId + ", SentTime: " + formattedDateTime);
 
                 // Update the LastMessage and LastMessageTime in the Chat table
                 String updateChatQuery = "UPDATE Chat SET LastMessage = ?, LastMessageTime = ? WHERE ChatID = ?";

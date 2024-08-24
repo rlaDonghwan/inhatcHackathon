@@ -2,6 +2,7 @@ package com.example.hackathonproject.Login;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class SessionManager {
     private static final String PREF_NAME = "UserSession";
@@ -25,9 +26,13 @@ public class SessionManager {
         editor.commit();
     }
 
+    // SessionManager.java
     public int getUserId() {
-        return pref.getInt(KEY_USER_ID, -1);
+        int userId = pref.getInt(KEY_USER_ID, -1);
+        Log.d("SessionManager", "Retrieved UserId: " + userId);  // 로그 추가
+        return userId;
     }
+
 
     public String getUserName() {
         return pref.getString(KEY_USER_NAME, "");

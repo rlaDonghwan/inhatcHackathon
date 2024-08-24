@@ -1,18 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <!-- 상대방 메시지 컨테이너 -->
-    <LinearLayout
-        android:id="@+id/otherMessageContainer"
+    <LinearLayout android:id="@+id/otherMessageContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="4dp"
-        android:gravity="start"> <!-- 왼쪽 정렬 -->
+        android:gravity="start"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
@@ -44,13 +44,14 @@
     </LinearLayout>
 
     <!-- 내 메시지 컨테이너 -->
-    <LinearLayout
-        android:id="@+id/myMessageContainer"
+    <LinearLayout android:id="@+id/myMessageContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="4dp"
-        android:gravity="end"> <!-- 오른쪽 정렬 -->
+        android:gravity="end"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <TextView
             android:id="@+id/msgTime2"
