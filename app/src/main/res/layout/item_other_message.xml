@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        android:backgroundTint="#BADCE9">
+        android:backgroundTint="#BADCE9"> <!-- 상대방 메시지 색상 -->
 
         <TextView
             android:id="@+id/msgContent1"
@@ -29,8 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="8dp"
-        android:text="오후 00:00"
         android:fontFamily="@font/im_hyemin_bold"
         android:textColor="@android:color/darker_gray"
+        android:text="오후 00:00"
         android:textSize="12sp" />
+
 </LinearLayout>
