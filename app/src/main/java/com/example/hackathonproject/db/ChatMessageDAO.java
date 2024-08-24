@@ -1,12 +1,6 @@
 package com.example.hackathonproject.db;
-
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
-
 import com.example.hackathonproject.Chat.ChatMessage;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +25,7 @@ public class ChatMessageDAO {
             throw new IllegalStateException("Database connection is not established.");
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public List<ChatMessage> getMessagesByChatId(int chatId, int loggedInUserId) throws SQLException {
         List<ChatMessage> messages = new ArrayList<>();
@@ -64,6 +58,8 @@ public class ChatMessageDAO {
         }
         return messages;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 
     public boolean addMessage(int chatId, int senderUserId, String messageText, ZonedDateTime kstTime) {
         String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, ?)";
@@ -110,5 +106,5 @@ public class ChatMessageDAO {
             return false;
         }
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
