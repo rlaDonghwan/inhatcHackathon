@@ -1,6 +1,10 @@
 package com.example.hackathonproject.db;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.hackathonproject.Chat.ChatMessage;
 
 import java.sql.Connection;
@@ -12,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,48 +33,34 @@ public class ChatMessageDAO {
         }
     }
 
-    public List<ChatMessage> getMessagesByChatId(int chatId) {
+    public List<ChatMessage> getMessagesByChatId(int chatId, int loggedInUserId) throws SQLException {
         List<ChatMessage> messages = new ArrayList<>();
-        if (connection == null) {
-            Log.e(TAG, "Connection is null, cannot fetch messages.");
-            return messages;
-        }
+        String query = "SELECT MessageID, ChatID, SenderUserID, MessageText, SentTime FROM ChatMessage WHERE ChatID = ?";
 
-        try {
-            String query = "SELECT * FROM ChatMessage WHERE ChatID = ? ORDER BY SentTime ASC";
-            PreparedStatement statement = connection.prepareStatement(query);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, chatId);
+            try (ResultSet resultSet = statement.executeQuery()) {
 
-            Log.d(TAG, "Executing query: " + statement.toString());
+                while (resultSet.next()) {
+                    ChatMessage message = new ChatMessage();
+                    message.setMessageId(resultSet.getInt("MessageID"));
+                    message.setChatId(resultSet.getInt("ChatID"));
+                    message.setSenderUserId(resultSet.getInt("SenderUserID"));
+                    message.setMessageText(resultSet.getString("MessageText"));
 
-            ResultSet resultSet = statement.executeQuery();
+                    // Convert the TIMESTAMP from the database to LocalDateTime with KST timezone
+                    Timestamp timestamp = resultSet.getTimestamp("SentTime");
+                    if (timestamp != null) {
+                        LocalDateTime sentTime = timestamp.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                        message.setSentTime(sentTime);
+                    }
 
-            while (resultSet.next()) {
-                ChatMessage message = new ChatMessage();
-                message.setMessageId(resultSet.getInt("MessageID"));
-                message.setChatId(resultSet.getInt("ChatID"));
-                message.setSenderUserId(resultSet.getInt("SenderUserID"));
-                message.setMessageText(resultSet.getString("MessageText"));
+                    // Add the loggedInUserId to the log
+                    Log.d("ChatAdapter", "Message: " + message.getMessageText() + ", Sender: " + message.getSenderUserId() + ", LoggedInUser: " + loggedInUserId);
 
-                // Convert the TIMESTAMP from the database to LocalDateTime with KST timezone
-                Timestamp timestamp = resultSet.getTimestamp("SentTime");
-                if (timestamp != null) {
-                    LocalDateTime sentTime = timestamp.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
-                    message.setSentTime(sentTime);
+                    messages.add(message);
                 }
-
-                Log.d(TAG, "Fetched message: " + message.getMessageText());
-
-                messages.add(message);
             }
-
-            if (messages.isEmpty()) {
-                Log.w(TAG, "No messages found for ChatID: " + chatId);
-            }
-
-        } catch (SQLException e) {
-            Log.e(TAG, "Error while fetching messages: " + e.getMessage());
-            e.printStackTrace();
         }
         return messages;
     }
@@ -92,6 +83,9 @@ public class ChatMessageDAO {
 
             if (rowsAffected > 0) {
                 Log.i(TAG, "Message successfully added.");
+
+                // 메시지 추가 후 로그 출력
+                Log.d("ChatAdapter", "Message: " + messageText + ", Sender: " + senderUserId + ", SentTime: " + formattedDateTime);
 
                 // Update the LastMessage and LastMessageTime in the Chat table
                 String updateChatQuery = "UPDATE Chat SET LastMessage = ?, LastMessageTime = ? WHERE ChatID = ?";
@@ -116,6 +110,5 @@ public class ChatMessageDAO {
             return false;
         }
     }
-
 
 }

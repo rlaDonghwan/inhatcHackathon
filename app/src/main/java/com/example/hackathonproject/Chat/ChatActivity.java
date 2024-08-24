@@ -25,7 +25,6 @@ import java.sql.Statement;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "ChatActivity";
@@ -34,7 +33,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText inputMessage;
     private ImageButton sendButton;
     private int chatId;
-    private int loggedInUserId;
+    private int loggedInUserId;  // 클래스 변수로 선언
     private int otherUserId;
     private int postId;
     private Connection connection;
@@ -45,15 +44,19 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        initializeUI();
-
+        // 먼저 SessionManager를 통해 loggedInUserId를 가져옴
         SessionManager sessionManager = new SessionManager(this);
-        loggedInUserId = sessionManager.getUserId();
+        loggedInUserId = sessionManager.getUserId();  // 여기서 클래스 변수에 값을 설정
+
+        Log.d("ChatActivity", "LoggedInUserId in onCreate: " + loggedInUserId);  // 로그로 확인
 
         chatId = getIntent().getIntExtra("chatId", -1);
         otherUserId = getIntent().getIntExtra("otherUserId", -1);
         postId = getIntent().getIntExtra("postId", -1);
         int currentUserId = getIntent().getIntExtra("currentUserId", -1);
+
+        // 이제 UI를 초기화
+        initializeUI();
 
         // 데이터베이스 연결을 시도하고 완료된 후 UI 초기화 및 데이터 로드
         createOrRetrieveChatRoom(currentUserId, otherUserId);
@@ -67,16 +70,13 @@ public class ChatActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
 
+        // 로그로 확인
+        Log.d("ChatActivity", "LoggedInUserId before ChatAdapter creation: " + loggedInUserId);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Intent로부터 상대방 ID를 가져옵니다.
-        int otherUserId = getIntent().getIntExtra("otherUserId", -1);
-
-        // 두 개의 인자를 전달하여 ChatAdapter를 초기화합니다.
-        chatAdapter = new ChatAdapter(loggedInUserId, otherUserId);
+        chatAdapter = new ChatAdapter(loggedInUserId);  // 올바르게 클래스 변수를 전달
         recyclerView.setAdapter(chatAdapter);
     }
-
 
     private void createOrRetrieveChatRoom(int currentUserId, int otherUserId) {
         DatabaseConnection databaseConnection = new DatabaseConnection();
@@ -182,7 +182,7 @@ public class ChatActivity extends AppCompatActivity {
             try (Connection conn = new DatabaseConnection().connect()) { // 새 연결 열기
                 if (conn != null) {
                     ChatMessageDAO chatMessageDAO = new ChatMessageDAO(conn);
-                    return chatMessageDAO.getMessagesByChatId(chatId);
+                    return chatMessageDAO.getMessagesByChatId(chatId, loggedInUserId);  // loggedInUserId 전달
                 } else {
                     Log.e(TAG, "Failed to establish a database connection in LoadMessagesTask.");
                     return null;
