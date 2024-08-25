@@ -26,21 +26,21 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout; // 이 라인을 �
 
 public class ChatListActivity extends AppCompatActivity {
 
-    private ListView chatListView;
-    private List<Chat> chatList;
-    private ChatDAO chatDAO;
-    private ChatListAdapter chatListAdapter;
-    private int loggedInUserId;
-    private SwipeRefreshLayout swipeRefreshLayout; // 스와이프 새로고침 레이아웃 변수 추가
+    private ListView chatListView;  // 채팅 목록을 표시할 ListView
+    private List<Chat> chatList;  // 채팅 목록을 저장하는 리스트
+    private ChatDAO chatDAO;  // 데이터베이스에서 채팅 정보를 가져오기 위한 DAO 객체
+    private ChatListAdapter chatListAdapter;  // 채팅 목록을 표시하기 위한 어댑터
+    private int loggedInUserId;  // 로그인된 사용자 ID를 저장하는 변수
+    private SwipeRefreshLayout swipeRefreshLayout; // 스와이프 새로고침 레이아웃 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
-        chatListView = findViewById(R.id.chat_list_view);
+        chatListView = findViewById(R.id.chat_list_view);  // ListView 초기화
 
-        // SwipeRefreshLayout 초기화
+        // SwipeRefreshLayout 초기화 및 새로고침 리스너 설정
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // 새로고침 시 채팅 목록 다시 로드
@@ -48,7 +48,7 @@ public class ChatListActivity extends AppCompatActivity {
         });
 
         SessionManager sessionManager = new SessionManager(this);
-        loggedInUserId = sessionManager.getUserId();
+        loggedInUserId = sessionManager.getUserId();  // 세션에서 로그인된 사용자 ID를 가져옴
 
         // DatabaseConnection 객체 생성
         DatabaseConnection databaseConnection = new DatabaseConnection();
@@ -58,7 +58,7 @@ public class ChatListActivity extends AppCompatActivity {
 
         // 필터 버튼 초기 선택 상태 설정
         TextView filterAllButton = findViewById(R.id.button_all);
-        filterAllButton.setSelected(true);
+        filterAllButton.setSelected(true);  // "전체" 버튼을 기본 선택 상태로 설정
         TextView filterSellButton = findViewById(R.id.button_sell);
         TextView filterBuyButton = findViewById(R.id.button_buy);
 
@@ -96,32 +96,30 @@ public class ChatListActivity extends AppCompatActivity {
 
         // ListView 클릭 이벤트 설정
         chatListView.setOnItemClickListener((parent, view, position, id) -> {
-            Chat selectedChat = chatList.get(position);
+            Chat selectedChat = chatList.get(position);  // 선택된 채팅 아이템 가져오기
             Intent intent = new Intent(ChatListActivity.this, ChatActivity.class);
-            intent.putExtra("chatId", selectedChat.getChatID()); // 선택한 채팅의 ID
-            intent.putExtra("otherUserId", selectedChat.getOtherUserID(loggedInUserId)); // 선택한 채팅의 상대방 ID
-            intent.putExtra("postId", selectedChat.getPostID()); // 선택한 채팅의 게시글 ID (만약 필요하다면)
+            intent.putExtra("chatId", selectedChat.getChatID()); // 선택한 채팅의 ID 전달
+            intent.putExtra("otherUserId", selectedChat.getOtherUserID(loggedInUserId)); // 선택한 채팅의 상대방 ID 전달
+            intent.putExtra("postId", selectedChat.getPostID()); // 선택한 채팅의 게시글 ID 전달 (필요 시)
             intent.putExtra("currentUserId", loggedInUserId); // 현재 사용자 ID 전달
 
-            // 로그 추가
+            // 로그로 채팅 정보를 출력
             Log.d("ChatListActivity", "Opening chat with chatId: " + selectedChat.getChatID() +
                     " otherUserId: " + selectedChat.getOtherUserID(loggedInUserId) +
                     " postId: " + selectedChat.getPostID() +
                     " currentUserId: " + loggedInUserId);
 
-            startActivity(intent);
+            startActivity(intent);  // ChatActivity 시작
         });
-
-
-
     }
 
+    // 비동기로 채팅 목록을 로드하는 AsyncTask 클래스
     private class LoadChatListTask extends AsyncTask<Void, Void, List<Chat>> {
         private DatabaseConnection databaseConnection;
         private Connection connection;
 
         public LoadChatListTask(DatabaseConnection databaseConnection) {
-            this.databaseConnection = databaseConnection;
+            this.databaseConnection = databaseConnection;  // 생성자에서 DatabaseConnection 객체를 받아옴
         }
 
         @Override
@@ -129,10 +127,10 @@ public class ChatListActivity extends AppCompatActivity {
             Log.d("LoadChatListTask", "doInBackground started");
             List<Chat> chatList = null;
             try {
-                connection = databaseConnection.connect();
+                connection = databaseConnection.connect();  // 데이터베이스 연결 시도
                 if (connection != null) {
                     chatDAO = new ChatDAO(connection);
-                    chatList = chatDAO.getAllChatsForUser(loggedInUserId);
+                    chatList = chatDAO.getAllChatsForUser(loggedInUserId);  // 로그인된 사용자의 모든 채팅 목록을 가져옴
                 }
             } catch (SQLException e) {
                 Log.e("LoadChatListTask", "SQLException: " + e.getMessage());
@@ -144,11 +142,11 @@ public class ChatListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Chat> chats) {
             Log.d("LoadChatListTask", "onPostExecute started");
-            swipeRefreshLayout.setRefreshing(false); // 새로고침 완료
+            swipeRefreshLayout.setRefreshing(false); // 새로고침 완료 상태로 설정
             if (chats != null && !chats.isEmpty()) {
-                chatList = chats;
-                chatListAdapter = new ChatListAdapter(ChatListActivity.this, chatList, loggedInUserId);
-                chatListView.setAdapter(chatListAdapter);
+                chatList = chats;  // 채팅 목록을 클래스 변수에 저장
+                chatListAdapter = new ChatListAdapter(ChatListActivity.this, chatList, loggedInUserId);  // 어댑터 초기화
+                chatListView.setAdapter(chatListAdapter);  // ListView에 어댑터 설정
                 Log.d("LoadChatListTask", "Chat list loaded successfully with " + chats.size() + " items.");
             } else {
                 Log.e("LoadChatListTask", "Failed to load chat list or chat list is empty.");
@@ -159,23 +157,23 @@ public class ChatListActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
-    // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메소드
+
+    // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메서드
     private void setFilter(TextView selectedButton, String filterType) {
-        resetFilterButtons();
-        selectedButton.setSelected(true);
+        resetFilterButtons();  // 모든 필터 버튼의 선택 상태를 초기화
+        selectedButton.setSelected(true);  // 선택된 버튼을 강조
         // 여기서 선택된 필터 유형에 따라 채팅 목록을 필터링하는 로직을 추가합니다.
     }
 
-    // 모든 필터 버튼의 선택 상태를 초기화하는 메소드
+    // 모든 필터 버튼의 선택 상태를 초기화하는 메서드
     private void resetFilterButtons() {
         TextView filterAllButton = findViewById(R.id.button_all);
         TextView filterSellButton = findViewById(R.id.button_sell);
         TextView filterBuyButton = findViewById(R.id.button_buy);
 
-        filterAllButton.setSelected(false);
-        filterSellButton.setSelected(false);
-        filterBuyButton.setSelected(false);
+        filterAllButton.setSelected(false);  // "전체" 버튼 선택 해제
+        filterSellButton.setSelected(false);  // "판매" 버튼 선택 해제
+        filterBuyButton.setSelected(false);  // "구매" 버튼 선택 해제
     }
 }

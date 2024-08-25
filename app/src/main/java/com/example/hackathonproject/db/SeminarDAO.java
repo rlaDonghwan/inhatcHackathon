@@ -37,6 +37,7 @@ public class SeminarDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 강연 게시글을 가져오는 메서드
     public List<SeminarPost> getAllSeminarPosts() {
@@ -66,6 +67,7 @@ public class SeminarDAO {
         }
         return postList;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 강연 게시글을 가져오는 메서드
     public SeminarPost getSeminarPostById(int lectureId) {
@@ -95,6 +97,7 @@ public class SeminarDAO {
         }
         return null;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글의 조회수를 증가시키는 메서드
     public void incrementSeminarPostViews(int lectureId) {
@@ -108,6 +111,7 @@ public class SeminarDAO {
             Log.e(TAG, "Failed to update lecture views", e);
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 삭제하는 메서드
     public boolean deleteSeminarPost(int lectureId) {
@@ -123,6 +127,7 @@ public class SeminarDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 업데이트하는 메서드
     public boolean updateSeminarPost(int lectureId, String title, String content, String location, double fee, int userId) {
@@ -144,4 +149,5 @@ public class SeminarDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

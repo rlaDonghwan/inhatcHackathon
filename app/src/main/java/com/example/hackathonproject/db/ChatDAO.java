@@ -1,11 +1,7 @@
 package com.example.hackathonproject.db;
-
 import static android.content.ContentValues.TAG;
-
 import android.util.Log;
-
 import com.example.hackathonproject.Chat.Chat;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -70,6 +66,7 @@ public class ChatDAO {
         }
         return chatList;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 채팅방을 가져오거나 새로 생성하는 메서드
     public void getOrCreateChatRoom(int userId1, int userId2, Integer postId, Integer lectureId, ChatRoomCallback callback) {
@@ -175,6 +172,8 @@ public class ChatDAO {
 
         }).start();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 
     private boolean isPostIdValid(Integer postId) {
         if (postId == null) {
@@ -211,9 +210,7 @@ public class ChatDAO {
         }
         return false;
     }
-
-
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // ChatRoomCallback 인터페이스 정의
     public interface ChatRoomCallback {
