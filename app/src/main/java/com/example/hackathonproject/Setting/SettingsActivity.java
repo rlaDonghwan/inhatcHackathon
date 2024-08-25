@@ -10,7 +10,7 @@ import com.example.hackathonproject.Education.EducationActivity;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.Login.StartActivity;
 import com.example.hackathonproject.R;
-import com.example.hackathonproject.Seminar.SeminarActivity;
+import com.example.hackathonproject.Lecture.LectureActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -65,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
         // 강연자 신청 탭 클릭 시 SeminarActivity로 이동
         LinearLayout secondMenuItem = findViewById(R.id.second_menu_item);
         secondMenuItem.setOnClickListener(v -> {
-            Intent intent = new Intent(SettingsActivity.this, SeminarActivity.class);
+            Intent intent = new Intent(SettingsActivity.this, LectureActivity.class);
             startActivity(intent);
         });
 

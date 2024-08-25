@@ -219,6 +219,7 @@ public class ChatActivity extends AppCompatActivity {
         protected void onPostExecute(List<ChatMessage> messages) {
             if (messages != null) {
                 chatAdapter.setMessages(messages);  // 가져온 메시지를 어댑터에 설정
+                recyclerView.scrollToPosition(messages.size() - 1);
             } else {
                 showErrorMessage("메시지를 불러오는데 실패했습니다.");
             }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryBackground"
-    tools:context=".Seminar.SeminarActivity">
+    tools:context=".Lecture.LectureActivity">
 
     <!-- ToolBar -->
     <androidx.appcompat.widget.Toolbar

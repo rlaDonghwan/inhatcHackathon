@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.Education.EducationActivity;
 import com.example.hackathonproject.R;
-import com.example.hackathonproject.Seminar.SeminarActivity;
+import com.example.hackathonproject.Lecture.LectureActivity;
 import com.example.hackathonproject.Setting.SettingsActivity;
 import com.example.hackathonproject.db.ChatDAO;
 import com.example.hackathonproject.db.DatabaseConnection;
@@ -21,7 +21,7 @@ import com.example.hackathonproject.Login.SessionManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import android.os.Bundle;
+
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout; // 이 라인을 추가
 
 public class ChatListActivity extends AppCompatActivity {
@@ -77,7 +77,7 @@ public class ChatListActivity extends AppCompatActivity {
         // 강연자 신청 탭 클릭 시 SeminarActivity로 이동
         LinearLayout secondMenuItem = findViewById(R.id.second_menu_item);
         secondMenuItem.setOnClickListener(v -> {
-            Intent intent = new Intent(ChatListActivity.this, SeminarActivity.class);
+            Intent intent = new Intent(ChatListActivity.this, LectureActivity.class);
             startActivity(intent);
         });
 

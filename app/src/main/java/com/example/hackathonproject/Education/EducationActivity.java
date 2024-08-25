@@ -14,7 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hackathonproject.Chat.ChatListActivity;
 import com.example.hackathonproject.R;
-import com.example.hackathonproject.Seminar.SeminarActivity;
+import com.example.hackathonproject.Lecture.LectureActivity;
 import com.example.hackathonproject.Setting.SettingsActivity;
 import com.example.hackathonproject.db.EducationDAO;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -64,7 +64,7 @@ public class EducationActivity extends AppCompatActivity {
         // 강연자 신청 탭 클릭 시 SeminarActivity로 이동
         LinearLayout secondMenuItem = findViewById(R.id.second_menu_item);
         secondMenuItem.setOnClickListener(v -> {
-            Intent intent = new Intent(EducationActivity.this, SeminarActivity.class);
+            Intent intent = new Intent(EducationActivity.this, LectureActivity.class);
             startActivity(intent);
         });
 
