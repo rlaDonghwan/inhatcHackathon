@@ -17,8 +17,10 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hackathonproject.Setting.EditProfileActivity;
 import com.example.hackathonproject.db.AuthManager;
 import com.example.hackathonproject.R;
 
@@ -50,11 +52,31 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
+            // Intent로 전달된 from_edit_profile 값을 확인
+            boolean fromEditProfile = getIntent().getBooleanExtra("from_edit_profile", false);
+
+            if (fromEditProfile) {
+                // EditProfileActivity에서 넘어온 경우 EditProfileActivity로 돌아가기
+                Intent intent = new Intent(ForgotPasswordActivity.this, EditProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            } else {
+                // 그렇지 않은 경우 SignInPasswordActivity로 돌아가기
+                Intent intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+            finish(); // 현재 Activity 종료
         });
+
+        boolean fromEditProfile = getIntent().getBooleanExtra("from_edit_profile", false);
+
+        TextView titleTextView = findViewById(R.id.titleTextView);
+        if (fromEditProfile) {
+            titleTextView.setText("비밀번호 재설정");
+        } else {
+            titleTextView.setText("비밀번호를 잊으셨나요?");
+        }
 
         emailAddressTextController = findViewById(R.id.emailAddressTextController);
         textController = findViewById(R.id.textController);
@@ -134,6 +156,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent;
+        String previousActivity = getIntent().getStringExtra("previousActivity");
+
+        if ("EditProfileActivity".equals(previousActivity)) {
+            intent = new Intent(ForgotPasswordActivity.this, EditProfileActivity.class);
+        } else {
+            intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+
+        super.onBackPressed(); // 기본 동작을 호출하여 경고를 해결합니다.
+    }
+
+
 
     private void sendSMSVerificationCode(String phoneNumber) {
         generatedCode = generateVerificationCode();

@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackathonproject.R;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.EducationViewHolder> {
@@ -39,9 +43,37 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
         // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
         EducationPost post = educationPostList.get(position);
         holder.postTitle.setText(post.getTitle()); // 제목 설정
-        holder.postDetails.setText(post.getCreatedAt());  // 게시글 작성 시간 등 추가 정보 설정
-        holder.postLocation.setText(post.getLocation()); // 위치 설정
         holder.postViews.setText("조회수: " + post.getViews());  // 조회수 설정
+
+        // 작성 시간을 현재 시간과 비교하여 "몇 시간 전", "몇 일 전"으로 표시
+        String formattedTime = formatTimeAgo(post.getCreatedAt());
+        holder.postDetails.setText(post.getLocation()+" - "+formattedTime);  // 포맷된 시간 표시
+    }
+
+    private String formatTimeAgo(String createdAt) {
+        // "2024-08-19 18:03:19.0"에서 ".0" 제거
+        if (createdAt != null && createdAt.endsWith(".0")) {
+            createdAt = createdAt.substring(0, createdAt.length() - 2);
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime postTime = LocalDateTime.parse(createdAt, formatter);
+
+        // 현재 시간을 KST로 가져옴
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        // 작성 시간과 현재 시간의 차이 계산
+        long minutes = ChronoUnit.MINUTES.between(postTime, now);
+        long hours = ChronoUnit.HOURS.between(postTime, now);
+        long days = ChronoUnit.DAYS.between(postTime, now);
+
+        if (minutes < 60) {
+            return minutes + "분 전";
+        } else if (hours < 24) {
+            return hours + "시간 전";
+        } else {
+            return days + "일 전";
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 

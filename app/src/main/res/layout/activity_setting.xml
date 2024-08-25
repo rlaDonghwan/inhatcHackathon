@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F2F4F6"
+    android:background="@color/primaryBackground"
     tools:context=".Setting.SettingsActivity">
 
     <!-- Toolbar -->
@@ -41,27 +41,113 @@
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Main Content -->
+
+    <!-- Bottom Navigation Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="1dp"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_below="@id/toolbar">
+        android:padding="16dp">
 
-        <!-- Welcome Message -->
-        <TextView
-            android:id="@+id/welcome_message"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:background="#4236b4ff"
-            android:fontFamily="@font/im_hyemin_bold"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/welcomeMsg"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:layout_height="115dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="4dp"
+            app:cardCornerRadius="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center_vertical">
+
+                    <!-- 둥근 원형 프로필 이미지 -->
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="start"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/circle_shape"
+                        android:clipToOutline="true"
+                        android:gravity="center_vertical"
+                        android:scaleType="centerCrop" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:orientation="horizontal">
+
+                            <!-- 텍스트 섹션 -->
+                            <TextView
+                                android:id="@+id/title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:text="봉사 시간 | "
+                                android:fontFamily="@font/omyu_pretty"
+                                android:textSize="20sp"
+                                android:textColor="#757575" />
+
+                            <TextView
+                                android:id="@+id/title_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:layout_marginLeft="5dp"
+                                android:text="NN"
+                                android:fontFamily="@font/omyu_pretty"
+                                android:textSize="20sp"
+                                android:textColor="#757575" />
+
+                            <TextView
+                                android:id="@+id/title_time2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:layout_marginLeft="5dp"
+                                android:text="시간"
+                                android:fontFamily="@font/omyu_pretty"
+                                android:textSize="20sp"
+                                android:textColor="#757575" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/question"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="start"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/omyu_pretty"
+                            android:text="홍길동"
+                            android:textColor="#000"
+                            android:textSize="40sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,9 +160,9 @@
                 android:id="@+id/option_edit_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="?android:attr/selectableItemBackground">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -88,8 +174,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="@string/editProfileTitle"
                     android:fontFamily="@font/im_hyemin_bold"
+                    android:text="@string/editProfileTitle"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -101,14 +187,47 @@
                 android:layout_height="1dp"
                 android:background="@color/skyBlue" />
 
-            <!-- Option 2: B1A3 소개 -->
+            <!-- Option 4: 질문 접수하기 -->
+            <LinearLayout
+                android:id="@+id/option_qna"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/message"
+                    android:textStyle="bold"
+                    app:tint="@color/skyBlue" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/im_hyemin_bold"
+                    android:text="@string/faq"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyBlue" />
+
+            <!-- Option 3: B1A3 소개 -->
             <LinearLayout
                 android:id="@+id/option_about_b1a3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="?android:attr/selectableItemBackground">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -120,8 +239,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:fontFamily="@font/im_hyemin_bold"
                     android:text="@string/app_infoTitle"
-                    android:fontFamily="@font/im_hyemin_bold"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -133,40 +252,7 @@
                 android:layout_height="1dp"
                 android:background="@color/skyBlue" />
 
-            <!-- Option 3: 질문 접수하기 -->
-            <LinearLayout
-                android:id="@+id/option_qna"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:background="?android:attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:textStyle="bold"
-                    android:src="@drawable/message"
-                    app:tint="@color/skyBlue" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/qna"
-                    android:fontFamily="@font/im_hyemin_bold"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/skyBlue" />
-
-            <!-- Option 4: 로그아웃 -->
+            <!-- Option 5: 로그아웃 -->
         </LinearLayout>
 
         <LinearLayout
@@ -187,15 +273,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@string/logoutTitle"
                 android:fontFamily="@font/im_hyemin_bold"
+                android:text="@string/logoutTitle"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <!-- Last Message -->
+        <TextView
+            android:id="@+id/welcome_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="5dp"
+            android:background="#4236b4ff"
+            android:fontFamily="@font/im_hyemin_bold"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/welcomeMsg"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
-    <!-- Bottom Navigation Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
