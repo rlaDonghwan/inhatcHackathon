@@ -157,6 +157,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent;
+        String previousActivity = getIntent().getStringExtra("previousActivity");
+
+        if ("EditProfileActivity".equals(previousActivity)) {
+            intent = new Intent(ForgotPasswordActivity.this, EditProfileActivity.class);
+        } else {
+            intent = new Intent(ForgotPasswordActivity.this, SignInPasswordActivity.class);
+        }
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+
+        super.onBackPressed(); // 기본 동작을 호출하여 경고를 해결합니다.
+    }
+
+
+
     private void sendSMSVerificationCode(String phoneNumber) {
         generatedCode = generateVerificationCode();
         SmsSend(phoneNumber, "인증번호: " + generatedCode);
