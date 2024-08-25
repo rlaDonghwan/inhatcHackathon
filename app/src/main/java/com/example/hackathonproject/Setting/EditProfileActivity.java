@@ -71,6 +71,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Button changePasswordButton = findViewById(R.id.change_password_button);
         changePasswordButton.setOnClickListener(v -> {
             Intent intent = new Intent(EditProfileActivity.this, ForgotPasswordActivity.class);
+            intent.putExtra("from_edit_profile", true);  // 데이터를 추가하여 전달
             startActivity(intent);
         });
 
