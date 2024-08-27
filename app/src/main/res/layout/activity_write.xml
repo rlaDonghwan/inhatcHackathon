@@ -45,36 +45,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="25dp"
         android:layout_marginStart="16dp"
         android:text="제목"
         android:fontFamily="@font/im_hyemin_bold"
         android:textSize="23sp"
         android:textColor="@android:color/black" />
 
-    <!-- Title EditText -->
-    <EditText
-        android:id="@+id/title_edit_text"
-        android:layout_width="395dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/title_text"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/edit_text_background"
-        android:hint="제목을 작성해 주세요. (10자 이내)"
-        android:fontFamily="@font/im_hyemin_regular"
-        android:padding="10dp"
-        android:textColor="@android:color/black"
-        android:textSize="17sp" />
-
     <!-- Checkboxes -->
     <LinearLayout
         android:id="@+id/checkbox_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_edit_text"
-        android:layout_marginTop="5dp"
+        android:layout_below="@id/title_text"
         android:layout_marginStart="16dp"
         android:orientation="horizontal">
 
@@ -100,12 +83,57 @@
             android:buttonTint="@color/skyBlue" />
     </LinearLayout>
 
+
+    <!-- Title EditText -->
+    <EditText
+        android:id="@+id/title_edit_text"
+        android:layout_width="395dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/checkbox_group"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="제목을 작성해 주세요. (10자 이내)"
+        android:fontFamily="@font/im_hyemin_regular"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+    <!-- 구해요 체크 시 금액 설정 -->
+    <TextView
+        android:id="@+id/price_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_edit_text"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="16dp"
+        android:text="금액"
+        android:fontFamily="@font/im_hyemin_bold"
+        android:textSize="23sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Price EditText -->
+    <EditText
+        android:id="@+id/price_edit_text"
+        android:layout_width="395dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/price_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="제목을 작성해 주세요. (10자 이내)"
+        android:fontFamily="@font/im_hyemin_regular"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+
     <!-- Content Text -->
     <TextView
         android:id="@+id/content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/checkbox_group"
+        android:layout_below="@id/price_edit_text"
         android:layout_marginTop="25dp"
         android:layout_marginStart="16dp"
         android:text="내용"
@@ -114,12 +142,10 @@
         android:textColor="@android:color/black" />
 
     <!-- Content EditText -->
-
-    <!-- Submit Button -->
     <EditText
         android:id="@+id/content_edit_text"
         android:layout_width="388dp"
-        android:layout_height="363dp"
+        android:layout_height="250dp"
         android:layout_below="@id/content_text"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -134,6 +160,7 @@
         android:textColor="@android:color/black"
         android:textSize="17sp" />
 
+    <!-- Submit Button -->
     <Button
         android:id="@+id/btnSummit"
         android:layout_width="150dp"
