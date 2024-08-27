@@ -42,7 +42,7 @@ public class SettingPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forgot_password);
+        setContentView(R.layout.activity_login_forgot_password);
 
         // 툴바 설정
         Toolbar toolbar = findViewById(R.id.toolbar);

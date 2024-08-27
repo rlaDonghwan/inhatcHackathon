@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.hackathonproject.R;
+import com.example.hackathonproject.Setting.ForgotPasswordActivity;
 import com.example.hackathonproject.db.AuthManager;
 
 import java.sql.SQLException;

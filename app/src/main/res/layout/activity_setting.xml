@@ -16,18 +16,6 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:elevation="4dp">
 
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="start"
-            android:scaleType="centerInside"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_arrow_back"
-            android:fontFamily="@font/kangwon_tntnche"
-            android:textStyle="bold"
-            app:iconTint="@android:color/white"
-            android:contentDescription="@string/back_button" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -171,6 +159,7 @@
                     app:tint="@color/skyBlue" />
 
                 <TextView
+                    android:id="@+id/edit_my_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -204,6 +193,7 @@
                     app:tint="@color/skyBlue" />
 
                 <TextView
+                    android:id="@+id/faq"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -236,11 +226,12 @@
                     app:tint="@color/skyBlue" />
 
                 <TextView
+                    android:id="@+id/font_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/im_hyemin_bold"
-                    android:text="@string/app_infoTitle"
+                    android:text="글씨 크기 조정"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -270,6 +261,7 @@
                 app:tint="@color/skyBlue" />
 
             <TextView
+                android:id="@+id/logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

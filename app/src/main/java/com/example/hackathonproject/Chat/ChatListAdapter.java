@@ -49,7 +49,7 @@ public class ChatListAdapter extends BaseAdapter {
 
         // convertView가 null인 경우, 새로운 뷰를 생성하고 ViewHolder를 초기화
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.chat_list_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_chat_list, parent, false);
             holder = new ViewHolder();
             holder.otherUserName = convertView.findViewById(R.id.otherUserName);  // 상대방 이름 텍스트뷰
             holder.lastMessage = convertView.findViewById(R.id.lastMessage);  // 마지막 메시지 텍스트뷰

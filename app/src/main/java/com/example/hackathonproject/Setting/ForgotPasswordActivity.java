@@ -1,4 +1,4 @@
-package com.example.hackathonproject.Login;
+package com.example.hackathonproject.Setting;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -21,7 +21,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.hackathonproject.Setting.EditProfileActivity;
+import com.example.hackathonproject.Login.ChangePasswordActivity;
+import com.example.hackathonproject.Login.SignInPasswordActivity;
 import com.example.hackathonproject.db.AuthManager;
 import com.example.hackathonproject.R;
 
@@ -31,10 +32,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_SEND_SMS = 2323;
     private static final String TAG = "ForgotPasswordActivity";
 
-    private EditText emailAddressTextController;
-    private EditText textController;
-    private Button sendCodeButton;
-    private Button verifyCodeButton;
     private AuthManager authManager;
     private String generatedCode;
     private String phoneNumberToSend;
@@ -42,8 +39,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forgot_password);
+        setContentView(R.layout.activity_login_forgot_password);
+        authManager = new AuthManager();
 
+        // 툴바 설정
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -79,11 +78,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             titleTextView.setText("비밀번호를 잊으셨나요?");
         }
 
-        emailAddressTextController = findViewById(R.id.emailAddressTextController);
-        textController = findViewById(R.id.textController);
-        sendCodeButton = findViewById(R.id.sendCodeButton);
-        verifyCodeButton = findViewById(R.id.verifyCodeButton);
-        authManager = new AuthManager();  // AuthManager 초기화
+        EditText emailAddressTextController = findViewById(R.id.emailAddressTextController);
+        EditText textController = findViewById(R.id.textController);
+        Button sendCodeButton = findViewById(R.id.sendCodeButton);
+        Button verifyCodeButton = findViewById(R.id.verifyCodeButton);
+
+        // AuthManager 초기화
+        AuthManager authManager = new AuthManager();
 
         //---------------------------------------------------------------------------------------------
         // SharedPreferences에서 폰트 크기 불러오기
@@ -91,13 +92,15 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
 
         // 불러온 폰트 크기를 UI 요소에 적용
+        titleTextView.setTextSize(savedFontSize);
         emailAddressTextController.setTextSize(savedFontSize);
         textController.setTextSize(savedFontSize);
         sendCodeButton.setTextSize(savedFontSize);
         verifyCodeButton.setTextSize(savedFontSize);
         //---------------------------------------------------------------------------------------------
 
-        // TextWatcher를 사용하여 전화번호 입력 시 자동으로 '-' 추가
+
+    // TextWatcher를 사용하여 전화번호 입력 시 자동으로 '-' 추가
         emailAddressTextController.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;
             private int prevLength;

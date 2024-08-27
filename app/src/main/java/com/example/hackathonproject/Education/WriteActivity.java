@@ -32,7 +32,7 @@ public class WriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_write);
+        setContentView(R.layout.activity_education_write);
 
         educationDAO = new EducationDAO(); // DAO 객체 초기화
         sessionManager = new SessionManager(this); // SessionManager 객체 초기화
