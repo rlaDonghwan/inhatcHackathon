@@ -3,6 +3,7 @@ package com.example.hackathonproject.Login;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,6 +84,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         sendCodeButton = findViewById(R.id.sendCodeButton);
         verifyCodeButton = findViewById(R.id.verifyCodeButton);
         authManager = new AuthManager();  // AuthManager 초기화
+
+        //---------------------------------------------------------------------------------------------
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        emailAddressTextController.setTextSize(savedFontSize);
+        textController.setTextSize(savedFontSize);
+        sendCodeButton.setTextSize(savedFontSize);
+        verifyCodeButton.setTextSize(savedFontSize);
+        //---------------------------------------------------------------------------------------------
 
         // TextWatcher를 사용하여 전화번호 입력 시 자동으로 '-' 추가
         emailAddressTextController.addTextChangedListener(new TextWatcher() {

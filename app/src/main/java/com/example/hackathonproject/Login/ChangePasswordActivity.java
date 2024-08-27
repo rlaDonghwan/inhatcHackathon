@@ -1,6 +1,7 @@
 package com.example.hackathonproject.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
@@ -29,6 +30,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         passwordInput = findViewById(R.id.password_input);
         confirmButton = findViewById(R.id.confirm_button);
+
+        //---------------------------------------------------------------------------------------------
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        passwordInput.setTextSize(savedFontSize);
+        confirmButton.setTextSize(savedFontSize);
+        //---------------------------------------------------------------------------------------------
+
 
         Intent intent = getIntent();
         phoneNumber = intent.getStringExtra("phoneNumber");

@@ -83,7 +83,7 @@
         <Button
             android:id="@+id/save_button"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/skyBlue"
             android:text="저장"
@@ -115,7 +115,7 @@
         <Button
             android:id="@+id/change_password_button"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/skyBlue"
             android:text="비밀번호 변경하기"
@@ -146,7 +146,7 @@
         <Button
             android:id="@+id/delete_account_button"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/bg_red"
             android:text="계정 삭제하기"

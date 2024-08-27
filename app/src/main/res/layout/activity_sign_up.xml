@@ -69,7 +69,7 @@
                 <EditText
                     android:id="@+id/full_name_input"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
                     android:fontFamily="@font/im_hyemin_regular"
                     android:hint="이름"
@@ -93,7 +93,7 @@
                 <EditText
                     android:id="@+id/phone_number_input"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
                     android:fontFamily="@font/im_hyemin_regular"
                     android:hint="010-1234-5678"
@@ -113,7 +113,7 @@
                 <EditText
                     android:id="@+id/password_input"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
                     android:hint="비밀번호"
                     android:fontFamily="@font/im_hyemin_regular"
@@ -137,8 +137,8 @@
 
                     <EditText
                         android:id="@+id/birthYear_input"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/im_hyemin_regular"
@@ -150,8 +150,8 @@
 
                     <EditText
                         android:id="@+id/month_input"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/im_hyemin_regular"
@@ -163,8 +163,8 @@
 
                     <EditText
                         android:id="@+id/day_input"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/im_hyemin_regular"
@@ -194,6 +194,7 @@
                         android:checked="false"
                         android:background="?attr/selectableItemBackgroundBorderless" />
                     <TextView
+                        android:id="@+id/checkbox_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="기관 담당자입니까?"
@@ -206,7 +207,7 @@
                 <Button
                     android:id="@+id/sign_up_button"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:backgroundTint="@color/skyBlue"
                     android:text="가입하기"
                     android:textSize="30sp"

@@ -1,6 +1,7 @@
 package com.example.hackathonproject.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -10,6 +11,8 @@ import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,14 +24,18 @@ import java.sql.SQLException;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText etName, etPassword, etPhoneNum, etBirthYear, etMonth, etDay;
-    private CheckBox cbIsOrganization;
+    private CheckBox cbIsOrganization ;
     private AuthManager authManager;
     private Button btnRegister;
-
+    private TextView checkboxText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> onBackPressed());
+
 
         authManager = new AuthManager();  // AuthManager 초기화
 
@@ -40,6 +47,27 @@ public class SignUpActivity extends AppCompatActivity {
         etDay = findViewById(R.id.day_input);
         cbIsOrganization = findViewById(R.id.checkbox);
         btnRegister = findViewById(R.id.sign_up_button);
+        checkboxText = findViewById(R.id.checkbox_text);
+
+        //---------------------------------------------------------------------------------------------
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        etName.setTextSize(savedFontSize);
+        etPassword.setTextSize(savedFontSize);
+        etPhoneNum.setTextSize(savedFontSize);
+        etBirthYear.setTextSize(savedFontSize);
+        etMonth.setTextSize(savedFontSize);
+        etDay.setTextSize(savedFontSize);
+        cbIsOrganization.setTextSize(savedFontSize);
+        btnRegister.setTextSize(savedFontSize);
+        checkboxText.setTextSize(savedFontSize);
+        //---------------------------------------------------------------------------------------------
+
+
+
 
         // 전화번호 입력 필드에 최대 13자리 제한 및 형식화 적용
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});

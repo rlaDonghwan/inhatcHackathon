@@ -71,6 +71,7 @@
             android:background="@drawable/round_button"
             android:fontFamily="@font/kangwon_tntnche"
             android:text="-"
+            android:textColor="@color/white"
             android:textSize="30sp" />
 
         <!-- Sample Text -->
@@ -85,7 +86,8 @@
             android:fontFamily="@font/im_hyemin_bold"
             android:text="가 나"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="25sp" />
+
 
         <Button
             android:id="@+id/increase_font_button"
@@ -94,6 +96,7 @@
             android:background="@drawable/round_button"
             android:fontFamily="@font/kangwon_tntnche"
             android:text="+"
+            android:textColor="@color/white"
             android:textSize="30sp" />
 
     </LinearLayout>
@@ -109,6 +112,7 @@
         android:background="@drawable/round_button"
         android:fontFamily="@font/kangwon_tntnche"
         android:text="확인"
+        android:textColor="@color/white"
         android:textSize="30sp" />
 
 
