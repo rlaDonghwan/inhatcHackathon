@@ -1,12 +1,16 @@
 package com.example.hackathonproject.Setting;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.Chat.ChatListActivity;
 import com.example.hackathonproject.Education.EducationActivity;
+import com.example.hackathonproject.Login.FontSizeActivity;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.Login.StartActivity;
 import com.example.hackathonproject.R;
@@ -30,13 +34,32 @@ public class SettingsActivity extends AppCompatActivity {
         LinearLayout qnaOption = findViewById(R.id.option_qna);
         LinearLayout logoutOption = findViewById(R.id.logout_option);
 
+        // TextView들 초기화
+        TextView editMyProfileTextView = findViewById(R.id.edit_my_profile);
+        TextView faqTextView = findViewById(R.id.faq);
+        TextView fontSizeTextView = findViewById(R.id.font_size);
+        TextView logoutTextView = findViewById(R.id.logout);
+        TextView welcomeMessageTextView = findViewById(R.id.welcome_message);
+
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        editMyProfileTextView.setTextSize(savedFontSize);
+        faqTextView.setTextSize(savedFontSize);
+        fontSizeTextView.setTextSize(savedFontSize);
+        logoutTextView.setTextSize(savedFontSize);
+        welcomeMessageTextView.setTextSize(savedFontSize);
+
+
         editProfileOption.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, EditProfileActivity.class);
             startActivity(intent);
         });
 
         aboutB1A3Option.setOnClickListener(v -> {
-            Intent intent = new Intent(SettingsActivity.this, AboutB1A3Activity.class);
+            Intent intent = new Intent(SettingsActivity.this, SettingFontSizeActivity.class);
             startActivity(intent);
         });
 

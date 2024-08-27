@@ -11,7 +11,7 @@ public class AboutB1A3Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_b1a3_info);
+        setContentView(R.layout.activity_setting_b1a3_info);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

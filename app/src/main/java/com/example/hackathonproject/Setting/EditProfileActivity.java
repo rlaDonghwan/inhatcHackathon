@@ -14,8 +14,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.hackathonproject.Login.ChangePasswordActivity;
-import com.example.hackathonproject.Login.ForgotPasswordActivity;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.Login.StartActivity;
 import com.example.hackathonproject.R;
@@ -24,15 +22,16 @@ import com.example.hackathonproject.db.AuthManager;
 import java.sql.SQLException;
 
 public class EditProfileActivity extends AppCompatActivity {
-    private EditText nameEditText;
     private AuthManager authManager;
     private SharedPreferences sharedPreferences;
     SessionManager sessionManager;
+    private EditText nameEditText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+        setContentView(R.layout.activity_setting_edit_profile);
 
         // AuthManager와 SharedPreferences 초기화
         authManager = new AuthManager();
@@ -60,24 +59,54 @@ public class EditProfileActivity extends AppCompatActivity {
         // EditText 초기화
         nameEditText = findViewById(R.id.name_edit_text);
 
+        // ---------------------------------------------------------------------------------------------
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        nameEditText.setTextSize(savedFontSize);
+        titleTextView.setTextSize(savedFontSize);
+
+        // 추가적인 UI 요소에 대한 폰트 크기 적용
+        TextView nameLabel = findViewById(R.id.name_label); // 이름 레이블
+        TextView infoLabel = findViewById(R.id.info_label); // 정보 레이블
+        TextView passwordChangeLabel = findViewById(R.id.password_change_label); // 비밀번호 변경 레이블
+        TextView passwordChangeInfo = findViewById(R.id.password_change_info); // 비밀번호 변경 정보
+        TextView deleteAccountLabel = findViewById(R.id.delete_account_label); // 계정 삭제 레이블
+        TextView deleteAccountInfo = findViewById(R.id.delete_account_info); // 계정 삭제 정보
+        Button saveButton = findViewById(R.id.save_button); // 저장 버튼
+        Button changePasswordButton = findViewById(R.id.change_password_button); // 비밀번호 변경 버튼
+        Button deleteAccountButton = findViewById(R.id.delete_account_button); // 계정 삭제 버튼
+
+        // 폰트 크기 적용
+        nameLabel.setTextSize(savedFontSize);
+        infoLabel.setTextSize(savedFontSize);
+        passwordChangeLabel.setTextSize(savedFontSize);
+        passwordChangeInfo.setTextSize(savedFontSize);
+        deleteAccountLabel.setTextSize(savedFontSize);
+        deleteAccountInfo.setTextSize(savedFontSize);
+        saveButton.setTextSize(savedFontSize);
+        changePasswordButton.setTextSize(savedFontSize);
+        deleteAccountButton.setTextSize(savedFontSize);
+        // ---------------------------------------------------------------------------------------------
+
         // 현재 사용자의 이름 불러오기
         loadUserName();
 
         // 저장 버튼 설정 및 사용자의 이름 업데이트
-        Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> saveUserName());
 
         // 비밀번호 변경 버튼 설정
-        Button changePasswordButton = findViewById(R.id.change_password_button);
         changePasswordButton.setOnClickListener(v -> {
             Intent intent = new Intent(EditProfileActivity.this, ForgotPasswordActivity.class);
             intent.putExtra("from_edit_profile", true);  // 데이터를 추가하여 전달
             startActivity(intent);
         });
 
-        Button deleteAccountButton = findViewById(R.id.delete_account_button);
         deleteAccountButton.setOnClickListener(v -> deleteUserAccount());
     }
+
 
     private void deleteUserAccount() {
         new DeleteAccountTask().execute();

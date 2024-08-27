@@ -68,7 +68,7 @@
     <Button
         android:id="@+id/confirm_button"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/phone_input"
         android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
@@ -99,15 +99,15 @@
         <Button
             android:id="@+id/create_account_button"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="#4236B4FF"
+            android:backgroundTint="@color/skyBlue"
             android:elevation="0dp"
-            android:fontFamily="@font/im_hyemin_bold"
+            android:fontFamily="@font/kangwon_tntnche"
             android:letterSpacing="0.1"
             android:text="계정 만들기"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="23sp" />
     </LinearLayout>
 </RelativeLayout>

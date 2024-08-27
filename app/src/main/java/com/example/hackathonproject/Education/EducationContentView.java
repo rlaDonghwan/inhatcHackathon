@@ -50,7 +50,7 @@ public class EducationContentView extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_content_view);
+        setContentView(R.layout.activity_education_content_view);
 
         educationDAO = new EducationDAO(); // DAO 객체 초기화
 

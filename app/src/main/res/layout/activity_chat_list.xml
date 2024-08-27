@@ -40,7 +40,7 @@
         <!-- 전체 Button -->
         <TextView
             android:id="@+id/button_all"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background_selected"
@@ -53,7 +53,7 @@
         <!-- 판매 Button -->
         <TextView
             android:id="@+id/button_sell"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background"
@@ -66,7 +66,7 @@
         <!-- 구매 Button -->
         <TextView
             android:id="@+id/button_buy"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background"

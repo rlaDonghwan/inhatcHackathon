@@ -1,4 +1,4 @@
-package com.example.hackathonproject.Login;
+package com.example.hackathonproject.Setting;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,9 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hackathonproject.Login.SignInPhoneNumActivity;
 import com.example.hackathonproject.R;
 
-public class FontSizeActivity extends Activity {
+public class SettingFontSizeActivity extends Activity {
     private Button btnContinue;
     private ImageButton backButton;
     private Button decreaseFontButton;
@@ -22,7 +23,7 @@ public class FontSizeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_font_size);
+        setContentView(R.layout.activity_setting_font_size);
 
         // 텍스트 뷰 및 버튼 초기화
         sampleText = findViewById(R.id.sample_text);
@@ -39,7 +40,7 @@ public class FontSizeActivity extends Activity {
                 sampleText.setTextSize(fontSize);
                 saveFontSize(fontSize);  // 폰트 크기 저장
             } else {
-                Toast.makeText(FontSizeActivity.this, "더 이상 폰트 크기를 줄일 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingFontSizeActivity.this, "더 이상 폰트 크기를 줄일 수 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -50,7 +51,7 @@ public class FontSizeActivity extends Activity {
                 sampleText.setTextSize(fontSize);
                 saveFontSize(fontSize);  // 폰트 크기 저장
             } else {
-                Toast.makeText(FontSizeActivity.this, "더 이상 폰트 크기를 늘릴 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingFontSizeActivity.this, "더 이상 폰트 크기를 늘릴 수 없습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -58,7 +59,7 @@ public class FontSizeActivity extends Activity {
         btnContinue = findViewById(R.id.confirm_button);
         btnContinue.setOnClickListener(v -> {
             // 확인 버튼 클릭 시 다음 화면으로 이동 (예: 로그인 화면)
-            Intent intent = new Intent(FontSizeActivity.this, SignInPhoneNumActivity.class);
+            Intent intent = new Intent(SettingFontSizeActivity.this, SettingsActivity.class);
             startActivity(intent);
             finish();  // FontSizeActivity 종료
         });

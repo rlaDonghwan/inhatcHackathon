@@ -38,7 +38,7 @@
         <activity android:name=".Login.SignInPhoneNumActivity" />
         <activity android:name=".Login.SignInPasswordActivity" />
         <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".Login.ForgotPasswordActivity" />
+        <activity android:name=".Setting.ForgotPasswordActivity" />
         <activity android:name=".Login.ChangePasswordActivity" />
         <activity android:name=".Login.MainActivity" />
         <activity android:name=".Login.FontSizeActivity" />
@@ -49,6 +49,7 @@
         <activity android:name=".Setting.SettingsActivity"/>
         <activity android:name=".Setting.AboutB1A3Activity"/>
         <activity android:name=".Setting.EditProfileActivity"/>
+        <activity android:name=".Setting.SettingFontSizeActivity"/>
         <activity android:name=".Setting.QnaActivity"/>
         <activity android:name=".Setting.SettingPasswordActivity"/>
         <activity android:name=".Chat.ChatListActivity"/>
