@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:text="제목"
         android:fontFamily="@font/im_hyemin_bold"
@@ -57,30 +57,63 @@
         android:id="@+id/checkbox_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_text"
-        android:layout_marginStart="16dp"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentEnd="true"
         android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/checkbox_buy"
+        <!-- 강연자 구해요 -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="구해요"
-            android:fontFamily="@font/im_hyemin_bold"
-            android:textSize="17sp"
-            android:textColor="@android:color/black"
-            android:buttonTint="@color/skyBlue" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <CheckBox
-            android:id="@+id/checkbox_sell"
+            <CheckBox
+                android:id="@+id/checkbox_buy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/skyBlue"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="강연자 구해요"
+                android:fontFamily="@font/im_hyemin_bold"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+
+        <!-- 교육 할게요 -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="할게요"
-            android:fontFamily="@font/im_hyemin_bold"
-            android:textSize="17sp"
-            android:textColor="@android:color/black"
-            android:buttonTint="@color/skyBlue" />
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkbox_sell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/skyBlue"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="교육 할게요"
+                android:fontFamily="@font/im_hyemin_bold"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 
@@ -89,12 +122,13 @@
         android:id="@+id/title_edit_text"
         android:layout_width="395dp"
         android:layout_height="55dp"
-        android:layout_below="@id/checkbox_group"
+        android:layout_below="@id/title_text"
+        android:layout_marginTop="13dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_background"
         android:hint="제목을 작성해 주세요. (10자 이내)"
-        android:fontFamily="@font/im_hyemin_regular"
+        android:fontFamily="@font/im_hyemin_bold"
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:textSize="17sp" />
@@ -105,9 +139,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_edit_text"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:layout_marginStart="16dp"
-        android:text="금액"
+        android:text="금액 | ₩"
         android:fontFamily="@font/im_hyemin_bold"
         android:textSize="23sp"
         android:textColor="@android:color/black" />
@@ -119,10 +153,11 @@
         android:layout_height="55dp"
         android:layout_below="@id/price_text"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_background"
-        android:hint="제목을 작성해 주세요. (10자 이내)"
-        android:fontFamily="@font/im_hyemin_regular"
+        android:hint="금액을 입력해주세요"
+        android:fontFamily="@font/im_hyemin_bold"
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:textSize="17sp" />
@@ -134,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/price_edit_text"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:layout_marginStart="16dp"
         android:text="내용"
         android:fontFamily="@font/im_hyemin_bold"
@@ -145,15 +180,15 @@
     <EditText
         android:id="@+id/content_edit_text"
         android:layout_width="388dp"
-        android:layout_height="250dp"
+        android:layout_height="260dp"
         android:layout_below="@id/content_text"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_background"
         android:gravity="top"
         android:hint="내용을 100줄 이내로 작성해 주세요."
-        android:fontFamily="@font/im_hyemin_regular"
+        android:fontFamily="@font/im_hyemin_bold"
         android:inputType="textMultiLine"
         android:padding="10dp"
         android:scrollbars="vertical"
@@ -163,8 +198,8 @@
     <!-- Submit Button -->
     <Button
         android:id="@+id/btnSummit"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_width="395dp"
+        android:layout_height="53dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
@@ -172,7 +207,7 @@
         android:fontFamily="@font/kangwon_tntnche"
         android:textSize="25sp"
         android:textColor="#FFFFFF"
-        android:backgroundTint="@color/skyBlue"
+        android:backgroundTint="@color/dark_blue"
         android:gravity="center"
         android:padding="10dp"
         android:backgroundTintMode="src_in"/>
