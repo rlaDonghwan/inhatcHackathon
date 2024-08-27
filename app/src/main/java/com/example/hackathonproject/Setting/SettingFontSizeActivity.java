@@ -9,8 +9,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.hackathonproject.Login.SignInPhoneNumActivity;
 import com.example.hackathonproject.R;
+import com.example.hackathonproject.Setting.SettingsActivity;
 
 public class SettingFontSizeActivity extends Activity {
     private Button btnContinue;
@@ -18,19 +18,23 @@ public class SettingFontSizeActivity extends Activity {
     private Button decreaseFontButton;
     private Button increaseFontButton;
     private TextView sampleText;
-    private int fontSize = 25;  // 기본 폰트 크기
+    private int fontSize;  // 폰트 크기 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_font_size);
+        setContentView(R.layout.activity_font_size);
+
+        // SharedPreferences에서 저장된 폰트 크기를 불러옴, 기본값은 25
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        fontSize = preferences.getInt("fontSize", 25);
 
         // 텍스트 뷰 및 버튼 초기화
         sampleText = findViewById(R.id.sample_text);
         decreaseFontButton = findViewById(R.id.decrease_font_button);
         increaseFontButton = findViewById(R.id.increase_font_button);
 
-        // 기본 폰트 크기 설정
+        // 불러온 폰트 크기를 텍스트 뷰에 설정
         sampleText.setTextSize(fontSize);
 
         // 폰트 크기 감소 버튼
@@ -58,6 +62,9 @@ public class SettingFontSizeActivity extends Activity {
         // '확인' 버튼 초기화 및 클릭 이벤트
         btnContinue = findViewById(R.id.confirm_button);
         btnContinue.setOnClickListener(v -> {
+            // 현재 폰트 크기를 저장
+            saveFontSize(fontSize);
+
             // 확인 버튼 클릭 시 다음 화면으로 이동 (예: 로그인 화면)
             Intent intent = new Intent(SettingFontSizeActivity.this, SettingsActivity.class);
             startActivity(intent);
