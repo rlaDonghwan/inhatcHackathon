@@ -41,6 +41,7 @@
         <activity android:name=".Login.ForgotPasswordActivity" />
         <activity android:name=".Login.ChangePasswordActivity" />
         <activity android:name=".Login.MainActivity" />
+        <activity android:name=".Login.FontSizeActivity" />
         <activity android:name=".Education.EducationActivity" />
         <activity android:name=".Education.WriteActivity"/>
         <activity android:name=".Education.EducationContentView"/>
