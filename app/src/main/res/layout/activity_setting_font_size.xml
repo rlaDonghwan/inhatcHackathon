@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/primaryBackground"
-    tools:context=".Login.FontSizeActivity">
+    tools:context=".Setting.SettingFontSizeActivity">
 
     <!-- Custom Appbar Widget -->
     <androidx.appcompat.widget.Toolbar
@@ -32,18 +32,12 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Title Text -->
-
-    <!-- Sample Text with Size Adjustment Buttons -->
-
-    <!-- Confirm Button -->
-
     <TextView
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_marginTop="58dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/kangwon_tntnche"
         android:letterSpacing="0.1"
         android:lineSpacingExtra="3dp"
@@ -57,13 +51,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_text"
-        android:layout_marginTop="101dp"
+        android:layout_marginTop="202dp"
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:orientation="horizontal">
 
-
-        <!-- Decrease Font Size Button -->
         <Button
             android:id="@+id/decrease_font_button"
             android:layout_width="80dp"
@@ -74,9 +66,6 @@
             android:textColor="@color/white"
             android:textSize="30sp" />
 
-        <!-- Sample Text -->
-
-        <!-- Increase Font Size Button -->
         <TextView
             android:id="@+id/sample_text"
             android:layout_width="wrap_content"
@@ -84,7 +73,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/im_hyemin_bold"
-            android:text="가 나"
+            android:text="어서오세요 \n welcome"
             android:textAlignment="center"
             android:textSize="25sp" />
 
@@ -101,19 +90,41 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/confirm_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/round_button"
-        android:fontFamily="@font/kangwon_tntnche"
-        android:text="확인"
-        android:textColor="@color/white"
-        android:textSize="30sp" />
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="184dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/skyBlue"
+            android:elevation="2dp"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:letterSpacing="0.1"
+            android:padding="10dp"
+            android:text="확인"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

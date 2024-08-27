@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.Chat.ChatListActivity;
 import com.example.hackathonproject.Education.EducationActivity;
-import com.example.hackathonproject.Login.FontSizeActivity;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.Login.StartActivity;
 import com.example.hackathonproject.R;
