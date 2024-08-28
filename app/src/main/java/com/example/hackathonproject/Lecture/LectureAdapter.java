@@ -1,4 +1,4 @@
-package com.example.hackathonproject.Seminar;
+package com.example.hackathonproject.Lecture;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +15,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class SeminarAdapter extends RecyclerView.Adapter<SeminarAdapter.SeminarViewHolder> {
+public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.SeminarViewHolder> {
 
-    private List<SeminarPost> seminarPosts; // 강연 게시글 목록을 저장할 리스트
+    private List<LecturePost> seminarPosts; // 강연 게시글 목록을 저장할 리스트
     private OnItemClickListener listener; // 아이템 클릭 리스너
 
     // 생성자: 강연 게시글 목록을 초기화
-    public SeminarAdapter(List<SeminarPost> seminarPosts) {
+    public LectureAdapter(List<LecturePost> seminarPosts) {
         this.seminarPosts = seminarPosts;
     }
 
@@ -38,7 +38,7 @@ public class SeminarAdapter extends RecyclerView.Adapter<SeminarAdapter.SeminarV
     @Override
     public void onBindViewHolder(@NonNull SeminarViewHolder holder, int position) {
         // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
-        SeminarPost post = seminarPosts.get(position);
+        LecturePost post = seminarPosts.get(position);
         holder.postTitle.setText(post.getTitle()); // 제목 설정
 
         // 작성 시간을 현재 시간과 비교하여 "몇 시간 전", "몇 일 전"으로 표시
@@ -84,7 +84,7 @@ public class SeminarAdapter extends RecyclerView.Adapter<SeminarAdapter.SeminarV
     }
 
     // 데이터를 업데이트하고 RecyclerView를 갱신하는 메서드
-    public void updateData(List<SeminarPost> posts) {
+    public void updateData(List<LecturePost> posts) {
         this.seminarPosts = posts;
         notifyDataSetChanged(); // 데이터 변경을 알림 (화면 갱신)
     }

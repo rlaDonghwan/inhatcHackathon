@@ -3,6 +3,8 @@ package com.example.hackathonproject.Chat;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,6 +42,8 @@ public class ChatActivity extends AppCompatActivity {
     private int postId;
     private Connection connection;
     private String otherUserName; // 상대방 이름을 저장할 변수
+    private Handler handler;  // Handler for periodic updates
+    private Runnable refreshRunnable;
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -64,6 +68,17 @@ public class ChatActivity extends AppCompatActivity {
 
         // 데이터베이스 연결을 시도하고 완료된 후 UI 초기화 및 데이터 로드
         createOrRetrieveChatRoom(currentUserId, otherUserId);
+
+        // Handler and Runnable 설정
+        handler = new Handler(Looper.getMainLooper());
+        refreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                loadChatMessages(); // 주기적으로 메시지를 로드합니다.
+                handler.postDelayed(this, 1000); // 1초마다 반복 실행
+            }
+        };
+        handler.post(refreshRunnable); // Runnable 실행 시작
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -188,8 +203,10 @@ public class ChatActivity extends AppCompatActivity {
     // 채팅 메시지를 로드하는 메서드
     private void loadChatMessages() {
         if (connection != null) {
+            Log.d("ChatActivity", "Database connection is established, loading messages...");
             new LoadMessagesTask().execute(chatId);
         } else {
+            Log.e("ChatActivity", "Database connection is null, unable to load messages.");
             showErrorMessage("데이터베이스 연결이 설정되지 않았습니다.");
         }
     }
@@ -219,6 +236,7 @@ public class ChatActivity extends AppCompatActivity {
         protected void onPostExecute(List<ChatMessage> messages) {
             if (messages != null) {
                 chatAdapter.setMessages(messages);  // 가져온 메시지를 어댑터에 설정
+                recyclerView.scrollToPosition(messages.size() - 1); // 스크롤을 최신 메시지로 이동
             } else {
                 showErrorMessage("메시지를 불러오는데 실패했습니다.");
             }
@@ -289,6 +307,9 @@ public class ChatActivity extends AppCompatActivity {
                 Log.e(TAG, "Error closing database connection: " + e.getMessage());
             }
         }
+
+        // Handler의 반복 실행을 중지
+        handler.removeCallbacks(refreshRunnable);
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
