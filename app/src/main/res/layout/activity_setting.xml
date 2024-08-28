@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:elevation="4dp">
@@ -156,7 +156,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/my_info"
-                    app:tint="@color/skyBlue" />
+                    app:tint="@color/orange" />
 
                 <TextView
                     android:id="@+id/edit_my_profile"
@@ -174,7 +174,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/skyBlue" />
+                android:background="@color/orange" />
 
             <!-- Option 4: 질문 접수하기 -->
             <LinearLayout
@@ -190,7 +190,7 @@
                     android:layout_height="24dp"
                     android:src="@drawable/message"
                     android:textStyle="bold"
-                    app:tint="@color/skyBlue" />
+                    app:tint="@color/orange" />
 
                 <TextView
                     android:id="@+id/faq"
@@ -208,7 +208,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/skyBlue" />
+                android:background="@color/orange" />
 
             <!-- Option 3: B1A3 소개 -->
             <LinearLayout
@@ -223,7 +223,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/information"
-                    app:tint="@color/skyBlue" />
+                    app:tint="@color/orange" />
 
                 <TextView
                     android:id="@+id/font_size"
@@ -241,7 +241,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/skyBlue" />
+                android:background="@color/orange" />
 
             <!-- Option 5: 로그아웃 -->
         </LinearLayout>
@@ -258,7 +258,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/logout"
-                app:tint="@color/skyBlue" />
+                app:tint="@color/orange" />
 
             <TextView
                 android:id="@+id/logout"
@@ -389,7 +389,7 @@
                 android:layout_height="33dp"
                 android:src="@drawable/setting"
                 android:layout_marginTop="3dp"
-                app:tint="@color/skyBlue" />
+                app:tint="@color/orange" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -397,7 +397,7 @@
                 android:fontFamily="@font/kangwon_tntnche"
                 android:text="설정"
                 android:layout_marginTop="3dp"
-                android:textColor="@color/skyBlue"
+                android:textColor="@color/orange"
                 android:textSize="12sp" />
         </LinearLayout>
 
