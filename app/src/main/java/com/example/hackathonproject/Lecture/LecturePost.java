@@ -1,5 +1,5 @@
-package com.example.hackathonproject.Seminar;
-public class SeminarPost {
+package com.example.hackathonproject.Lecture;
+public class LecturePost {
     private int lectureId; // 강연 고유 ID
     private int userId; // 사용자 ID
     private String userName; // 사용자 이름
@@ -12,7 +12,7 @@ public class SeminarPost {
     private int views; // 조회수
 
     // 생성자
-    public SeminarPost(int lectureId, int userId, String userName, String title, String content, String location, String createdAt, String completedAt, double fee, int views) {
+    public LecturePost(int lectureId, int userId, String userName, String title, String content, String location, String createdAt, String completedAt, double fee, int views) {
         this.lectureId = lectureId;
         this.userId = userId;
         this.userName = userName; // 작성자 이름

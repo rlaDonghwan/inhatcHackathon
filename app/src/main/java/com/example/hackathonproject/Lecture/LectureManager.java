@@ -1,15 +1,15 @@
-package com.example.hackathonproject.Seminar;
+package com.example.hackathonproject.Lecture;
 
 import com.example.hackathonproject.db.SeminarDAO;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public class SeminarManager {
+public class LectureManager {
     private SeminarDAO seminarDAO; // SeminarDAO 객체를 저장할 변수
 
     // 생성자: SeminarDAO 객체를 초기화
-    public SeminarManager(SeminarDAO seminarDAO) {
+    public LectureManager(SeminarDAO seminarDAO) {
         this.seminarDAO = seminarDAO;
     }
 
@@ -22,7 +22,7 @@ public class SeminarManager {
     }
 
     // 모든 세미나 게시글을 가져오는 메서드
-    public List<SeminarPost> getAllSeminarPosts() {
+    public List<LecturePost> getAllSeminarPosts() {
         // 세미나 게시글 목록을 데이터베이스에서 가져옴
         return seminarDAO.getAllSeminarPosts();
     }

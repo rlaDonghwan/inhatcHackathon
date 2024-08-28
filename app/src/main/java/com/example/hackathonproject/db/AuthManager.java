@@ -1,6 +1,8 @@
 package com.example.hackathonproject.db;
 
 import android.os.Build;
+import android.util.Log;
+
 import androidx.annotation.RequiresApi;
 
 import java.sql.SQLException;
@@ -11,6 +13,7 @@ import java.time.format.DateTimeParseException;
 
 public class AuthManager {
     private UserDAO userDAO; // 사용자 데이터베이스 접근 객체
+    private static final String TAG = "AuthManager";
 
     public AuthManager() {
         this.userDAO = new UserDAO(); // UserDAO 초기화
@@ -31,13 +34,11 @@ public class AuthManager {
         userDAO.registerUser(name, password, phoneNum, age, role); // 사용자 등록
         return true;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자를 로그인하고 사용자 ID 반환
     public int loginUserAndGetId(String phoneNum, String password) throws SQLException {
         return userDAO.getUserIdIfCredentialsMatch(phoneNum, password); // 자격 증명이 일치하면 사용자 ID 반환
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 사용자 이름 조회
     public String getUserNameById(int userId) throws SQLException {
@@ -45,17 +46,20 @@ public class AuthManager {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    // 사용자 ID로 누적 봉사 시간을 가져오는 메서드
+    public int getVolunteerHoursById(int userId) throws SQLException {
+        return userDAO.getVolunteerHoursById(userId); // UserDAO를 통해 누적 봉사 시간 조회
+    }
+
     // 사용자가 존재하는지 확인
     public boolean isUserExist(String phoneNum) throws SQLException {
         return userDAO.isUserExist(phoneNum); // 전화번호로 사용자 존재 여부 확인
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비밀번호 변경
     public boolean changePassword(String phoneNum, String newPassword) throws SQLException {
         return userDAO.changePassword(phoneNum, newPassword); // 전화번호로 비밀번호 변경
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private int calculateAge(String birthDate) {
@@ -68,23 +72,18 @@ public class AuthManager {
             throw new IllegalArgumentException("Invalid date format: " + birthDate); // 날짜 형식이 잘못되었을 경우 예외 발생
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 나이에 따라 역할 결정
     private String determineRole(int age) {
         return age < 65 ? "청년" : "노인"; // 65세 미만은 청년, 65세 이상은 노인으로 역할 설정
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 이름 변경 메서드
     public boolean changeUserName(int userId, String newName) throws SQLException {
         return userDAO.updateUserName(userId, newName);
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 계정 삭제 메서드
     public boolean deleteUserAccount(int userId) throws SQLException {
         return userDAO.deleteUser(userId);
     }
-
 }

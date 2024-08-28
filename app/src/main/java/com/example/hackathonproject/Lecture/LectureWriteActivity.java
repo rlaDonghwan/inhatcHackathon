@@ -1,4 +1,4 @@
-package com.example.hackathonproject.Seminar;
+package com.example.hackathonproject.Lecture;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,7 +18,7 @@ import com.example.hackathonproject.db.SeminarDAO;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class SeminarWriteActivity extends AppCompatActivity {
+public class LectureWriteActivity extends AppCompatActivity {
     // UI 요소 선언
     private EditText titleEditText;
     private EditText contentEditText;
@@ -30,7 +30,7 @@ public class SeminarWriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seminor_write);
+        setContentView(R.layout.activity_lecture_write);
 
         // DAO와 SessionManager 초기화
         seminarDAO = new SeminarDAO();
@@ -140,11 +140,11 @@ public class SeminarWriteActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             // 강연 등록 성공 여부에 따른 UI 처리
             if (success) {
-                Toast.makeText(SeminarWriteActivity.this, "강연이 성공적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
+                Toast.makeText(LectureWriteActivity.this, "강연이 성공적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
                 setResult(RESULT_OK);  // 결과 설정
                 finish();  // 액티비티 종료
             } else {
-                Toast.makeText(SeminarWriteActivity.this, "강연 등록에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
+                Toast.makeText(LectureWriteActivity.this, "강연 등록에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
             }
         }
     }
@@ -175,11 +175,11 @@ public class SeminarWriteActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean success) {
             // 강연 수정 성공 여부에 따른 UI 처리
             if (success) {
-                Toast.makeText(SeminarWriteActivity.this, "강연이 성공적으로 수정되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
+                Toast.makeText(LectureWriteActivity.this, "강연이 성공적으로 수정되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
                 setResult(RESULT_OK);  // 결과 설정
                 finish();  // 액티비티 종료
             } else {
-                Toast.makeText(SeminarWriteActivity.this, "강연 수정에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
+                Toast.makeText(LectureWriteActivity.this, "강연 수정에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
             }
         }
     }

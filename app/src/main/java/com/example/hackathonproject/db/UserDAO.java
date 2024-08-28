@@ -153,4 +153,24 @@ public class UserDAO {
         }
     }
 
+    public int getVolunteerHoursById(int userId) throws SQLException {
+        String sql = "SELECT VolunteerHours FROM User WHERE UserID = ?"; // SQL 쿼리
+        int volunteerHours = 0;
+
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId); // 사용자 ID 설정
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    volunteerHours = rs.getInt("VolunteerHours"); // 누적 봉사 시간 가져오기
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get volunteer hours by ID", e); // 오류 로그 출력
+            throw e; // 예외 다시 던지기
+        }
+
+        return volunteerHours; // 봉사 시간 반환
+    }
+
 }
