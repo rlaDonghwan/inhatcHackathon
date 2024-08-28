@@ -8,6 +8,7 @@ public class SessionManager {
     private static final String PREF_NAME = "UserSession";
     private static final String KEY_USER_ID = "UserID";
     private static final String KEY_USER_NAME = "UserName";
+    private static final String KEY_VOLUNTEER_HOURS = "VolunteerHours";
     private static final String KEY_IS_LOGGED_IN = "IsLoggedIn"; // 로그인 상태 저장용
 
     private SharedPreferences pref;
@@ -19,9 +20,10 @@ public class SessionManager {
     }
 
     // 세션 생성 메서드
-    public void createSession(String userName, int userId) {
+    public void createSession(String userName, int userId, int volunteerHours) {
         editor.putInt(KEY_USER_ID, userId);
         editor.putString(KEY_USER_NAME, userName);
+        editor.putInt(KEY_VOLUNTEER_HOURS, volunteerHours);
         editor.putBoolean(KEY_IS_LOGGED_IN, true); // 로그인 상태를 true로 설정
         editor.commit();
     }
@@ -36,6 +38,10 @@ public class SessionManager {
 
     public String getUserName() {
         return pref.getString(KEY_USER_NAME, "");
+    }
+
+    public int getVolunteerHours() {
+        return pref.getInt(KEY_VOLUNTEER_HOURS, 0); // 기본값 0
     }
 
     public boolean isLoggedIn() {

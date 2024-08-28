@@ -1,7 +1,7 @@
 package com.example.hackathonproject.db;
 
 import android.util.Log;
-import com.example.hackathonproject.Seminar.SeminarPost;
+import com.example.hackathonproject.Lecture.LecturePost;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,8 +40,8 @@ public class SeminarDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 강연 게시글을 가져오는 메서드
-    public List<SeminarPost> getAllSeminarPosts() {
-        List<SeminarPost> postList = new ArrayList<>();
+    public List<LecturePost> getAllSeminarPosts() {
+        List<LecturePost> postList = new ArrayList<>();
         String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
                 "FROM Lecture l JOIN User u ON l.UserID = u.UserID";
 
@@ -60,7 +60,7 @@ public class SeminarDAO {
                 String createdAt = rs.getString("CreatedAt");
                 String completedAt = rs.getString("CompletedAt");
 
-                postList.add(new SeminarPost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views));
+                postList.add(new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views));
             }
         } catch (SQLException e) {
             Log.e(TAG, "Failed to load posts", e);
@@ -70,7 +70,7 @@ public class SeminarDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 강연 게시글을 가져오는 메서드
-    public SeminarPost getSeminarPostById(int lectureId) {
+    public LecturePost getSeminarPostById(int lectureId) {
         String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
                 "FROM Lecture l JOIN User u ON l.UserID = u.UserID WHERE LectureID = ?";
 
@@ -89,7 +89,7 @@ public class SeminarDAO {
                     String createdAt = rs.getString("CreatedAt");
                     String completedAt = rs.getString("CompletedAt");
 
-                    return new SeminarPost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views);
+                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views);
                 }
             }
         } catch (SQLException e) {
