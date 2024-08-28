@@ -50,7 +50,7 @@ public class LectureContentView extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seminar_content_view);
+        setContentView(R.layout.activity_lecture_content_view);
 
         seminarDAO = new SeminarDAO(); // DAO 객체 초기화
 
@@ -70,9 +70,9 @@ public class LectureContentView extends AppCompatActivity {
         // UI 요소 초기화
         titleTextView = findViewById(R.id.toolbar_title);  // 제목 텍스트뷰
         contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
-        lecturerNameTextView = findViewById(R.id.lecturer_name);  // 강연자 이름 텍스트뷰
-        dateTextView = findViewById(R.id.date);  // 날짜 텍스트뷰
-        feeTextView = findViewById(R.id.fee);  // 강연료 텍스트뷰
+        lecturerNameTextView = findViewById(R.id.name);  // 강연자 이름 텍스트뷰
+        dateTextView = findViewById(R.id.upload_date);  // 날짜 텍스트뷰
+        feeTextView = findViewById(R.id.work_price);  // 강연료 텍스트뷰
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
 

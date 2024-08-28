@@ -30,7 +30,7 @@ public class LectureWriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seminor_write);
+        setContentView(R.layout.activity_lecture_write);
 
         // DAO와 SessionManager 초기화
         seminarDAO = new SeminarDAO();
