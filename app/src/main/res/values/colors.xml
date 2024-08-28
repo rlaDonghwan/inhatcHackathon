@@ -2,12 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-<!--
-    <color name="skyBlue">#50B1FF</color>
-    <color name="skyBlue">#74B6F9</color>
-    <color name="skyBlue">#f5490a</color>
-    <color name="skyBlue2">#5A9AE4</color>
--->
+<!--    <color name="skyBlue">#50B1FF</color>-->
+<!--    <color name="skyBlue">#74B6F9</color>-->
+<!--    <color name="skyBlue">#f5490a</color>-->
+<!--    <color name="skyBlue2">#5A9AE4</color>-->
+
 
     <color name="orange">#f56a3e</color>
     <color name="dark_orange">#8A2C0C</color>

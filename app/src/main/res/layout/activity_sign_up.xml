@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:text="이름"
                     android:textSize="23sp"
-                    android:fontFamily="@font/im_hyemin_bold"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:paddingBottom="4dp" />
 
                 <EditText
@@ -71,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/im_hyemin_regular"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:hint="이름"
                     android:padding="12dp"
                     android:textSize="17sp"
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:text="전화번호"
                     android:textSize="23sp"
-                    android:fontFamily="@font/im_hyemin_bold"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:paddingTop="18dp"
                     android:paddingBottom="4dp" />
 
@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/im_hyemin_regular"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:hint="010-1234-5678"
                     android:inputType="phone"
                     android:padding="12dp"
@@ -105,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="비밀번호"
-                    android:fontFamily="@font/im_hyemin_bold"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:textSize="23sp"
                     android:paddingTop="18dp"
                     android:paddingBottom="4dp" />
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
                     android:hint="비밀번호"
-                    android:fontFamily="@font/im_hyemin_regular"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:inputType="textPassword"
                     android:padding="12dp"
                     android:textSize="17sp" />
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:text="생년월일"
                     android:textSize="23sp"
-                    android:fontFamily="@font/im_hyemin_bold"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:paddingTop="18dp"
                     android:paddingBottom="4dp" />
                 <LinearLayout
@@ -141,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/im_hyemin_regular"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="출생년도"
                         android:inputType="number"
                         android:padding="12dp"
@@ -154,7 +154,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/im_hyemin_regular"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="월"
                         android:inputType="number"
                         android:padding="12dp"
@@ -167,7 +167,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/im_hyemin_regular"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="일"
                         android:inputType="number"
                         android:padding="12dp"
@@ -199,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:text="기관 담당자입니까?"
                         android:textSize="20sp"
-                        android:fontFamily="@font/im_hyemin_bold"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:paddingBottom="4dp" />
                 </LinearLayout>
 

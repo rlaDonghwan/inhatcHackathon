@@ -29,6 +29,7 @@
 
 
         <TextView
+            android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -116,7 +117,6 @@
 
     </LinearLayout>
 
-
     <!-- Title EditText -->
     <EditText
         android:id="@+id/title_edit_text"
@@ -133,13 +133,43 @@
         android:textColor="@android:color/black"
         android:textSize="17sp" />
 
+    <!-- 구해요 체크 시 금액 설정 -->
+    <TextView
+        android:id="@+id/price_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_edit_text"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="16dp"
+        android:text="금액 | ₩"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:textSize="23sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Price EditText -->
+    <EditText
+        android:id="@+id/price_edit_text"
+        android:layout_width="395dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/price_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="금액을 입력해주세요"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+
     <!-- Content Text -->
     <TextView
         android:id="@+id/content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_edit_text"
-        android:layout_marginTop="30dp"
+        android:layout_below="@id/price_edit_text"
+        android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:text="내용"
         android:fontFamily="@font/nanumsquare_neo_eb"
@@ -150,15 +180,15 @@
     <EditText
         android:id="@+id/content_edit_text"
         android:layout_width="388dp"
-        android:layout_height="400dp"
+        android:layout_height="280dp"
         android:layout_below="@id/content_text"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_background"
-        android:fontFamily="@font/nanumsquare_neo_eb"
         android:gravity="top"
         android:hint="내용을 100줄 이내로 작성해 주세요."
+        android:fontFamily="@font/nanumsquare_neo_eb"
         android:inputType="textMultiLine"
         android:padding="10dp"
         android:scrollbars="vertical"

@@ -24,8 +24,8 @@
             <TextView
                 android:id="@+id/msgContent1"
                 android:layout_width="wrap_content"
+                android:fontFamily="@font/nanumsquare_neo_eb"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/im_hyemin_bold"
                 android:padding="10dp"
                 android:textColor="@android:color/black"
                 android:textSize="14sp" />
@@ -38,7 +38,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:text="오후 00:00"
-            android:fontFamily="@font/im_hyemin_bold"
+            android:fontFamily="@font/nanumsquare_neo_eb"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp" />
     </LinearLayout>
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="8dp"
-            android:fontFamily="@font/im_hyemin_bold"
+            android:fontFamily="@font/nanumsquare_neo_eb"
             android:textColor="@android:color/darker_gray"
             android:text="오후 00:00"
             android:textSize="12sp" />
@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:fontFamily="@font/im_hyemin_bold"
+                android:fontFamily="@font/nanumsquare_neo_eb"
                 android:textColor="@android:color/black"
                 android:textSize="14sp" />
         </androidx.cardview.widget.CardView>

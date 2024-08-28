@@ -86,7 +86,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="답변 완료"
-                            android:fontFamily="@font/im_hyemin_bold"
+                            android:fontFamily="@font/nanumsquare_neo_eb"
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -98,7 +98,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
                         android:layout_marginEnd="4dp"
-                        android:fontFamily="@font/im_hyemin_bold"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:text="20XX . 05 . 11"
                         android:textColor="@color/gray"
                         android:textSize="14sp" />
@@ -140,7 +140,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="대기 중"
-                            android:fontFamily="@font/im_hyemin_bold"
+                            android:fontFamily="@font/nanumsquare_neo_eb"
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -152,7 +152,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
                         android:layout_marginEnd="4dp"
-                        android:fontFamily="@font/im_hyemin_bold"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:text="20XX . 08 . XX"
                         android:textColor="@color/gray"
                         android:textSize="14sp" />

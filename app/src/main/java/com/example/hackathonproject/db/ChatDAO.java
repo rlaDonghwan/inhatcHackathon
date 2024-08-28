@@ -1,5 +1,7 @@
 package com.example.hackathonproject.db;
+
 import static android.content.ContentValues.TAG;
+
 import android.util.Log;
 import com.example.hackathonproject.Chat.Chat;
 import java.sql.Connection;
@@ -25,9 +27,9 @@ public class ChatDAO {
         List<Chat> chatList = new ArrayList<>();
         String query = "SELECT c.*, u1.Name AS UserName1, u2.Name AS UserName2 " +
                 "FROM Chat c " +
-                "JOIN User u1 ON c.UserID1 = u1.UserID " +
-                "JOIN User u2 ON c.UserID2 = u2.UserID " +
-                "WHERE c.UserID1 = ? OR c.UserID2 = ?";
+                "JOIN User u1 ON c.AuthorID = u1.UserID " +
+                "JOIN User u2 ON c.OtherUserID = u2.UserID " +
+                "WHERE c.AuthorID = ? OR c.OtherUserID = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -36,14 +38,14 @@ public class ChatDAO {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int chatId = resultSet.getInt("ChatID");
-                    int userId1 = resultSet.getInt("UserID1");
-                    int userId2 = resultSet.getInt("UserID2");
-                    Integer postId = resultSet.getObject("PostID") != null ? resultSet.getInt("PostID") : null;
+                    int authorId = resultSet.getInt("AuthorID");
+                    int otherUserId = resultSet.getInt("OtherUserID");
+                    Integer educationId = resultSet.getObject("EducationID") != null ? resultSet.getInt("EducationID") : null;
                     Integer lectureId = resultSet.getObject("LectureID") != null ? resultSet.getInt("LectureID") : null;
                     String lastMessage = resultSet.getString("LastMessage");
                     String lastMessageTime = resultSet.getString("LastMessageTime");
 
-                    String otherUserName = userId == userId1 ? resultSet.getString("UserName2") : resultSet.getString("UserName1");
+                    String otherUserName = userId == authorId ? resultSet.getString("UserName2") : resultSet.getString("UserName1");
 
                     // KST로 시간을 변환
                     LocalDateTime lastMessageTimeKST = null;
@@ -55,7 +57,7 @@ public class ChatDAO {
                     }
 
                     // Chat 객체 생성 시 lectureId를 포함하도록 수정
-                    Chat chat = new Chat(chatId, userId1, userId2, lastMessage, lastMessageTimeKST != null ? lastMessageTimeKST.toString() : null, postId, lectureId);
+                    Chat chat = new Chat(chatId, authorId, otherUserId, lastMessage, lastMessageTimeKST != null ? lastMessageTimeKST.toString() : null, educationId, lectureId);
 
                     chat.setOtherUserName(otherUserName);
                     chatList.add(chat);
@@ -69,16 +71,16 @@ public class ChatDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 채팅방을 가져오거나 새로 생성하는 메서드
-    public void getOrCreateChatRoom(int userId1, int userId2, Integer postId, Integer lectureId, ChatRoomCallback callback) {
+    public void getOrCreateChatRoom(int authorId, int otherUserId, Integer educationId, Integer lectureId, ChatRoomCallback callback) {
         new Thread(() -> {
             try {
                 connection.setAutoCommit(false);
 
-                // PostID 또는 LectureID가 제공된 경우 유효성 검사
-                if (postId != null && !isPostIdValid(postId)) {
+                // EducationID 또는 LectureID가 제공된 경우 유효성 검사
+                if (educationId != null && !isEducationIdValid(educationId)) {
                     connection.rollback();
-                    Log.e(TAG, "PostID is invalid, rolling back transaction");
-                    callback.onError(new SQLException("Invalid PostID: " + postId));
+                    Log.e(TAG, "EducationID is invalid, rolling back transaction");
+                    callback.onError(new SQLException("Invalid EducationID: " + educationId));
                     return;
                 }
 
@@ -90,15 +92,15 @@ public class ChatDAO {
                 }
 
                 String query = "SELECT ChatID FROM Chat WHERE " +
-                        "((UserID1 = ? AND UserID2 = ?) OR (UserID1 = ? AND UserID2 = ?)) " +
-                        "AND (PostID = ? OR PostID IS NULL) AND (LectureID = ? OR LectureID IS NULL)";
+                        "((AuthorID = ? AND OtherUserID = ?) OR (AuthorID = ? AND OtherUserID = ?)) " +
+                        "AND (EducationID = ? OR EducationID IS NULL) AND (LectureID = ? OR LectureID IS NULL)";
                 try (PreparedStatement statement = connection.prepareStatement(query)) {
-                    statement.setInt(1, userId1);
-                    statement.setInt(2, userId2);
-                    statement.setInt(3, userId2);
-                    statement.setInt(4, userId1);
-                    if (postId != null) {
-                        statement.setInt(5, postId);
+                    statement.setInt(1, authorId);
+                    statement.setInt(2, otherUserId);
+                    statement.setInt(3, otherUserId);
+                    statement.setInt(4, authorId);
+                    if (educationId != null) {
+                        statement.setInt(5, educationId);
                     } else {
                         statement.setNull(5, java.sql.Types.INTEGER);
                     }
@@ -115,12 +117,12 @@ public class ChatDAO {
                             Log.d(TAG, "Chat room found, committing transaction");
                             callback.onSuccess(chatId);
                         } else {
-                            query = "INSERT INTO Chat (UserID1, UserID2, PostID, LectureID) VALUES (?, ?, ?, ?)";
+                            query = "INSERT INTO Chat (AuthorID, OtherUserID, EducationID, LectureID) VALUES (?, ?, ?, ?)";
                             try (PreparedStatement insertStatement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                                insertStatement.setInt(1, userId1);
-                                insertStatement.setInt(2, userId2);
-                                if (postId != null) {
-                                    insertStatement.setInt(3, postId);
+                                insertStatement.setInt(1, authorId);
+                                insertStatement.setInt(2, otherUserId);
+                                if (educationId != null) {
+                                    insertStatement.setInt(3, educationId);
                                 } else {
                                     insertStatement.setNull(3, java.sql.Types.INTEGER);
                                 }
@@ -174,17 +176,16 @@ public class ChatDAO {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-
-    private boolean isPostIdValid(Integer postId) {
-        if (postId == null) {
+    private boolean isEducationIdValid(Integer educationId) {
+        if (educationId == null) {
             return false; // null 값은 유효하지 않다고 가정
         }
-        String query = "SELECT COUNT(*) FROM EducationPost WHERE PostID = ?";
+        String query = "SELECT COUNT(*) FROM Education WHERE EducationID = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, postId);
+            statement.setInt(1, educationId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt(1) > 0; // `PostID`가 존재하는 경우 `true` 반환
+                    return resultSet.getInt(1) > 0; // `EducationID`가 존재하는 경우 `true` 반환
                 }
             }
         } catch (SQLException e) {

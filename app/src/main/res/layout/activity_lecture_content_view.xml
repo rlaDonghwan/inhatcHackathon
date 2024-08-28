@@ -62,8 +62,7 @@
             android:id="@+id/content_image"
             android:layout_width="match_parent"
             android:layout_height="350dp"
-            android:layout_below="@id/toolbar"
-            android:src="" />
+            android:layout_below="@id/toolbar" />
 
         <!-- 이미지 구분선 -->
         <View
@@ -215,7 +214,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:text="시급 |  "
+                android:text="강연료 |  "
                 android:fontFamily="@font/nanumsquare_neo_eb"
                 android:textSize="20sp"
                 android:textStyle="bold"

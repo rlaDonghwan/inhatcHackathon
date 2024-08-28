@@ -17,7 +17,7 @@
         <item name="android:checkboxStyle">@style/CustomCheckBox</item>
 
         <!-- 상태바 색상 설정 -->
-        <item name="android:statusBarColor">@color/skyBlue2</item>
+        <item name="android:statusBarColor">@color/dark_orange</item>
         <!-- 상태바 아이콘 색상 설정 (true: 검정색 아이콘, false: 흰색 아이콘) -->
         <item name="android:windowLightStatusBar">true</item>
     </style>

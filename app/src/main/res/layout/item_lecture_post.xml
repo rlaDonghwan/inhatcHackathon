@@ -23,8 +23,7 @@
             <ImageView
                 android:id="@+id/content_image"
                 android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:src="" />
+                android:layout_height="110dp" />
 
             <!-- Left Group: Title and Author -->
             <LinearLayout
@@ -67,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="게시시간"
+                    android:text="서울 - 분전"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
