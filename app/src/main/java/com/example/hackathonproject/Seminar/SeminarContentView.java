@@ -102,7 +102,7 @@ public class SeminarContentView extends AppCompatActivity {
             }
             return post;
         }
-
+    //-
         @Override
         protected void onPostExecute(SeminarPost post) {
             swipeRefreshLayout.setRefreshing(false);  // 새로고침 완료
