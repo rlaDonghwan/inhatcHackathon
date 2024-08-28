@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
@@ -122,7 +122,7 @@
         android:fontFamily="@font/kangwon_tntnche"
         android:textSize="25sp"
         android:textColor="#FFFFFF"
-        android:backgroundTint="@color/skyBlue"
+        android:backgroundTint="@color/orange"
         android:gravity="center"
         android:padding="10dp"
         android:backgroundTintMode="src_in"/>

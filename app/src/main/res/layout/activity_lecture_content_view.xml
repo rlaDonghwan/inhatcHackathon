@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/skyBlue"
+            android:background="@color/orange"
             android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
@@ -57,13 +57,28 @@
                 tools:ignore="UsingOnClickInXml" />
         </androidx.appcompat.widget.Toolbar>
 
-        <!-- 정보 행 -->
+        <!-- 이미지 -->
+        <ImageView
+            android:id="@+id/content_image"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_below="@id/toolbar"
+            android:src="" />
 
+        <!-- 이미지 구분선 -->
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/content_image"
+            android:background="@android:color/darker_gray" />
+
+        <!-- 정보 행 -->
         <LinearLayout
             android:id="@+id/profile_write"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:layout_below="@id/toolbar"
+            android:layout_below="@id/content_image"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical">
@@ -88,12 +103,12 @@
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="start"
                     android:fontFamily="@font/nanumsquare_neo_eb"
                     android:text="홍길동"
                     android:textColor="#000"
-                    android:textSize="25sp"
+                    android:textSize="23sp"
                     android:textStyle="bold" />
 
                 <!-- 텍스트 섹션 -->
@@ -105,7 +120,7 @@
                     android:layout_marginTop="5dp"
                     android:text="인천시 연수아트센터"
                     android:fontFamily="@font/nanumsquare_neo_eb"
-                    android:textSize="17sp"
+                    android:textSize="15sp"
                     android:textColor="@color/gray" />
 
             </LinearLayout>
@@ -128,8 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/up_line"
             android:layout_above="@id/down_line"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="10dp">
 
             <!-- scroll에는 한 요소만 가능해서 제목이랑 내용 묶음 -->
             <LinearLayout
@@ -144,10 +158,11 @@
                     android:id="@+id/content_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_above="@id/upload_date"
                     android:text="제목 입니다."
                     android:fontFamily="@font/nanumsquare_neo_eb"
-                    android:textSize="40sp"
+                    android:textSize="30sp"
                     android:textColor="@android:color/black" />
 
                 <!-- 작성일자 -->
@@ -169,7 +184,7 @@
                     android:layout_marginTop="20dp"
                     android:text="예시 내용 입니다."
                     android:fontFamily="@font/nanumsquare_neo_bd"
-                    android:textSize="25sp"
+                    android:textSize="23sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black" />
             </LinearLayout>
@@ -181,7 +196,7 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_above="@id/bottom_bar"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:background="@android:color/darker_gray" />
 
         <!-- 하단 금액(봉사시간) + 신청버튼 묶기 -->
@@ -191,7 +206,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
@@ -199,6 +214,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:text="시급 |  "
                 android:fontFamily="@font/nanumsquare_neo_eb"
                 android:textSize="20sp"
@@ -239,7 +255,7 @@
                 android:text="@string/apply_button"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize="25sp"
-                android:backgroundTint="@color/skyBlue"
+                android:backgroundTint="@color/orange"
                 android:textColor="@android:color/white"
                 android:gravity="center"
                 android:padding="10dp"

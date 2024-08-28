@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:elevation="4dp">
@@ -190,7 +190,7 @@
                         android:id="@+id/checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:buttonTint="@color/skyBlue"
+                        android:buttonTint="@color/orange"
                         android:checked="false"
                         android:background="?attr/selectableItemBackgroundBorderless" />
                     <TextView
@@ -208,7 +208,7 @@
                     android:id="@+id/sign_up_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/skyBlue"
+                    android:backgroundTint="@color/orange"
                     android:text="가입하기"
                     android:textSize="30sp"
                     android:fontFamily="@font/kangwon_tntnche"
