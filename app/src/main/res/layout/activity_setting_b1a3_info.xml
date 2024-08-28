@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/b1a3_info"
-                android:fontFamily="@font/im_hyemin_regular"
+                android:fontFamily="@font/nanumsquare_neo_eb"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:lineSpacingExtra="4dp"

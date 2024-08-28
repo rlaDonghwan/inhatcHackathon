@@ -28,14 +28,15 @@ import com.example.hackathonproject.db.EducationDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class EducationContentView extends AppCompatActivity {
-    private int postId;  // 게시글 ID를 저장할 변수
-    private TextView contentTextView, titleTextView, teacherNameTextView, dateTextView;  // UI 요소들
+    private int educationId;  // 게시글 ID를 저장할 변수
+    private TextView contentTextView, titleTextView, teacherNameTextView, dateTextView, feeTextView,locationTextView; // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
     private EducationDAO educationDAO;  // 데이터베이스 접근 객체
     private EducationPost currentPost;  // 현재 게시글 객체 (수정 시 사용)
@@ -67,11 +68,13 @@ public class EducationContentView extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
 
-        titleTextView = findViewById(R.id.toolbar_title);  // 제목 텍스트뷰
+        titleTextView = findViewById(R.id.content_title);  // 제목 텍스트뷰
         contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
         teacherNameTextView = findViewById(R.id.name);  // 작성자 이름 텍스트뷰
         dateTextView = findViewById(R.id.upload_date);  // 날짜 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
+        feeTextView = findViewById(R.id.work_price);
+        locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
 
         menuButton.setOnClickListener(this::showPopupMenu);  // 메뉴 버튼 클릭 시 팝업 메뉴 표시
 
@@ -79,10 +82,10 @@ public class EducationContentView extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
-        postId = getIntent().getIntExtra("postId", -1);  // 인텐트로부터 게시글 ID 가져오기
-        if (postId == -1) {
+        educationId = getIntent().getIntExtra("educationId", -1);  // 인텐트로부터 게시글 ID 가져오기
+        if (educationId == -1) {
             Toast.makeText(this, "유효하지 않은 게시글 ID입니다.", Toast.LENGTH_SHORT).show();
-            finish(); // 유효하지 않은 postId로 인해 액티비티를 종료
+            finish(); // 유효하지 않은 educationId로 인해 액티비티를 종료
             return;
         }
         loadPostContent();  // 게시글 내용 로드 및 조회수 증가
@@ -92,9 +95,9 @@ public class EducationContentView extends AppCompatActivity {
         btnApply.setOnClickListener(v -> {
             int loggedInUserId = getLoggedInUserId();
             int otherUserId = currentPost.getUserId();  // 게시글 작성자의 ID
-            int postId = currentPost.getPostId();  // 현재 게시글 ID
+            int educationId = currentPost.getEducationId();  // 현재 게시글 ID
 
-            if (postId <= 0) {
+            if (educationId <= 0) {
                 Toast.makeText(EducationContentView.this, "잘못된 게시글 ID입니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -104,7 +107,7 @@ public class EducationContentView extends AppCompatActivity {
                 @Override
                 public void onSuccess(Connection connection) {
                     ChatDAO chatDAO = new ChatDAO(connection);
-                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, postId, null, new ChatDAO.ChatRoomCallback() {
+                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, educationId, null, new ChatDAO.ChatRoomCallback() {
                         @Override
                         public void onSuccess(int chatId) {
                             runOnUiThread(() -> {
@@ -113,7 +116,7 @@ public class EducationContentView extends AppCompatActivity {
                                     Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
                                     intent.putExtra("chatId", chatId);
                                     intent.putExtra("otherUserId", otherUserId);
-                                    intent.putExtra("postId", postId);
+                                    intent.putExtra("educationId", educationId);
                                     intent.putExtra("currentUserId", loggedInUserId);  // 현재 사용자 ID 전달
                                     startActivity(intent);
                                 } else {
@@ -153,18 +156,18 @@ public class EducationContentView extends AppCompatActivity {
 
     // 게시글 내용을 로드하는 메서드
     private void loadPostContent() {
-        new LoadPostTask().execute(postId); // 비동기 작업으로 데이터베이스에서 게시글 내용 불러오기
+        new LoadPostTask().execute(educationId); // 비동기 작업으로 데이터베이스에서 게시글 내용 불러오기
     }
 
     @SuppressLint("StaticFieldLeak")
     private class LoadPostTask extends AsyncTask<Integer, Void, EducationPost> {
         @Override
         protected EducationPost doInBackground(Integer... params) {
-            int postId = params[0];
+            int educationId = params[0];
             try {
-                EducationPost post = educationDAO.getEducationPostById(postId);  // 게시글 ID로 게시글 가져오기
+                EducationPost post = educationDAO.getEducationPostById(educationId);  // 게시글 ID로 게시글 가져오기
                 if (post != null) {
-                    educationDAO.incrementPostViews(postId); // 조회수 증가
+                    educationDAO.incrementPostViews(educationId); // 조회수 증가
                 }
                 return post;
             } catch (Exception e) {
@@ -180,23 +183,29 @@ public class EducationContentView extends AppCompatActivity {
                 currentPost = post;  // 현재 게시글 객체 저장
                 titleTextView.setText(post.getTitle());  // 제목 설정
                 contentTextView.setText(post.getContent());  // 내용 설정
-                teacherNameTextView.setText("작성자 | " + post.getUserName());  // 작성자 설정
+                teacherNameTextView.setText(post.getUserName());  // 작성자 설정
                 String formattedTime = formatTimeAgo(post.getCreatedAt());
                 dateTextView.setText(formattedTime);  // 작성 날짜 설정
+
+                DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
+                feeTextView.setText( df.format(post.getFee()));  // 강연료 설정
+
+                locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);
 
                 if (loggedInUserId == post.getUserId()) {
                     // 사용자가 게시글 작성자인 경우
-                    btnApply.setText("글 수정하기");
+                    btnApply.setText("교육 수정");
                     btnApply.setOnClickListener(v -> {
-                        Intent intent = new Intent(EducationContentView.this, WriteActivity.class);
-                        intent.putExtra("postId", currentPost.getPostId());
+                        Intent intent = new Intent(EducationContentView.this, EducationWriteActivity.class);
+                        intent.putExtra("educationId", currentPost.getEducationId());
                         intent.putExtra("title", currentPost.getTitle());
                         intent.putExtra("content", currentPost.getContent());
                         intent.putExtra("location", currentPost.getLocation());
                         intent.putExtra("category", currentPost.getCategory());
+                        intent.putExtra("fee", currentPost.getFee());  // 교육료 전달
                         startActivity(intent);
                     });
                 } else {
@@ -205,7 +214,7 @@ public class EducationContentView extends AppCompatActivity {
                     btnApply.setOnClickListener(v -> {
                         Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
                         intent.putExtra("otherUserId", post.getUserId()); // 게시글 작성자의 ID를 채팅 화면으로 전달
-                        intent.putExtra("postId", postId); // 현재 게시글 ID를 전달
+                        intent.putExtra("educationId", educationId); // 현재 게시글 ID를 전달
                         startActivity(intent);
                     });
                 }
@@ -252,8 +261,8 @@ public class EducationContentView extends AppCompatActivity {
                 case 0:
                     // 게시글 수정 선택 시 현재 게시글의 데이터를 인텐트에 담아 WriteActivity로 전달
                     if (currentPost != null) {
-                        Intent intent = new Intent(EducationContentView.this, WriteActivity.class);
-                        intent.putExtra("postId", currentPost.getPostId());  // 게시글 ID 전달
+                        Intent intent = new Intent(EducationContentView.this, EducationWriteActivity.class);
+                        intent.putExtra("educationId", currentPost.getEducationId());  // 게시글 ID 전달
                         intent.putExtra("title", currentPost.getTitle());  // 제목 전달
                         intent.putExtra("content", currentPost.getContent());  // 내용 전달
                         intent.putExtra("location", currentPost.getLocation());  // 위치 전달
@@ -292,7 +301,7 @@ public class EducationContentView extends AppCompatActivity {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 try {
-                    return educationDAO.deleteEducationPost(postId);  // 데이터베이스에서 게시글 삭제
+                    return educationDAO.deleteEducationPost(educationId);  // 데이터베이스에서 게시글 삭제
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;

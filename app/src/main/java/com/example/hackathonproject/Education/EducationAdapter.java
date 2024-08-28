@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackathonproject.R;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -48,6 +49,10 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
         // 작성 시간을 현재 시간과 비교하여 "몇 시간 전", "몇 일 전"으로 표시
         String formattedTime = formatTimeAgo(post.getCreatedAt());
         holder.postDetails.setText(post.getLocation()+" - "+formattedTime);  // 포맷된 시간 표시
+
+        // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용
+        DecimalFormat df = new DecimalFormat("#,###");
+        holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
     }
 
     private String formatTimeAgo(String createdAt) {
@@ -105,18 +110,15 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
 
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
     public class EducationViewHolder extends RecyclerView.ViewHolder {
-        public TextView postTitle; // 제목을 표시할 TextView
-        public TextView postDetails; // 게시글 작성 시간 등을 표시할 TextView
-        public TextView postLocation; // 위치를 표시할 TextView
-        public TextView postViews; // 조회수를 표시할 TextView
+        public TextView postTitle, postDetails, postViews, postFee; // 뷰 요소들
 
         public EducationViewHolder(View itemView) {
             super(itemView);
             // 각 뷰 요소를 아이템 뷰에서 초기화
             postTitle = itemView.findViewById(R.id.postTitle);
             postDetails = itemView.findViewById(R.id.postDetails);
-            postLocation = itemView.findViewById(R.id.postLocation);
             postViews = itemView.findViewById(R.id.postViews);
+            postFee = itemView.findViewById(R.id.postFee);
 
             // 아이템 뷰 클릭 시 리스너 호출
             itemView.setOnClickListener(v -> {

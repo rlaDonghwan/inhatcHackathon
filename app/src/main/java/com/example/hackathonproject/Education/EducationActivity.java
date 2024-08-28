@@ -48,7 +48,7 @@ public class EducationActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab); // 글쓰기 버튼 초기화
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(EducationActivity.this, WriteActivity.class); // 글쓰기 액티비티로 이동
+            Intent intent = new Intent(EducationActivity.this, EducationWriteActivity.class); // 글쓰기 액티비티로 이동
             startActivityForResult(intent, 100); // 결과를 받기 위해 액티비티 시작
         });
 
@@ -81,8 +81,6 @@ public class EducationActivity extends AppCompatActivity {
             Intent intent = new Intent(EducationActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
-
-
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -113,12 +111,11 @@ public class EducationActivity extends AppCompatActivity {
                 public void onItemClick(View view, int position) {
                     EducationPost post = educationPostList.get(position);
                     Intent intent = new Intent(EducationActivity.this, EducationContentView.class); // 게시글 내용 보기 액티비티로 이동
-                    intent.putExtra("postId", post.getPostId()); // 게시글 ID 전달
+                    intent.putExtra("educationId", post.getEducationId()); // 게시글 ID 전달
                     startActivity(intent); // 액티비티 시작
                 }
             });
         }
-
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 

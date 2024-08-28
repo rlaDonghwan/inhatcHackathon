@@ -5,67 +5,74 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
-import com.example.hackathonproject.db.SeminarDAO;
+import com.example.hackathonproject.db.EducationDAO;
+import com.example.hackathonproject.db.LectureDAO;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class LectureWriteActivity extends AppCompatActivity {
     // UI 요소 선언
-    private EditText titleEditText;
-    private EditText contentEditText;
-    private EditText priceEditText;
-    private SeminarDAO seminarDAO;
+    private EditText titleEditText;  // 제목을 입력하는 EditText
+    private EditText descriptionEditText;  // 내용을 입력하는 EditText
+    private EditText priceEditText;  // 금액을 입력하는 EditText
+    private Button submitButton;  // 제출 버튼
+    private CheckBox checkBoxBuy;  // '구해요' 카테고리 선택 CheckBox
+    private CheckBox checkBoxSell;  // '할게요' 카테고리 선택 CheckBox
+    private LectureDAO lectureDAO;
     private SessionManager sessionManager;
     private int lectureId = -1; // 수정 시 사용할 강연 ID (새 강연 작성 시에는 -1로 초기화)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lecture_write);
+        setContentView(R.layout.activity_education_write);
 
-        // DAO와 SessionManager 초기화
-        seminarDAO = new SeminarDAO();
-        sessionManager = new SessionManager(this);
+        lectureDAO = new LectureDAO(); // DAO 객체 초기화
+        sessionManager = new SessionManager(this); // SessionManager 객체 초기화
 
-        // UI 요소 초기화
-        titleEditText = findViewById(R.id.title_edit_text);
-        contentEditText = findViewById(R.id.content_edit_text);
-        priceEditText = findViewById(R.id.price_edit_text);
+        ImageButton backButton = findViewById(R.id.back_button);  // 뒤로 가기 버튼 초기화
+        backButton.setOnClickListener(v -> onBackPressed());  // 뒤로 가기 버튼 클릭 시 뒤로 이동
 
-        // 뒤로 가기 버튼 설정
-        ImageButton backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> onBackPressed());
+        titleEditText = findViewById(R.id.title_edit_text);  // 제목 입력 필드 초기화
+        descriptionEditText = findViewById(R.id.content_edit_text);  // 내용 입력 필드 초기화
+        submitButton = findViewById(R.id.btnSummit);  // 제출 버튼 초기화
+        checkBoxBuy = findViewById(R.id.checkbox_buy);  // '구해요' 체크박스 초기화
+        checkBoxSell = findViewById(R.id.checkbox_sell);  // '할게요' 체크박스 초기화
+        priceEditText = findViewById(R.id.price_edit_text);  // 교육료 입력 필드 초기화
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);  // 툴바 제목 TextView 초기화
 
-        // Intent로 전달된 데이터를 처리하여 수정 모드인지 확인
+
+        // Intent로 전달된 데이터 처리 (수정 모드인지 확인)
         Intent intent = getIntent();
         if (intent.hasExtra("lectureId")) {
-            // 강연 수정 모드 설정
-            lectureId = intent.getIntExtra("lectureId", -1);  // 강연 ID 가져오기
+            lectureId = intent.getIntExtra("lectureId", -1);  // 강연 게시글 ID 가져오기
             String title = intent.getStringExtra("title");  // 제목 가져오기
             String content = intent.getStringExtra("content");  // 내용 가져오기
-            String fee = intent.getStringExtra("fee");  // 강연료 가져오기
+//            String category = intent.getStringExtra("category");  // 카테고리 가져오기
+            int fee = intent.getIntExtra("fee", 0);  // 교육료 가져오기
 
-            // UI 요소에 기존 강연 정보 설정
             titleEditText.setText(title);  // 제목 설정
-            contentEditText.setText(content);  // 내용 설정
-            priceEditText.setText(fee);  // 강연료 설정
+            descriptionEditText.setText(content);  // 내용 설정
+            priceEditText.setText(String.valueOf(fee));  // 강연료 설정
 
             // 수정 버튼 클릭 시 업데이트 처리
-            Button submitButton = findViewById(R.id.btnSummit);
             submitButton.setOnClickListener(v -> updateLecture());  // 수정 버튼 클릭 시 처리
         } else {
             // 새 강연 작성 모드 설정
-            Button submitButton = findViewById(R.id.btnSummit);
             submitButton.setOnClickListener(v -> submitLecture());  // 제출 버튼 클릭 시 처리
+            toolbarTitle.setText("교육 신청");
+
         }
     }
 
@@ -73,7 +80,7 @@ public class LectureWriteActivity extends AppCompatActivity {
     private void submitLecture() {
         // UI 요소에서 입력값 가져오기
         String title = titleEditText.getText().toString().trim();
-        String content = contentEditText.getText().toString().trim();
+        String content = descriptionEditText.getText().toString().trim();
         String feeText = priceEditText.getText().toString().trim();
         double fee = feeText.isEmpty() ? 0 : Double.parseDouble(feeText);
 
@@ -91,7 +98,7 @@ public class LectureWriteActivity extends AppCompatActivity {
     private void updateLecture() {
         // UI 요소에서 입력값 가져오기
         String title = titleEditText.getText().toString().trim();
-        String content = contentEditText.getText().toString().trim();
+        String content = descriptionEditText.getText().toString().trim();
         String price_edit_text = priceEditText.getText().toString().trim();
         double fee = price_edit_text.isEmpty() ? 0 : Double.parseDouble(price_edit_text);
 
@@ -129,7 +136,7 @@ public class LectureWriteActivity extends AppCompatActivity {
                 Log.d("SubmitLectureTask", "KST Time: " + kstTime);
 
                 // 강연 데이터를 데이터베이스에 삽입
-                return seminarDAO.insertSeminarPost(userId, title, content, location, fee, kstTime);
+                return lectureDAO.insertLecturePost(userId, title, content, location, fee, kstTime);
             } catch (Exception e) {
                 Log.e("SubmitLectureTask", "Error inserting lecture", e);
                 return false;
@@ -164,7 +171,7 @@ public class LectureWriteActivity extends AppCompatActivity {
 
             try {
                 // 강연 데이터를 데이터베이스에서 업데이트
-                return seminarDAO.updateSeminarPost(lectureId, title, content, location, fee, userId);
+                return lectureDAO.updateLecturePost(lectureId, title, content, location, fee, userId);
             } catch (Exception e) {
                 Log.e("UpdateLectureTask", "Error updating lecture", e);
                 return false;

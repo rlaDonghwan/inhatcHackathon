@@ -15,30 +15,30 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.SeminarViewHolder> {
+public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureViewHolder> {
 
-    private List<LecturePost> seminarPosts; // 강연 게시글 목록을 저장할 리스트
+    private List<LecturePost> lecturePosts; // 강연 게시글 목록을 저장할 리스트
     private OnItemClickListener listener; // 아이템 클릭 리스너
 
     // 생성자: 강연 게시글 목록을 초기화
-    public LectureAdapter(List<LecturePost> seminarPosts) {
-        this.seminarPosts = seminarPosts;
+    public LectureAdapter(List<LecturePost> lecturePosts) {
+        this.lecturePosts = lecturePosts;
     }
 
     // ViewHolder를 생성하는 메서드
     @NonNull
     @Override
-    public SeminarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LectureViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // 아이템 뷰를 인플레이트하여 ViewHolder에 전달
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lecture_post, parent, false);
-        return new SeminarViewHolder(view);
+        return new LectureViewHolder(view);
     }
 
     // ViewHolder에 데이터를 바인딩하는 메서드
     @Override
-    public void onBindViewHolder(@NonNull SeminarViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LectureViewHolder holder, int position) {
         // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
-        LecturePost post = seminarPosts.get(position);
+        LecturePost post = lecturePosts.get(position);
         holder.postTitle.setText(post.getTitle()); // 제목 설정
 
         // 작성 시간을 현재 시간과 비교하여 "몇 시간 전", "몇 일 전"으로 표시
@@ -80,12 +80,12 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.SeminarV
     // 어댑터에서 관리하는 아이템의 개수 반환
     @Override
     public int getItemCount() {
-        return seminarPosts.size();  // 세미나 게시글 리스트의 크기 반환
+        return lecturePosts.size();  // 강연 게시글 리스트의 크기 반환
     }
 
     // 데이터를 업데이트하고 RecyclerView를 갱신하는 메서드
     public void updateData(List<LecturePost> posts) {
-        this.seminarPosts = posts;
+        this.lecturePosts = posts;
         notifyDataSetChanged(); // 데이터 변경을 알림 (화면 갱신)
     }
 
@@ -100,15 +100,14 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.SeminarV
     }
 
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
-    public class SeminarViewHolder extends RecyclerView.ViewHolder {
-        public TextView postTitle, postDetails, postLocation, postViews, postFee; // 뷰 요소들
+    public class LectureViewHolder extends RecyclerView.ViewHolder {
+        public TextView postTitle, postDetails, postViews, postFee; // 뷰 요소들
 
-        public SeminarViewHolder(View itemView) {
+        public LectureViewHolder(View itemView) {
             super(itemView);
             // 각 뷰 요소를 아이템 뷰에서 초기화
             postTitle = itemView.findViewById(R.id.postTitle);
             postDetails = itemView.findViewById(R.id.postDetails);
-            postLocation = itemView.findViewById(R.id.postLocation);
             postViews = itemView.findViewById(R.id.postViews);
             postFee = itemView.findViewById(R.id.postFee);
 

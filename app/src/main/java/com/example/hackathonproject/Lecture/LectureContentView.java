@@ -24,7 +24,7 @@ import com.example.hackathonproject.Chat.ChatActivity;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.ChatDAO;
 import com.example.hackathonproject.db.DatabaseConnection;
-import com.example.hackathonproject.db.SeminarDAO;
+import com.example.hackathonproject.db.LectureDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -38,7 +38,7 @@ public class LectureContentView extends AppCompatActivity {
     private int lectureId;  // 강연 ID를 저장할 변수
     private TextView contentTextView, titleTextView, lecturerNameTextView, dateTextView, feeTextView, locationTextView;  // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
-    private SeminarDAO seminarDAO;  // 데이터베이스 접근 객체
+    private LectureDAO lectureDAO;  // 데이터베이스 접근 객체
     private LecturePost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
 
@@ -52,7 +52,7 @@ public class LectureContentView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_content_view);
 
-        seminarDAO = new SeminarDAO(); // DAO 객체 초기화
+        lectureDAO = new LectureDAO(); // DAO 객체 초기화
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,7 +68,7 @@ public class LectureContentView extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         // UI 요소 초기화
-        titleTextView = findViewById(R.id.toolbar_title);  // 제목 텍스트뷰
+        titleTextView = findViewById(R.id.content_title);  // 제목 텍스트뷰
         contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
         lecturerNameTextView = findViewById(R.id.name);  // 강연자 이름 텍스트뷰
         dateTextView = findViewById(R.id.upload_date);  // 날짜 텍스트뷰
@@ -164,9 +164,9 @@ public class LectureContentView extends AppCompatActivity {
         @Override
         protected LecturePost doInBackground(Integer... params) {
             int lectureId = params[0];
-            LecturePost post = seminarDAO.getSeminarPostById(lectureId);  // 강연 ID로 강연 가져오기
+            LecturePost post = lectureDAO.getLecturePostById(lectureId);  // 강연 ID로 강연 가져오기
             if (post != null) {
-                seminarDAO.incrementSeminarPostViews(lectureId); // 조회수 증가
+                lectureDAO.incrementLecturePostViews(lectureId); // 조회수 증가
             }
             return post;
         }
@@ -179,12 +179,12 @@ public class LectureContentView extends AppCompatActivity {
                 currentPost = post;  // 현재 강연 객체 저장
                 titleTextView.setText(post.getTitle());  // 제목 설정
                 contentTextView.setText(post.getContent());  // 내용 설정
-                lecturerNameTextView.setText("강연자 | " + post.getUserName());  // 사용자 이름 설정
+                lecturerNameTextView.setText(post.getUserName());  // 사용자 이름 설정
                 String formattedTime = formatTimeAgo(post.getCreatedAt());
                 dateTextView.setText(formattedTime);  // 작성 날짜 설정
 
                 DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
-                feeTextView.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
+                feeTextView.setText( df.format(post.getFee()));  // 강연료 설정
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
@@ -201,6 +201,7 @@ public class LectureContentView extends AppCompatActivity {
                         intent.putExtra("content", currentPost.getContent());
                         intent.putExtra("fee", currentPost.getFee());
                         intent.putExtra("location", currentPost.getLocation());
+                        intent.putExtra("fee", currentPost.getFee());  // 교육료 전달
                         startActivity(intent);
                     });
                 } else {
@@ -258,14 +259,14 @@ public class LectureContentView extends AppCompatActivity {
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case 0:
-                        // 강연 수정 선택 시, SeminarWriteActivity로 이동
+                        // 강연 수정 선택 시, LectureWriteActivity로 이동
                         if (currentPost != null) {
                             Intent intent = new Intent(LectureContentView.this, LectureWriteActivity.class);
                             intent.putExtra("lectureId", currentPost.getLectureId());  // 강연 ID 전달
                             intent.putExtra("title", currentPost.getTitle());  // 제목 전달
                             intent.putExtra("content", currentPost.getContent());  // 내용 전달
                             intent.putExtra("fee", currentPost.getFee());  // 강연료 전달
-                            startActivity(intent);  // SeminarWriteActivity 시작
+                            startActivity(intent);  // LectureWriteActivity 시작
                         }
                         return true;
                     case 1:
@@ -299,7 +300,7 @@ public class LectureContentView extends AppCompatActivity {
             new AsyncTask<Void, Void, Boolean>() {
                 @Override
                 protected Boolean doInBackground(Void... voids) {
-                    return seminarDAO.deleteSeminarPost(lectureId);  // 데이터베이스에서 강연 삭제
+                    return lectureDAO.deleteLecturePost(lectureId);  // 데이터베이스에서 강연 삭제
                 }
 
                 @Override
@@ -317,7 +318,7 @@ public class LectureContentView extends AppCompatActivity {
         // 상단 바의 뒤로가기 버튼을 클릭 시 호출
         @Override
         public boolean onSupportNavigateUp() {
-            navigateBackToSeminarActivity();
+            navigateBackToLectureActivity();
             return true;
         }
 
@@ -325,14 +326,14 @@ public class LectureContentView extends AppCompatActivity {
         @Override
         public void onBackPressed() {
             super.onBackPressed();
-            navigateBackToSeminarActivity();
+            navigateBackToLectureActivity();
         }
 
-        // SeminarActivity로 돌아가는 메서드
-        private void navigateBackToSeminarActivity() {
+        // LectureActivity를 돌아가는 메서드
+        private void navigateBackToLectureActivity() {
             Intent intent = new Intent(this, LectureActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);  // 기존의 SeminarActivity를 재사용
-            startActivity(intent);  // SeminarActivity 시작
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);  // 기존의 LectureActivity를 재사용
+            startActivity(intent);  // LectureActivity 시작
             finish();  // 현재 액티비티 종료
         }
     }

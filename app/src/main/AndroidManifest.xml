@@ -43,7 +43,7 @@
         <activity android:name=".Login.MainActivity" />
         <activity android:name=".Login.FontSizeActivity" />
         <activity android:name=".Education.EducationActivity" />
-        <activity android:name=".Education.WriteActivity"/>
+        <activity android:name=".Education.EducationWriteActivity"/>
         <activity android:name=".Education.EducationContentView"/>
         <activity android:name=".Lecture.LectureActivity"/>
         <activity android:name=".Setting.SettingsActivity"/>
