@@ -3,6 +3,8 @@ package com.example.hackathonproject.Setting;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.Chat.ChatListActivity;
@@ -23,6 +25,17 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 세션 매니저 초기화
         sessionManager = new SessionManager(this);
+
+        // 세션에서 사용자 이름 가져오기
+        String userName = sessionManager.getUserName();
+        int volunteerHours = sessionManager.getVolunteerHours();
+
+        // 상단 프로필 이름을 세션 이름으로 설정
+        TextView profileNameTextView = findViewById(R.id.question);
+        profileNameTextView.setText(userName);
+
+        TextView volunteerHoursTextView = findViewById(R.id.title_time);
+        volunteerHoursTextView.setText(String.valueOf(volunteerHours));
 
         // 각 옵션 클릭 시 해당 액티비티로 이동
         LinearLayout editProfileOption = findViewById(R.id.option_edit_profile);
