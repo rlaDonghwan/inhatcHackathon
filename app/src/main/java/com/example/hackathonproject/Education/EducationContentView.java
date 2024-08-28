@@ -69,8 +69,8 @@ public class EducationContentView extends AppCompatActivity {
 
         titleTextView = findViewById(R.id.toolbar_title);  // 제목 텍스트뷰
         contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
-        teacherNameTextView = findViewById(R.id.teacher_name);  // 작성자 이름 텍스트뷰
-        dateTextView = findViewById(R.id.date);  // 날짜 텍스트뷰
+        teacherNameTextView = findViewById(R.id.name);  // 작성자 이름 텍스트뷰
+        dateTextView = findViewById(R.id.upload_date);  // 날짜 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
 
         menuButton.setOnClickListener(this::showPopupMenu);  // 메뉴 버튼 클릭 시 팝업 메뉴 표시
@@ -172,7 +172,6 @@ public class EducationContentView extends AppCompatActivity {
                 return null;
             }
         }
-
 
         @Override
         protected void onPostExecute(EducationPost post) {

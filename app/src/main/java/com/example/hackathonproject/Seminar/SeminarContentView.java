@@ -55,11 +55,11 @@ public class SeminarContentView extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         // UI 요소 초기화
-        titleTextView = findViewById(R.id.toolbar_title);  // 제목 텍스트뷰
+        titleTextView = findViewById(R.id.content_title);  // 제목 텍스트뷰
         contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
-        lecturerNameTextView = findViewById(R.id.lecturer_name);  // 강연자 이름 텍스트뷰
-        dateTextView = findViewById(R.id.date);  // 날짜 텍스트뷰
-        feeTextView = findViewById(R.id.fee);  // 강연료 텍스트뷰
+        lecturerNameTextView = findViewById(R.id.name);  // 강연자 이름 텍스트뷰
+        dateTextView = findViewById(R.id.upload_date);  // 날짜 텍스트뷰
+        feeTextView = findViewById(R.id.work_price);  // 강연료 텍스트뷰
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
 
@@ -111,14 +111,14 @@ public class SeminarContentView extends AppCompatActivity {
                 currentPost = post;  // 현재 강연 객체 저장
                 titleTextView.setText(post.getTitle());  // 제목 설정
                 contentTextView.setText(post.getContent());  // 내용 설정
-                lecturerNameTextView.setText("강연자 | " + post.getUserName());  // 사용자 이름 설정
+                lecturerNameTextView.setText(post.getUserName());  // 사용자 이름 설정
                 String formattedTime = formatTimeAgo(post.getCreatedAt());
                 dateTextView.setText(formattedTime);  // 작성 날짜 설정
 
                 DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
-                feeTextView.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
+                feeTextView.setText(df.format(post.getFee()));  // 강연료 설정
 
-                locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
+                locationTextView.setText(post.getLocation());  // 위치 설정
             } else {
                 // 강연 로드 실패 시 메시지 표시
                 Toast.makeText(SeminarContentView.this, "강연을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
@@ -152,7 +152,6 @@ public class SeminarContentView extends AppCompatActivity {
         }
     }
 
-
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
@@ -171,6 +170,7 @@ public class SeminarContentView extends AppCompatActivity {
                         intent.putExtra("title", currentPost.getTitle());  // 제목 전달
                         intent.putExtra("content", currentPost.getContent());  // 내용 전달
                         intent.putExtra("fee", currentPost.getFee());  // 강연료 전달
+                        intent.putExtra("location", currentPost.getLocation());  // 위치 전달
                         startActivity(intent);  // SeminarWriteActivity 시작
                     }
                     return true;

@@ -199,31 +199,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="시급 |  "
+                android:text="봉사  |  1시간  "
                 android:fontFamily="@font/nanumsquare_neo_eb"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
             <!-- 금액 or 봉사시간 -->
-            <TextView
-                android:id="@+id/work_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="20,000"
-                android:fontFamily="@font/nanumsquare_neo_eb"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="원"
-                android:fontFamily="@font/nanumsquare_neo_eb"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
 
             <!-- 버튼 오른쪽 정렬을 위한 space -->
             <View
