@@ -22,7 +22,7 @@ public class LectureWriteActivity extends AppCompatActivity {
     // UI 요소 선언
     private EditText titleEditText;
     private EditText contentEditText;
-    private EditText feeEditText;
+    private EditText priceEditText;
     private SeminarDAO seminarDAO;
     private SessionManager sessionManager;
     private int lectureId = -1; // 수정 시 사용할 강연 ID (새 강연 작성 시에는 -1로 초기화)
@@ -30,7 +30,7 @@ public class LectureWriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seminor_write);
+        setContentView(R.layout.activity_lecture_write);
 
         // DAO와 SessionManager 초기화
         seminarDAO = new SeminarDAO();
@@ -39,7 +39,7 @@ public class LectureWriteActivity extends AppCompatActivity {
         // UI 요소 초기화
         titleEditText = findViewById(R.id.title_edit_text);
         contentEditText = findViewById(R.id.content_edit_text);
-        feeEditText = findViewById(R.id.fee_edit_text);
+        priceEditText = findViewById(R.id.price_edit_text);
 
         // 뒤로 가기 버튼 설정
         ImageButton backButton = findViewById(R.id.back_button);
@@ -57,14 +57,14 @@ public class LectureWriteActivity extends AppCompatActivity {
             // UI 요소에 기존 강연 정보 설정
             titleEditText.setText(title);  // 제목 설정
             contentEditText.setText(content);  // 내용 설정
-            feeEditText.setText(fee);  // 강연료 설정
+            priceEditText.setText(fee);  // 강연료 설정
 
             // 수정 버튼 클릭 시 업데이트 처리
-            Button submitButton = findViewById(R.id.btnSubmit);
+            Button submitButton = findViewById(R.id.btnSummit);
             submitButton.setOnClickListener(v -> updateLecture());  // 수정 버튼 클릭 시 처리
         } else {
             // 새 강연 작성 모드 설정
-            Button submitButton = findViewById(R.id.btnSubmit);
+            Button submitButton = findViewById(R.id.btnSummit);
             submitButton.setOnClickListener(v -> submitLecture());  // 제출 버튼 클릭 시 처리
         }
     }
@@ -74,7 +74,7 @@ public class LectureWriteActivity extends AppCompatActivity {
         // UI 요소에서 입력값 가져오기
         String title = titleEditText.getText().toString().trim();
         String content = contentEditText.getText().toString().trim();
-        String feeText = feeEditText.getText().toString().trim();
+        String feeText = priceEditText.getText().toString().trim();
         double fee = feeText.isEmpty() ? 0 : Double.parseDouble(feeText);
 
         // 필수 입력값 확인
@@ -92,8 +92,8 @@ public class LectureWriteActivity extends AppCompatActivity {
         // UI 요소에서 입력값 가져오기
         String title = titleEditText.getText().toString().trim();
         String content = contentEditText.getText().toString().trim();
-        String feeText = feeEditText.getText().toString().trim();
-        double fee = feeText.isEmpty() ? 0 : Double.parseDouble(feeText);
+        String price_edit_text = priceEditText.getText().toString().trim();
+        double fee = price_edit_text.isEmpty() ? 0 : Double.parseDouble(price_edit_text);
 
         // 필수 입력값 확인
         if (title.isEmpty() || content.isEmpty()) {

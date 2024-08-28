@@ -34,7 +34,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="글쓰기"
+            android:text="교육 신청"
             android:textColor="#FFFFFF"
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
@@ -81,10 +81,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="강연자 구해요"
                 android:fontFamily="@font/nanumsquare_neo_bd"
-                android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                android:text="구해요"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -107,10 +107,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="교육 할게요"
                 android:fontFamily="@font/nanumsquare_neo_bd"
-                android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                android:text="할게요"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -133,42 +133,12 @@
         android:textColor="@android:color/black"
         android:textSize="17sp" />
 
-    <!-- 구해요 체크 시 금액 설정 -->
-    <TextView
-        android:id="@+id/price_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_edit_text"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="16dp"
-        android:text="금액 | ₩"
-        android:fontFamily="@font/nanumsquare_neo_eb"
-        android:textSize="23sp"
-        android:textColor="@android:color/black" />
-
-    <!-- Price EditText -->
-    <EditText
-        android:id="@+id/price_edit_text"
-        android:layout_width="395dp"
-        android:layout_height="55dp"
-        android:layout_below="@id/price_text"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/edit_text_background"
-        android:hint="금액을 입력해주세요"
-        android:fontFamily="@font/nanumsquare_neo_eb"
-        android:padding="10dp"
-        android:textColor="@android:color/black"
-        android:textSize="17sp" />
-
-
     <!-- Content Text -->
     <TextView
         android:id="@+id/content_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/price_edit_text"
+        android:layout_below="@id/title_edit_text"
         android:layout_marginTop="30dp"
         android:layout_marginStart="16dp"
         android:text="내용"
@@ -180,15 +150,15 @@
     <EditText
         android:id="@+id/content_edit_text"
         android:layout_width="388dp"
-        android:layout_height="260dp"
+        android:layout_height="400dp"
         android:layout_below="@id/content_text"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_background"
+        android:fontFamily="@font/nanumsquare_neo_eb"
         android:gravity="top"
         android:hint="내용을 100줄 이내로 작성해 주세요."
-        android:fontFamily="@font/nanumsquare_neo_eb"
         android:inputType="textMultiLine"
         android:padding="10dp"
         android:scrollbars="vertical"
@@ -207,7 +177,7 @@
         android:fontFamily="@font/kangwon_tntnche"
         android:textSize="25sp"
         android:textColor="#FFFFFF"
-        android:backgroundTint="@color/dark_blue"
+        android:backgroundTint="@color/skyBlue"
         android:gravity="center"
         android:padding="10dp"
         android:backgroundTintMode="src_in"/>

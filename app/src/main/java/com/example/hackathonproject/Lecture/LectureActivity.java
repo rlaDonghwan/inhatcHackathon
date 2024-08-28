@@ -31,7 +31,7 @@ public class LectureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seminor);
+        setContentView(R.layout.activity_lecture);
 
         seminarManager = new LectureManager(new SeminarDAO());  // SeminarManager 객체 초기화
 

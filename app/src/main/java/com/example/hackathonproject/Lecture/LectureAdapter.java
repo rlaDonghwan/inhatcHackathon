@@ -30,7 +30,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.SeminarV
     @Override
     public SeminarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // 아이템 뷰를 인플레이트하여 ViewHolder에 전달
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_seminar_post, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lecture_post, parent, false);
         return new SeminarViewHolder(view);
     }
 
