@@ -184,13 +184,12 @@ public class LectureContentView extends AppCompatActivity {
                 dateTextView.setText(formattedTime);  // 작성 날짜 설정
 
                 DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
-                feeTextView.setText( df.format(post.getFee()));  // 강연료 설정
+                feeTextView.setText(df.format(post.getFee()));  // 강연료 설정
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);
-
                 if (loggedInUserId == post.getUserId()) {
                     // 사용자가 강연 작성자인 경우
                     btnApply.setText("강연 수정");
@@ -199,12 +198,16 @@ public class LectureContentView extends AppCompatActivity {
                         intent.putExtra("lectureId", currentPost.getLectureId());
                         intent.putExtra("title", currentPost.getTitle());
                         intent.putExtra("content", currentPost.getContent());
-                        intent.putExtra("fee", currentPost.getFee());
+                        intent.putExtra("fee", currentPost.getFee());  // 금액 전달
                         intent.putExtra("location", currentPost.getLocation());
-                        intent.putExtra("fee", currentPost.getFee());  // 교육료 전달
+                        intent.putExtra("isYouthAudienceAllowed", currentPost.isYouthAudienceAllowed()); // 청년 참관 가능 상태 전달
                         startActivity(intent);
                     });
-                } else {
+
+                    // 메뉴 버튼을 표시
+                    menuButton.setVisibility(View.VISIBLE);
+
+            } else {
                     // 사용자가 다른 사람의 강연을 본 경우
                     btnApply.setText("신청하기");
                     btnApply.setOnClickListener(v -> {
@@ -213,6 +216,9 @@ public class LectureContentView extends AppCompatActivity {
                         intent.putExtra("lectureId", lectureId); // 현재 강연 ID를 전달
                         startActivity(intent);
                     });
+
+                    // 메뉴 버튼을 숨김
+                    menuButton.setVisibility(View.GONE);
                 }
             } else {
                 // 강연 로드 실패 시 메시지 표시
@@ -248,39 +254,46 @@ public class LectureContentView extends AppCompatActivity {
         }
 
 
-        // 팝업 메뉴를 보여주는 메서드
-        private void showPopupMenu(View view) {
-            PopupMenu popup = new PopupMenu(this, view);
-            // 팝업 메뉴에 항목 추가
-            popup.getMenu().add(0, 0, 0, "강연 수정");  // 수정 메뉴 추가
-            popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제");  // 삭제 메뉴 추가
+    // 팝업 메뉴를 보여주는 메서드
+    private void showPopupMenu(View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+        // 팝업 메뉴에 항목 추가
+        popup.getMenu().add(0, 0, 0, "강연 수정");  // 수정 메뉴 추가
+        popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제");  // 삭제 메뉴 추가
+        popup.getMenu().add(0, 2, 2, "게시글 완료");  // 완료 메뉴 추가
 
-            // 팝업 메뉴 항목 클릭 시 처리
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case 0:
-                        // 강연 수정 선택 시, LectureWriteActivity로 이동
-                        if (currentPost != null) {
-                            Intent intent = new Intent(LectureContentView.this, LectureWriteActivity.class);
-                            intent.putExtra("lectureId", currentPost.getLectureId());  // 강연 ID 전달
-                            intent.putExtra("title", currentPost.getTitle());  // 제목 전달
-                            intent.putExtra("content", currentPost.getContent());  // 내용 전달
-                            intent.putExtra("fee", currentPost.getFee());  // 강연료 전달
-                            startActivity(intent);  // LectureWriteActivity 시작
-                        }
-                        return true;
-                    case 1:
-                        // 삭제 확인 다이얼로그 표시
-                        confirmDeleteLecture();
-                        return true;
-                    default:
-                        return false;
-                }
-            });
-            popup.show();  // 팝업 메뉴 표시
-        }
+        // 팝업 메뉴 항목 클릭 시 처리
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case 0:
+                    // 강연 수정 선택 시, LectureWriteActivity로 이동
+                    if (currentPost != null) {
+                        Intent intent = new Intent(LectureContentView.this, LectureWriteActivity.class);
+                        intent.putExtra("lectureId", currentPost.getLectureId());  // 강연 ID 전달
+                        intent.putExtra("title", currentPost.getTitle());  // 제목 전달
+                        intent.putExtra("content", currentPost.getContent());  // 내용 전달
+                        intent.putExtra("fee", currentPost.getFee());  // 강연료 전달
+                        intent.putExtra("isYouthAudienceAllowed", currentPost.isYouthAudienceAllowed()); // 청년 참관 가능 상태 전달
+                        startActivity(intent);  // LectureWriteActivity 시작
+                    }
+                    return true;
+                case 1:
+                    // 삭제 확인 다이얼로그 표시
+                    confirmDeleteLecture();
+                    return true;
+                case 2:
+                    // 완료 확인 다이얼로그 표시
+                    confirmCompleteLecture();
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        popup.show();  // 팝업 메뉴 표시
+    }
 
-        // 강연 삭제를 확인하는 메서드
+
+    // 강연 삭제를 확인하는 메서드
         private void confirmDeleteLecture() {
             new AlertDialog.Builder(this)
                     .setTitle("강연 삭제")  // 다이얼로그 제목 설정
@@ -294,7 +307,22 @@ public class LectureContentView extends AppCompatActivity {
                     .show();  // 다이얼로그 표시
         }
 
-        // 강연 삭제 메서드
+    // 게시글 완료를 확인하는 메서드
+    private void confirmCompleteLecture() {
+        new AlertDialog.Builder(this)
+                .setTitle("게시글 완료")  // 다이얼로그 제목 설정
+                .setMessage("정말로 이 게시글을 완료하시겠습니까? 완료된 게시글은 삭제됩니다.")  // 다이얼로그 메시지 설정
+                .setPositiveButton("완료", new DialogInterface.OnClickListener() {  // 완료 버튼 설정
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteLecture();  // 강연 삭제 메서드 호출
+                    }
+                })
+                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                .show();  // 다이얼로그 표시
+    }
+
+
+    // 강연 삭제 메서드
         @SuppressLint("StaticFieldLeak")
         private void deleteLecture() {
             new AsyncTask<Void, Void, Boolean>() {

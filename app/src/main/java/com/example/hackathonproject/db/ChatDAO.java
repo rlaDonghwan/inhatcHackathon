@@ -71,9 +71,15 @@ public class ChatDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 채팅방을 가져오거나 새로 생성하는 메서드
-    public void getOrCreateChatRoom(int authorId, int otherUserId, Integer educationId, Integer lectureId, ChatRoomCallback callback) {
+    public void getOrCreateChatRoom(int loggedInUserId, int otherUserId, Integer educationId, Integer lectureId, ChatRoomCallback callback) {
         new Thread(() -> {
             try {
+                Log.d(TAG, "----------------Received educationId: " + educationId + ", lectureId: " + lectureId);
+
+                // 작은 ID 값을 항상 AuthorID로 설정, 큰 ID 값을 OtherUserID로 설정
+                int authorId = Math.min(loggedInUserId, otherUserId);
+                int finalOtherUserId = Math.max(loggedInUserId, otherUserId);
+
                 connection.setAutoCommit(false);
 
                 // EducationID 또는 LectureID가 제공된 경우 유효성 검사
@@ -96,8 +102,8 @@ public class ChatDAO {
                         "AND (EducationID = ? OR EducationID IS NULL) AND (LectureID = ? OR LectureID IS NULL)";
                 try (PreparedStatement statement = connection.prepareStatement(query)) {
                     statement.setInt(1, authorId);
-                    statement.setInt(2, otherUserId);
-                    statement.setInt(3, otherUserId);
+                    statement.setInt(2, finalOtherUserId);
+                    statement.setInt(3, finalOtherUserId);
                     statement.setInt(4, authorId);
                     if (educationId != null) {
                         statement.setInt(5, educationId);
@@ -120,7 +126,7 @@ public class ChatDAO {
                             query = "INSERT INTO Chat (AuthorID, OtherUserID, EducationID, LectureID) VALUES (?, ?, ?, ?)";
                             try (PreparedStatement insertStatement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
                                 insertStatement.setInt(1, authorId);
-                                insertStatement.setInt(2, otherUserId);
+                                insertStatement.setInt(2, finalOtherUserId);
                                 if (educationId != null) {
                                     insertStatement.setInt(3, educationId);
                                 } else {

@@ -30,9 +30,6 @@ public class EducationWriteActivity extends AppCompatActivity {
     private SessionManager sessionManager;  // 사용자 세션 관리 객체
     private int educationId = -1; // 수정 시 사용할 교육 게시글 ID
 
-    private boolean isBuySelected = false;
-    private boolean isSellSelected = false;
-
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -54,6 +51,9 @@ public class EducationWriteActivity extends AppCompatActivity {
         priceEditText = findViewById(R.id.price_edit_text);  // 교육료 입력 필드 초기화
         TextView toolbarTitle = findViewById(R.id.toolbar_title);  // 툴바 제목 TextView 초기화
 
+        checkBoxBuy = findViewById(R.id.checkbox_buy);  // '구해요' 체크박스 초기화
+        checkBoxSell = findViewById(R.id.checkbox_sell);  // '할게요' 체크박스 초기화
+
 
         // Intent로 전달된 데이터 처리 (수정 모드인지 확인)
         Intent intent = getIntent();
@@ -68,9 +68,24 @@ public class EducationWriteActivity extends AppCompatActivity {
             descriptionEditText.setText(content);  // 내용 설정
             priceEditText.setText(String.valueOf(fee));  // 교육료 설정
 
+            // '구해요' 체크박스 선택 시 '할게요' 체크박스 해제
+            checkBoxBuy.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    checkBoxSell.setChecked(false);
+                }
+            });
+
+            // '할게요' 체크박스 선택 시 '구해요' 체크박스 해제
+            checkBoxSell.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    checkBoxBuy.setChecked(false);
+                }
+            });
+
 
             // 수정 모드이므로 툴바 제목을 "교육 수정"으로 변경
             toolbarTitle.setText("교육 수정");
+
 
             if ("구해요".equals(category)) {
                 checkBoxBuy.setChecked(true);  // '구해요' 카테고리 선택

@@ -1,7 +1,6 @@
 package com.example.hackathonproject.db;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -12,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class AuthManager {
-    private UserDAO userDAO; // 사용자 데이터베이스 접근 객체
+    private final UserDAO userDAO; // 사용자 데이터베이스 접근 객체
     private static final String TAG = "AuthManager";
 
     public AuthManager() {
@@ -86,4 +85,21 @@ public class AuthManager {
     public boolean deleteUserAccount(int userId) throws SQLException {
         return userDAO.deleteUser(userId);
     }
+
+    // 프로필 사진 이미지 업데이트(경로)
+    public boolean updateProfileImage(int userId, String imagePath) throws SQLException {
+        return userDAO.updateProfileImagePath(userId, imagePath);
+    }
+
+    // 프로필 사진 이미지 가져오기(경로)
+    public String getProfileImagePath(int userId) throws SQLException {
+        return userDAO.getProfileImagePath(userId);
+    }
+
+    // 사용자 ID로 기관 여부를 확인하는 메서드 추가
+    public boolean isUserOrganization(int userId) throws SQLException {
+        return userDAO.isUserOrganization(userId); // UserDAO를 통해 기관 여부 확인
+    }
+
+
 }

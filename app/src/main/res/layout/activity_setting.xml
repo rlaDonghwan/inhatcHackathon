@@ -61,6 +61,7 @@
 
                     <!-- 둥근 원형 프로필 이미지 -->
                     <ImageView
+                        android:id="@+id/profile_image"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_gravity="start"
@@ -119,17 +120,34 @@
 
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/question"
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
                             android:layout_gravity="start"
-                            android:layout_marginTop="5dp"
-                            android:fontFamily="@font/nanum_squareneo_otf_hv"
-                            android:text="홍길동"
-                            android:textColor="#000"
-                            android:textSize="35sp"
-                            android:textStyle="bold" />
+                            android:layout_marginTop="5dp">
+
+                            <TextView
+                                android:id="@+id/question"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:fontFamily="@font/nanum_squareneo_otf_hv"
+                                android:text="홍길동"
+                                android:textColor="#000"
+                                android:textSize="35sp"
+                                android:textStyle="bold" />
+
+                            <!-- 추가된 이미지 -->
+                            <ImageView
+                                android:id="@+id/authorization_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/authorization"
+                                android:contentDescription="Authorization Mark"
+                                android:visibility="gone" />
+                        </LinearLayout>
 
                     </LinearLayout>
                 </LinearLayout>

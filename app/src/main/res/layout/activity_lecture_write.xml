@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,20 +21,16 @@
             android:scaleType="centerInside"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_arrow_back"
-            android:fontFamily="@font/kangwon_tntnche"
-            android:textStyle="bold"
-            app:iconTint="@android:color/white"
             android:contentDescription="@string/back_button" />
-
 
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="교육 신청"
+            android:text="강연자 구직"
+            android:fontFamily="@font/kangwon_tntnche"
             android:textColor="#FFFFFF"
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
@@ -64,7 +59,7 @@
         android:layout_alignParentEnd="true"
         android:orientation="horizontal">
 
-        <!-- 강연자 구해요 -->
+        <!--청년 참관 가능 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +67,7 @@
             android:gravity="center_vertical">
 
             <CheckBox
-                android:id="@+id/checkbox_buy"
+                android:id="@+id/checkbox_want"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/orange"
@@ -82,34 +77,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/nanumsquare_neo_bd"
-                android:text="구해요"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <!-- 교육 할게요 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <CheckBox
-                android:id="@+id/checkbox_sell"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/orange"
-                android:scaleX="1.5"
-                android:scaleY="1.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/nanumsquare_neo_bd"
-                android:text="할게요"
+                android:fontFamily="@font/nanumsquare_neo_eb"
+                android:text="청년 참관 가능"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
@@ -120,15 +89,15 @@
     <!-- Title EditText -->
     <EditText
         android:id="@+id/title_edit_text"
-        android:layout_width="395dp"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_below="@id/title_text"
         android:layout_marginTop="13dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="@font/nanumsquare_neo_eb"
         android:background="@drawable/edit_text_background"
         android:hint="제목을 작성해 주세요. (10자 이내)"
-        android:fontFamily="@font/nanumsquare_neo_eb"
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:textSize="17sp" />
@@ -149,19 +118,18 @@
     <!-- Price EditText -->
     <EditText
         android:id="@+id/price_edit_text"
-        android:layout_width="395dp"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_below="@id/price_text"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
+        android:fontFamily="@font/nanumsquare_neo_eb"
         android:background="@drawable/edit_text_background"
         android:hint="금액을 입력해주세요"
-        android:fontFamily="@font/nanumsquare_neo_eb"
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:textSize="17sp" />
-
 
     <!-- Content Text -->
     <TextView
@@ -179,16 +147,18 @@
     <!-- Content EditText -->
     <EditText
         android:id="@+id/content_edit_text"
-        android:layout_width="388dp"
-        android:layout_height="280dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnSummit"
         android:layout_below="@id/content_text"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="224dp"
         android:background="@drawable/edit_text_background"
+        android:fontFamily="@font/nanumsquare_neo_eb"
         android:gravity="top"
         android:hint="내용을 100줄 이내로 작성해 주세요."
-        android:fontFamily="@font/nanumsquare_neo_eb"
         android:inputType="textMultiLine"
         android:padding="10dp"
         android:scrollbars="vertical"
@@ -198,14 +168,15 @@
     <!-- Submit Button -->
     <Button
         android:id="@+id/btnSummit"
-        android:layout_width="395dp"
-        android:layout_height="53dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         android:text="@string/submit_button"
-        android:fontFamily="@font/kangwon_tntnche"
         android:textSize="25sp"
+        android:fontFamily="@font/kangwon_tntnche"
         android:textColor="#FFFFFF"
         android:backgroundTint="@color/orange"
         android:gravity="center"

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class UserDAO {
     private static final String TAG = "UserDAO"; // 로그 태그
-    private DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
+    private final DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
 
 
     // 사용자가 존재하는지 확인하는 메서드
@@ -172,5 +172,60 @@ public class UserDAO {
 
         return volunteerHours; // 봉사 시간 반환
     }
+
+    // 프로필 이미지 경로 업데이트 메서드
+    public boolean updateProfileImagePath(int userId, String imagePath) throws SQLException {
+        String sql = "UPDATE User SET ProfileImagePath = ? WHERE UserID = ?";
+
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, imagePath);
+            pstmt.setInt(2, userId);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to update profile image path", e);
+            throw e;
+        }
+    }
+
+    // 사용자 ID로 프로필 이미지 경로 가져오기 메서드
+    public String getProfileImagePath(int userId) throws SQLException {
+        String sql = "SELECT ProfileImagePath FROM User WHERE UserID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("ProfileImagePath");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get profile image path by ID", e);
+            throw e;
+        }
+        return null;
+    }
+
+    // 사용자 ID로 기관 여부를 확인하는 메서드
+    public boolean isUserOrganization(int userId) throws SQLException {
+        // User 테이블로 수정
+        String sql = "SELECT Role FROM User WHERE UserID = ?";
+        // 예시: role이 '기관'인 경우 true 반환
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String role = rs.getString("Role"); // Role로 대문자 변경
+                    return "기관".equals(role);
+                }
+            }
+        }
+        return false;
+    }
+
+
 
 }

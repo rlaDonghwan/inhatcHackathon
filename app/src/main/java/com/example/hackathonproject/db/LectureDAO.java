@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LectureDAO { // 클래스명 LectureDAO로 변경
-    private static final String TAG = "LectureDAO"; // 로그 태그, 클래스명에 맞게 변경
-    private DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
+public class LectureDAO {
+    private static final String TAG = "LectureDAO";
+    private DatabaseConnection dbConnection = new DatabaseConnection();
 
     // 강연 게시글을 삽입하는 메서드
-    public boolean insertLecturePost(int userId, String title, String content, String location, double fee, ZonedDateTime kstTime) {
-        String sql = "INSERT INTO Lecture (UserID, Title, Content, Location, Fee, CreatedAt, Views) VALUES (?, ?, ?, ?, ?, ?, 0)";
+    public boolean insertLecturePost(int userId, String title, String content, String location, double fee, ZonedDateTime kstTime, boolean isYouthAudienceAllowed) {
+        String sql = "INSERT INTO Lecture (UserID, Title, Content, Location, Fee, CreatedAt, Views, IsYouthAudienceAllowed) VALUES (?, ?, ?, ?, ?, ?, 0, ?)";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -32,32 +32,30 @@ public class LectureDAO { // 클래스명 LectureDAO로 변경
             // ZonedDateTime을 포맷팅된 문자열로 변환하여 저장
             String formattedDateTime = kstTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             pstmt.setString(6, formattedDateTime);
+            pstmt.setBoolean(7, isYouthAudienceAllowed);
 
             int rowsAffected = pstmt.executeUpdate(); // 쿼리 실행
             return rowsAffected > 0; // 삽입 성공 여부 반환
         } catch (SQLException e) {
-            Log.e(TAG, "강연 게시글 삽입 실패", e); // 오류 로그 출력
-            return false; // 삽입 실패 시 false 반환
+            Log.e(TAG, "강연 게시글 삽입 실패", e);
+            return false;
         }
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 모든 강연 게시글을 가져오는 메서드
-    public List<LecturePost> getAllLecturePosts() { // 메서드명 수정
-        List<LecturePost> postList = new ArrayList<>(); // 강연 게시글 리스트
-        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
-                "FROM Lecture l JOIN User u ON l.UserID = u.UserID"; // SQL 쿼리
+    public List<LecturePost> getAllLecturePosts() {
+        List<LecturePost> postList = new ArrayList<>();
+        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt, IsYouthAudienceAllowed " +
+                "FROM Lecture l JOIN User u ON l.UserID = u.UserID";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
-            // 결과 집합을 순회하며 강연 게시글 객체를 생성하여 리스트에 추가
             while (rs.next()) {
                 int lectureId = rs.getInt("LectureID");
                 int userId = rs.getInt("UserID");
-                String userName = rs.getString("Name");  // 작성자 이름 가져오기
+                String userName = rs.getString("Name");
                 String title = rs.getString("Title");
                 String content = rs.getString("Content");
                 String location = rs.getString("Location");
@@ -65,20 +63,19 @@ public class LectureDAO { // 클래스명 LectureDAO로 변경
                 int views = rs.getInt("Views");
                 String createdAt = rs.getString("CreatedAt");
                 String completedAt = rs.getString("CompletedAt");
+                boolean isYouthAudienceAllowed = rs.getBoolean("IsYouthAudienceAllowed");
 
-                postList.add(new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views));
+                postList.add(new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed));
             }
         } catch (SQLException e) {
-            Log.e(TAG, "강연 게시글 불러오기 실패", e); // 오류 로그 출력
+            Log.e(TAG, "강연 게시글 불러오기 실패", e);
         }
-        return postList; // 강연 게시글 리스트 반환
+        return postList;
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 특정 ID의 강연 게시글을 가져오는 메서드
-    public LecturePost getLecturePostById(int lectureId) { // 메서드명 수정
-        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt " +
+    public LecturePost getLecturePostById(int lectureId) {
+        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt, IsYouthAudienceAllowed " +
                 "FROM Lecture l JOIN User u ON l.UserID = u.UserID WHERE LectureID = ?";
 
         try (Connection conn = dbConnection.connect();
@@ -87,7 +84,7 @@ public class LectureDAO { // 클래스명 LectureDAO로 변경
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     int userId = rs.getInt("UserID");
-                    String userName = rs.getString("Name");  // 작성자 이름 가져오기
+                    String userName = rs.getString("Name");
                     String title = rs.getString("Title");
                     String content = rs.getString("Content");
                     String location = rs.getString("Location");
@@ -95,53 +92,48 @@ public class LectureDAO { // 클래스명 LectureDAO로 변경
                     int views = rs.getInt("Views");
                     String createdAt = rs.getString("CreatedAt");
                     String completedAt = rs.getString("CompletedAt");
+                    boolean isYouthAudienceAllowed = rs.getBoolean("IsYouthAudienceAllowed");
 
-                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views);
+                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed);
                 }
             }
         } catch (SQLException e) {
-            Log.e(TAG, "ID로 강연 게시글 불러오기 실패", e); // 오류 로그 출력
+            Log.e(TAG, "ID로 강연 게시글 불러오기 실패", e);
         }
-        return null; // 강연 게시글이 없을 경우 null 반환
+        return null;
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 강연 게시글의 조회수를 증가시키는 메서드
-    public void incrementLecturePostViews(int lectureId) { // 메서드명 수정
+    public void incrementLecturePostViews(int lectureId) {
         String sql = "UPDATE Lecture SET Views = Views + 1 WHERE LectureID = ?";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, lectureId);
-            pstmt.executeUpdate(); // 조회수 증가 쿼리 실행
+            pstmt.executeUpdate();
         } catch (SQLException e) {
-            Log.e(TAG, "강연 게시글 조회수 업데이트 실패", e); // 오류 로그 출력
+            Log.e(TAG, "강연 게시글 조회수 업데이트 실패", e);
         }
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 강연 게시글을 삭제하는 메서드
-    public boolean deleteLecturePost(int lectureId) { // 메서드명 수정
+    public boolean deleteLecturePost(int lectureId) {
         String sql = "DELETE FROM Lecture WHERE LectureID = ?";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, lectureId);
-            int rowsAffected = pstmt.executeUpdate(); // 강연 게시글 삭제 쿼리 실행
-            return rowsAffected > 0; // 삭제 성공 여부 반환
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException e) {
-            Log.e(TAG, "강연 게시글 삭제 실패", e); // 오류 로그 출력
-            return false; // 삭제 실패 시 false 반환
+            Log.e(TAG, "강연 게시글 삭제 실패", e);
+            return false;
         }
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 강연 게시글을 업데이트하는 메서드
-    public boolean updateLecturePost(int lectureId, String title, String content, String location, double fee, int userId) { // 메서드명 수정
-        String sql = "UPDATE Lecture SET Title = ?, Content = ?, Location = ?, Fee = ? WHERE LectureID = ? AND UserID = ?";
+    public boolean updateLecturePost(int lectureId, String title, String content, String location, double fee, int userId, boolean isYouthAudienceAllowed) {
+        String sql = "UPDATE Lecture SET Title = ?, Content = ?, Location = ?, Fee = ?, IsYouthAudienceAllowed = ? WHERE LectureID = ? AND UserID = ?";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -149,14 +141,15 @@ public class LectureDAO { // 클래스명 LectureDAO로 변경
             pstmt.setString(2, content);
             pstmt.setString(3, location);
             pstmt.setDouble(4, fee);
-            pstmt.setInt(5, lectureId);
-            pstmt.setInt(6, userId);
+            pstmt.setBoolean(5, isYouthAudienceAllowed);
+            pstmt.setInt(6, lectureId);
+            pstmt.setInt(7, userId);
 
-            int rowsAffected = pstmt.executeUpdate(); // 강연 게시글 업데이트 쿼리 실행
-            return rowsAffected > 0; // 업데이트 성공 여부 반환
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException e) {
-            Log.e(TAG, "강연 게시글 업데이트 실패", e); // 오류 로그 출력
-            return false; // 업데이트 실패 시 false 반환
+            Log.e(TAG, "강연 게시글 업데이트 실패", e);
+            return false;
         }
     }
 }

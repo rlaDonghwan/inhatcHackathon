@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.hackathonproject.Education.EducationActivity;
 import com.example.hackathonproject.R;
@@ -20,18 +21,24 @@ import com.example.hackathonproject.Login.SessionManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout; // 이 라인을 추가
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class ChatListActivity extends AppCompatActivity {
 
     private ListView chatListView;  // 채팅 목록을 표시할 ListView
-    private List<Chat> chatList;  // 채팅 목록을 저장하는 리스트
+    private List<Chat> chatList;  // 전체 채팅 목록을 저장하는 리스트
+    private List<Chat> filteredChatList;  // 필터링된 채팅 목록을 저장하는 리스트
     private ChatDAO chatDAO;  // 데이터베이스에서 채팅 정보를 가져오기 위한 DAO 객체
     private ChatListAdapter chatListAdapter;  // 채팅 목록을 표시하기 위한 어댑터
     private int loggedInUserId;  // 로그인된 사용자 ID를 저장하는 변수
     private SwipeRefreshLayout swipeRefreshLayout; // 스와이프 새로고침 레이아웃 변수
+
+    private TextView filterAllButton;
+    private TextView filterEducationButton;
+    private TextView filterLectureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +64,15 @@ public class ChatListActivity extends AppCompatActivity {
         new LoadChatListTask(databaseConnection).execute();
 
         // 필터 버튼 초기 선택 상태 설정
-        TextView filterAllButton = findViewById(R.id.button_all);
+        filterAllButton = findViewById(R.id.button_all);
         filterAllButton.setSelected(true);  // "전체" 버튼을 기본 선택 상태로 설정
-        TextView filterSellButton = findViewById(R.id.button_sell);
-        TextView filterBuyButton = findViewById(R.id.button_buy);
+        filterEducationButton = findViewById(R.id.button_education);
+        filterLectureButton = findViewById(R.id.button_lecture);
 
         // 필터 버튼 클릭 이벤트 설정
         filterAllButton.setOnClickListener(view -> setFilter(filterAllButton, "전체"));
-        filterSellButton.setOnClickListener(view -> setFilter(filterSellButton, "판매"));
-        filterBuyButton.setOnClickListener(view -> setFilter(filterBuyButton, "구매"));
+        filterEducationButton.setOnClickListener(view -> setFilter(filterEducationButton, "교육"));
+        filterLectureButton.setOnClickListener(view -> setFilter(filterLectureButton, "강연"));
 
         // 교육 받기 탭 클릭 시 EducationActivity로 이동
         LinearLayout firstMenuItem = findViewById(R.id.first_menu_item);
@@ -96,19 +103,20 @@ public class ChatListActivity extends AppCompatActivity {
 
         // ListView 클릭 이벤트 설정
         chatListView.setOnItemClickListener((parent, view, position, id) -> {
-            Chat selectedChat = chatList.get(position);  // 선택된 채팅 아이템 가져오기
+            Chat selectedChat = filteredChatList.get(position);  // 선택된 채팅 아이템 가져오기
             Intent intent = new Intent(ChatListActivity.this, ChatActivity.class);
             intent.putExtra("chatId", selectedChat.getChatID()); // 선택한 채팅의 ID 전달
-            intent.putExtra("otherUserId", selectedChat.getOtherUserID(loggedInUserId)); // 선택한 채팅의 상대방 ID 전달
-            intent.putExtra("postId", selectedChat.getPostID()); // 선택한 채팅의 게시글 ID 전달 (필요 시)
+            intent.putExtra("otherUserId", selectedChat.getCounterpartUserID(loggedInUserId)); // 선택한 채팅의 상대방 ID 전달
+            intent.putExtra("educationID", selectedChat.getEducationID()); // 선택한 채팅의 교육 게시글 ID 전달 (필요 시)
+            intent.putExtra("lectureID", selectedChat.getLectureID()); // 선택한 채팅의 강연 게시글 ID 전달 (필요 시)
             intent.putExtra("currentUserId", loggedInUserId); // 현재 사용자 ID 전달
 
             // 로그로 채팅 정보를 출력
             Log.d("ChatListActivity", "Opening chat with chatId: " + selectedChat.getChatID() +
-                    " otherUserId: " + selectedChat.getOtherUserID(loggedInUserId) +
-                    " postId: " + selectedChat.getPostID() +
+                    " otherUserId: " + selectedChat.getCounterpartUserID(loggedInUserId) +
+                    " educationID: " + selectedChat.getEducationID() +
+                    " lectureID: " + selectedChat.getLectureID() +
                     " currentUserId: " + loggedInUserId);
-
             startActivity(intent);  // ChatActivity 시작
         });
     }
@@ -144,8 +152,9 @@ public class ChatListActivity extends AppCompatActivity {
             Log.d("LoadChatListTask", "onPostExecute started");
             swipeRefreshLayout.setRefreshing(false); // 새로고침 완료 상태로 설정
             if (chats != null && !chats.isEmpty()) {
-                chatList = chats;  // 채팅 목록을 클래스 변수에 저장
-                chatListAdapter = new ChatListAdapter(ChatListActivity.this, chatList, loggedInUserId);  // 어댑터 초기화
+                chatList = chats;  // 전체 채팅 목록을 클래스 변수에 저장
+                filteredChatList = new ArrayList<>(chatList);  // 필터링된 목록을 전체 목록으로 초기화
+                chatListAdapter = new ChatListAdapter(ChatListActivity.this, filteredChatList, loggedInUserId);  // 어댑터 초기화
                 chatListView.setAdapter(chatListAdapter);  // ListView에 어댑터 설정
                 Log.d("LoadChatListTask", "Chat list loaded successfully with " + chats.size() + " items.");
             } else {
@@ -160,20 +169,46 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메서드
+    // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메서드
     private void setFilter(TextView selectedButton, String filterType) {
         resetFilterButtons();  // 모든 필터 버튼의 선택 상태를 초기화
         selectedButton.setSelected(true);  // 선택된 버튼을 강조
-        // 여기서 선택된 필터 유형에 따라 채팅 목록을 필터링하는 로직을 추가합니다.
+
+        // 선택된 버튼에 대해 'round_button_background_selected.xml'을 배경으로 설정
+        selectedButton.setBackgroundResource(R.drawable.round_button_background_selected);
+
+        // 필터링 로직
+        if (filterType.equals("전체")) {
+            filteredChatList = new ArrayList<>(chatList);  // 전체 채팅을 표시
+        } else if (filterType.equals("교육")) {
+            filteredChatList = new ArrayList<>();
+            for (Chat chat : chatList) {
+                if (chat.getEducationID() != null && chat.getEducationID() > 0) {
+                    filteredChatList.add(chat);  // 교육 ID가 있는 채팅만 추가
+                }
+            }
+        } else if (filterType.equals("강연")) {
+            filteredChatList = new ArrayList<>();
+            for (Chat chat : chatList) {
+                if (chat.getLectureID() != null && chat.getLectureID() > 0) {
+                    filteredChatList.add(chat);  // 강연 ID가 있는 채팅만 추가
+                }
+            }
+        }
+
+        // 필터링된 채팅 목록을 어댑터에 설정
+        chatListAdapter.updateChatList(filteredChatList);
+        chatListAdapter.notifyDataSetChanged();
     }
 
     // 모든 필터 버튼의 선택 상태를 초기화하는 메서드
     private void resetFilterButtons() {
-        TextView filterAllButton = findViewById(R.id.button_all);
-        TextView filterSellButton = findViewById(R.id.button_sell);
-        TextView filterBuyButton = findViewById(R.id.button_buy);
+        TextView[] filterButtons = {findViewById(R.id.button_all), findViewById(R.id.button_education), findViewById(R.id.button_lecture)};
 
-        filterAllButton.setSelected(false);  // "전체" 버튼 선택 해제
-        filterSellButton.setSelected(false);  // "판매" 버튼 선택 해제
-        filterBuyButton.setSelected(false);  // "구매" 버튼 선택 해제
+        for (TextView button : filterButtons) {
+            button.setSelected(false);
+            // 기본 상태로 버튼 배경 설정 ('round_button_background.xml')
+            button.setBackgroundResource(R.drawable.round_button_background);
+        }
     }
 }

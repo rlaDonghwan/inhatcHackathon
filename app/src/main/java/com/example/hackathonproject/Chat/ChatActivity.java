@@ -39,7 +39,8 @@ public class ChatActivity extends AppCompatActivity {
     private int chatId;
     private int loggedInUserId;  // 로그인된 사용자 ID를 저장하는 클래스 변수
     private int otherUserId;
-    private int postId;
+    private Integer educationID;  // 교육 ID를 위한 변수 (null일 수 있음)
+    private Integer lectureID;  // 강연 ID를 위한 변수 (null일 수 있음)
     private Connection connection;
     private String otherUserName; // 상대방 이름을 저장할 변수
     private Handler handler;  // Handler for periodic updates
@@ -55,19 +56,22 @@ public class ChatActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(this);
         loggedInUserId = sessionManager.getUserId();  // 세션에서 로그인된 사용자 ID를 가져와서 클래스 변수에 설정
 
-        Log.d("ChatActivity", "LoggedInUserId in onCreate: " + loggedInUserId);  // 로그로 확인
+        Log.d(TAG, "LoggedInUserId in onCreate: " + loggedInUserId);  // 로그로 확인
 
-        // Intent로 전달된 chatId, otherUserId, postId 값을 가져옴
+        // Intent로 전달된 chatId, otherUserId, educationID, lectureID 값을 가져옴
         chatId = getIntent().getIntExtra("chatId", -1);
         otherUserId = getIntent().getIntExtra("otherUserId", -1);
-        postId = getIntent().getIntExtra("postId", -1);
-        int currentUserId = getIntent().getIntExtra("currentUserId", -1);
+        educationID = getIntent().hasExtra("educationId") ? getIntent().getIntExtra("educationId", -1) : null;
+        lectureID = getIntent().hasExtra("lectureId") ? getIntent().getIntExtra("lectureId", -1) : null;
+
+        // 로그 추가하여 전달된 ID들 확인
+        Log.d(TAG, "Received educationID: " + educationID + ", lectureID: " + lectureID);
 
         // UI를 초기화
         initializeUI();
 
         // 데이터베이스 연결을 시도하고 완료된 후 UI 초기화 및 데이터 로드
-        createOrRetrieveChatRoom(currentUserId, otherUserId);
+        createOrRetrieveChatRoom(loggedInUserId, otherUserId);
 
         // Handler and Runnable 설정
         handler = new Handler(Looper.getMainLooper());
@@ -93,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         // 로그로 확인
-        Log.d("ChatActivity", "LoggedInUserId before ChatAdapter creation: " + loggedInUserId);
+        Log.d(TAG, "LoggedInUserId before ChatAdapter creation: " + loggedInUserId);
 
         // 리사이클러뷰와 어댑터 설정
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -103,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 채팅방을 생성하거나 기존 채팅방을 가져오는 메서드
-    private void createOrRetrieveChatRoom(int currentUserId, int otherUserId) {
+    private void createOrRetrieveChatRoom(int loggedInUserId, int otherUserId) {
         DatabaseConnection databaseConnection = new DatabaseConnection();
         databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
             @Override
@@ -119,12 +123,12 @@ public class ChatActivity extends AppCompatActivity {
                         if (chatId == -1) {
                             // 채팅방이 존재하지 않으면 새로 생성
                             ChatDAO chatDAO = new ChatDAO(connection);
-                            chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, postId, null, new ChatDAO.ChatRoomCallback() {
+                            chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, educationID, lectureID, new ChatDAO.ChatRoomCallback() {
                                 @Override
                                 public void onSuccess(int retrievedChatId) {
                                     runOnUiThread(() -> {
                                         chatId = retrievedChatId;  // 가져온 채팅 ID를 저장
-                                        initializeChatUI(currentUserId, otherUserName);
+                                        initializeChatUI(loggedInUserId, otherUserName);
                                         loadChatMessages(); // 채팅 메시지를 로드합니다.
                                     });
                                 }
@@ -137,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                             });
                         } else {
                             // 기존 채팅방이 있을 때
-                            initializeChatUI(currentUserId, otherUserName);
+                            initializeChatUI(loggedInUserId, otherUserName);
                             loadChatMessages();
                         }
                     }
@@ -193,7 +197,7 @@ public class ChatActivity extends AppCompatActivity {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 채팅 UI를 초기화하는 메서드
-    private void initializeChatUI(int currentUserId, String otherUserName) {
+    private void initializeChatUI(int loggedInUserId, String otherUserName) {
         sendButton.setOnClickListener(v -> sendMessage());  // 전송 버튼 클릭 시 메시지 전송 메서드 호출
         TextView chatTitle = findViewById(R.id.chat_title);
         chatTitle.setText(otherUserName + "님");  // 채팅창 타이틀에 상대방 이름 표시
@@ -203,10 +207,10 @@ public class ChatActivity extends AppCompatActivity {
     // 채팅 메시지를 로드하는 메서드
     private void loadChatMessages() {
         if (connection != null) {
-            Log.d("ChatActivity", "Database connection is established, loading messages...");
+            Log.d(TAG, "Database connection is established, loading messages...");
             new LoadMessagesTask().execute(chatId);
         } else {
-            Log.e("ChatActivity", "Database connection is null, unable to load messages.");
+            Log.e(TAG, "Database connection is null, unable to load messages.");
             showErrorMessage("데이터베이스 연결이 설정되지 않았습니다.");
         }
     }
