@@ -24,4 +24,6 @@
     <color name="filter_selected_color">#A7D3F0</color> <!-- skyBlue보다 밝은 색상, 버튼이 선택되었을 때 -->
     <color name="filter_pressed_color">#6DA0D8</color> <!-- skyBlue보다 어두운 색상, 버튼을 눌렀을 때 -->
     <color name="filter_disabled_color">#D3D3D3</color> <!-- 비활성화 상태일 때의 회색 -->
-    <color name="filter_default_color">#87CEEB</color> <!-- 기본 �
+    <color name="filter_default_color">#87CEEB</color> <!-- 기본 상태에서의 skyBlue 색상 -->
+
+</resources>
