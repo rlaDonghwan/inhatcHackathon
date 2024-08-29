@@ -186,6 +186,7 @@ public class EducationContentView extends AppCompatActivity {
         protected void onPostExecute(EducationPost post) {
             Log.d("EducationContentView", "Loaded post: " + post);
             swipeRefreshLayout.setRefreshing(false);  // 새로고침 완료
+
             if (post != null) {
                 currentPost = post;  // 현재 게시글 객체 저장
                 titleTextView.setText(post.getTitle());  // 제목 설정
@@ -195,16 +196,19 @@ public class EducationContentView extends AppCompatActivity {
                 dateTextView.setText(formattedTime);  // 작성 날짜 설정
 
                 DecimalFormat df = new DecimalFormat("#,###");  // 소수점 없이 강연료 포맷 설정
-                feeTextView.setText( df.format(post.getFee()));  // 강연료 설정
+                feeTextView.setText(df.format(post.getFee()));  // 강연료 설정
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);
+                ImageButton menuButton = findViewById(R.id.menu_button); // 메뉴 버튼
 
+                // 작성자 ID와 로그인된 사용자 ID를 비교
                 if (loggedInUserId == post.getUserId()) {
                     // 사용자가 게시글 작성자인 경우
                     btnApply.setText("교육 수정");
+                    menuButton.setVisibility(View.VISIBLE); // 메뉴 버튼 보이기
                     btnApply.setOnClickListener(v -> {
                         Intent intent = new Intent(EducationContentView.this, EducationWriteActivity.class);
                         intent.putExtra("educationId", currentPost.getEducationId());
@@ -218,6 +222,7 @@ public class EducationContentView extends AppCompatActivity {
                 } else {
                     // 사용자가 다른 사람의 글을 본 경우
                     btnApply.setText("신청하기");
+                    menuButton.setVisibility(View.GONE); // 메뉴 버튼 숨기기
                     btnApply.setOnClickListener(v -> {
                         Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
                         intent.putExtra("otherUserId", post.getUserId()); // 게시글 작성자의 ID를 채팅 화면으로 전달
@@ -225,10 +230,15 @@ public class EducationContentView extends AppCompatActivity {
                         startActivity(intent);
                     });
                 }
+
+                menuButton.setOnClickListener(v -> showPopupMenu(v));
+
+
             } else {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
         }
+
     }
 
     private String formatTimeAgo(String createdAt) {
@@ -258,10 +268,12 @@ public class EducationContentView extends AppCompatActivity {
     }
 
     // 팝업 메뉴를 보여주는 메서드
+    // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
         popup.getMenu().add(0, 0, 0, "게시글 수정");  // 수정 메뉴 추가
         popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제");  // 삭제 메뉴 추가
+        popup.getMenu().add(0, 2, 2, "게시글 완료");  // 완료 메뉴 추가
 
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -280,12 +292,16 @@ public class EducationContentView extends AppCompatActivity {
                 case 1:
                     confirmDeletePost();  // 삭제 확인 다이얼로그 표시
                     return true;
+                case 2:
+                    confirmCompletePost();  // 완료 확인 다이얼로그 표시
+                    return true;
                 default:
                     return false;
             }
         });
         popup.show();  // 팝업 메뉴 표시
     }
+
 
     // 게시글 삭제를 확인하는 메서드
     private void confirmDeletePost() {
@@ -300,6 +316,21 @@ public class EducationContentView extends AppCompatActivity {
                 .setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
+
+    // 게시글 완료를 확인하는 메서드
+    private void confirmCompletePost() {
+        new AlertDialog.Builder(this)
+                .setTitle("게시글 완료")  // 다이얼로그 제목 설정
+                .setMessage("정말로 이 게시글을 완료하시겠습니까? 완료된 게시글은 삭제됩니다.")  // 다이얼로그 메시지 설정
+                .setPositiveButton("완료", new DialogInterface.OnClickListener() {  // 완료 버튼 설정
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePost();  // 게시글 삭제 메서드 호출
+                    }
+                })
+                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                .show();  // 다이얼로그 표시
+    }
+
 
     // 게시글 삭제 메서드
     @SuppressLint("StaticFieldLeak")
