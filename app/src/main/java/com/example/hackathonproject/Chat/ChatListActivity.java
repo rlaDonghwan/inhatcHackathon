@@ -1,7 +1,13 @@
 package com.example.hackathonproject.Chat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -9,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.hackathonproject.Education.EducationActivity;
@@ -39,6 +47,8 @@ public class ChatListActivity extends AppCompatActivity {
     private TextView filterAllButton;
     private TextView filterEducationButton;
     private TextView filterLectureButton;
+
+    private static final String CHANNEL_ID = "chat_notification_channel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +131,14 @@ public class ChatListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 액티비티가 화면에 보일 때마다 채팅 목록을 새로 로드
+        swipeRefreshLayout.setRefreshing(true);
+        new LoadChatListTask(new DatabaseConnection()).execute();
+    }
+
     // 비동기로 채팅 목록을 로드하는 AsyncTask 클래스
     private class LoadChatListTask extends AsyncTask<Void, Void, List<Chat>> {
         private DatabaseConnection databaseConnection;
@@ -169,7 +187,6 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메서드
-    // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메서드
     private void setFilter(TextView selectedButton, String filterType) {
         resetFilterButtons();  // 모든 필터 버튼의 선택 상태를 초기화
         selectedButton.setSelected(true);  // 선택된 버튼을 강조
@@ -211,4 +228,5 @@ public class ChatListActivity extends AppCompatActivity {
             button.setBackgroundResource(R.drawable.round_button_background);
         }
     }
+
 }

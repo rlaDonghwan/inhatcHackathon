@@ -16,9 +16,9 @@ import java.util.List;
 
 public class ChatListAdapter extends BaseAdapter {
 
-    private Context context;  // 현재 컨텍스트를 저장하는 변수
+    private final Context context;  // 현재 컨텍스트를 저장하는 변수
     private List<Chat> chatList;  // 채팅 목록을 저장하는 리스트
-    private int loggedInUserId;  // 로그인된 사용자 ID를 저장하는 변수
+    private final int loggedInUserId;  // 로그인된 사용자 ID를 저장하는 변수
 
     // ChatListAdapter 생성자: 컨텍스트, 채팅 목록, 로그인된 사용자 ID를 받아 초기화
     public ChatListAdapter(Context context, List<Chat> chatList, int loggedInUserId) {
@@ -70,8 +70,7 @@ public class ChatListAdapter extends BaseAdapter {
         holder.lastMessage.setText(chat.getLastMessage() != null ? chat.getLastMessage() : "");
 
         // 마지막 메시지 시간을 현재 시간과 비교하여 포맷
-        String formattedTime = formatTimeAgo(chat.getLastMessageTime());
-        holder.lastMessageTime.setText(formattedTime);
+        holder.lastMessageTime.setText(formatTimeAgo(chat.getLastMessageTime()));
 
         // 새 메시지가 있는지 여부에 따라 아이콘 표시 여부 설정
         holder.newMessageIcon.setVisibility(chat.isNewMessage() ? View.VISIBLE : View.GONE);
@@ -85,12 +84,13 @@ public class ChatListAdapter extends BaseAdapter {
             LocalDateTime dateTime = LocalDateTime.parse(lastMessageTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             LocalDateTime now = LocalDateTime.now();
 
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("a h:mm");
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM d, a h:mm");
+
             if (dateTime.toLocalDate().equals(now.toLocalDate())) {
-                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("a h:mm");
-                return dateTime.format(timeFormatter);
+                return dateTime.format(timeFormatter);  // 같은 날이면 시간만 표시
             } else {
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM d, a h:mm");
-                return dateTime.format(dateFormatter);
+                return dateTime.format(dateFormatter);  // 날짜와 시간을 함께 표시
             }
         } catch (Exception e) {
             e.printStackTrace();
