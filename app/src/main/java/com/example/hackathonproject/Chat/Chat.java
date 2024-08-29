@@ -5,10 +5,10 @@ public class Chat {
     private int chatID;
 
     // 채팅에 참여한 첫 번째 사용자 ID
-    private int userID1;
+    private int authorID;
 
     // 채팅에 참여한 두 번째 사용자 ID
-    private int userID2;
+    private int otherUserID;
 
     // 마지막으로 보낸 메시지 내용
     private String lastMessage;
@@ -23,39 +23,36 @@ public class Chat {
     private String otherUserName;
 
     // 관련된 교육 게시글 ID (null 가능)
-    private Integer postID;
+    private Integer educationID;
 
     // 관련된 강연 ID (null 가능)
     private Integer lectureID;
 
-    // 생성자에서 chatType을 제거하여 인자 수를 맞춤
-    public Chat(int chatID, int userID1, int userID2, String lastMessage, String lastMessageTime, Integer postID, Integer lectureID) {
+    // 생성자
+    public Chat(int chatID, int authorID, int otherUserID, String lastMessage, String lastMessageTime, Integer educationID, Integer lectureID) {
         this.chatID = chatID;
-        this.userID1 = userID1;
-        this.userID2 = userID2;
-        // 마지막 메시지가 null이 아닌 경우 그대로 저장, null인 경우 빈 문자열로 설정
+        this.authorID = authorID;
+        this.otherUserID = otherUserID;
         this.lastMessage = (lastMessage != null) ? lastMessage : "";
-        // 마지막 메시지 시간이 null이 아닌 경우 그대로 저장, null인 경우 빈 문자열로 설정
         this.lastMessageTime = (lastMessageTime != null) ? lastMessageTime : "";
         this.newMessage = false; // 기본값으로 새로운 메시지 없음으로 설정
-        this.postID = postID;
+        this.educationID = educationID;
         this.lectureID = lectureID;
         this.otherUserName = ""; // 기본값으로 빈 문자열 설정
     }
 
     // Getters and Setters
-    // 각 필드에 접근하기 위한 Getter 및 Setter 메서드들
 
     public int getChatID() {
         return chatID;
     }
 
-    public int getUserID1() {
-        return userID1;
+    public int getAuthorID() {
+        return authorID;
     }
 
-    public int getUserID2() {
-        return userID2;
+    public int getOtherUserID() {
+        return otherUserID;
     }
 
     public String getLastMessage() {
@@ -67,8 +64,8 @@ public class Chat {
     }
 
     // 현재 사용자의 ID를 기반으로 상대방의 사용자 ID를 반환
-    public int getOtherUserID(int currentUserId) {
-        return (userID1 == currentUserId) ? userID2 : userID1;
+    public int getCounterpartUserID(int currentUserId) {
+        return (authorID == currentUserId) ? otherUserID : authorID;
     }
 
     public boolean isNewMessage() {
@@ -87,12 +84,12 @@ public class Chat {
         this.otherUserName = otherUserName;
     }
 
-    public Integer getPostID() {
-        return postID;
+    public Integer getEducationID() {
+        return educationID;
     }
 
-    public void setPostID(Integer postID) {
-        this.postID = postID;
+    public void setEducationID(Integer educationID) {
+        this.educationID = educationID;
     }
 
     public Integer getLectureID() {

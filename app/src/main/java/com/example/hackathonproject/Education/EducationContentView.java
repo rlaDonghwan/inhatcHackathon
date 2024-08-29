@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -82,7 +83,9 @@ public class EducationContentView extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refreshContent);
 
-        educationId = getIntent().getIntExtra("educationId", -1);  // 인텐트로부터 게시글 ID 가져오기
+        educationId = getIntent().getIntExtra("educationId", -1);
+        Log.d("EducationContentView", "Received educationId: " + educationId);
+
         if (educationId == -1) {
             Toast.makeText(this, "유효하지 않은 게시글 ID입니다.", Toast.LENGTH_SHORT).show();
             finish(); // 유효하지 않은 educationId로 인해 액티비티를 종료
@@ -92,16 +95,18 @@ public class EducationContentView extends AppCompatActivity {
 
         // "신청하기" 버튼 클릭 시 채팅방 생성 및 ChatActivity로 이동
         Button btnApply = findViewById(R.id.btnApply);
+
         btnApply.setOnClickListener(v -> {
-            int loggedInUserId = getLoggedInUserId();
-            int otherUserId = currentPost.getUserId();  // 게시글 작성자의 ID
+            int loggedInUserId = getLoggedInUserId();  // 현재 사용자 ID
+            int otherUserId = loggedInUserId;  // otherUserId를 현재 사용자 ID로 설정 (상대방)
             int educationId = currentPost.getEducationId();  // 현재 게시글 ID
 
             if (educationId <= 0) {
                 Toast.makeText(EducationContentView.this, "잘못된 게시글 ID입니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
                 return;
             }
-            // 데이터베이스 연결 비동기 처리
+
+            // 채팅방을 생성하고 ChatActivity로 이동
             DatabaseConnection databaseConnection = new DatabaseConnection();
             databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
                 @Override
@@ -112,13 +117,14 @@ public class EducationContentView extends AppCompatActivity {
                         public void onSuccess(int chatId) {
                             runOnUiThread(() -> {
                                 if (chatId != -1) {
-                                    // 채팅 화면으로 이동하면서 채팅방에 대한 정보를 전달
+                                    // ChatActivity로 이동
                                     Intent intent = new Intent(EducationContentView.this, ChatActivity.class);
                                     intent.putExtra("chatId", chatId);
-                                    intent.putExtra("otherUserId", otherUserId);
-                                    intent.putExtra("educationId", educationId);
-                                    intent.putExtra("currentUserId", loggedInUserId);  // 현재 사용자 ID 전달
+                                    intent.putExtra("otherUserId", otherUserId);  // 현재 사용자 ID를 상대방 ID로 사용
+                                    intent.putExtra("educationId", educationId); // 기존 코드 유지
                                     startActivity(intent);
+                                    Log.d("EducationContentView", "----------------------------educationId: " + educationId);
+
                                 } else {
                                     Toast.makeText(EducationContentView.this, "채팅방을 생성할 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
                                 }
@@ -178,6 +184,7 @@ public class EducationContentView extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(EducationPost post) {
+            Log.d("EducationContentView", "Loaded post: " + post);
             swipeRefreshLayout.setRefreshing(false);  // 새로고침 완료
             if (post != null) {
                 currentPost = post;  // 현재 게시글 객체 저장
