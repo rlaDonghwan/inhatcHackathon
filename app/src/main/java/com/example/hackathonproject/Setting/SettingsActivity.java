@@ -47,23 +47,26 @@ public class SettingsActivity extends AppCompatActivity {
         // UI 요소 초기화
         profileImageView = findViewById(R.id.profile_image);
         TextView profileNameTextView = findViewById(R.id.question);
-        TextView volunteerHoursTextView = findViewById(R.id.title_time);
-        ImageView authorizationIcon = findViewById(R.id.authorization_icon); // 인증 마크 이미지 뷰
+        TextView volunteerHoursTextView = findViewById(R.id.title_Vtime);
+        TextView balanceTextView = findViewById(R.id.title_time); // balance 값을 표시할 텍스트뷰
+        ImageView authorizationIcon = findViewById(R.id.authorization_icon);
 
         // 세션에서 사용자 정보 가져오기
         String userName = sessionManager.getUserName();
         int volunteerHours = sessionManager.getVolunteerHours();
+        int balance = sessionManager.getBalance(); // Balance 값을 가져옴
         int userId = sessionManager.getUserId();
 
-        // 프로필 이름과 봉사 시간을 설정
+        // 프로필 이름과 봉사 시간, Balance를 설정
         profileNameTextView.setText(userName);
         volunteerHoursTextView.setText(String.valueOf(volunteerHours));
+        balanceTextView.setText(String.valueOf(balance)); // Balance 값을 설정
 
         // 사용자 기관 여부에 따라 인증 마크 가시성 설정
         if (sessionManager.isUserOrganization()) {
-            authorizationIcon.setVisibility(View.VISIBLE); // 인증 마크 보이기
+            authorizationIcon.setVisibility(View.VISIBLE);
         } else {
-            authorizationIcon.setVisibility(View.GONE); // 인증 마크 숨기기
+            authorizationIcon.setVisibility(View.GONE);
         }
 
         // 프로필 이미지를 비동기로 로드

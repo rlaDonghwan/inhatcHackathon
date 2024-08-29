@@ -102,4 +102,10 @@ public class AuthManager {
     }
 
 
+    // 사용자 ID로 Balance 값을 가져오는 메서드
+    public int getBalanceById(int userId) throws SQLException {
+        return userDAO.getBalanceById(userId);
+    }
+
+
 }
