@@ -7,9 +7,9 @@
 <!--    <color name="skyBlue">#f5490a</color>-->
 <!--    <color name="skyBlue2">#5A9AE4</color>-->
 
-
-    <color name="orange">#f56a3e</color>
-    <color name="dark_orange">#8A2C0C</color>
+    <color name="light_orange">#FFA500</color>
+    <color name="orange">#F15A2A</color>
+    <color name="dark_orange">#571D09</color>
 
     <color name="lightGray">#D3D3D3</color>
     <color name="primaryBackground">#F2F4F6</color>

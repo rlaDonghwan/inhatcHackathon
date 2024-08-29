@@ -3,9 +3,8 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:startColor="#FFA500"
-                android:centerColor="#FFFF00"
-                android:endColor="#FF4500"
+                android:startColor="@color/light_orange"
+                android:endColor="@color/orange"
                 android:angle="45" />
 
             <corners android:radius="16dp" /> <!-- 모서리 둥글게 -->

@@ -5,6 +5,6 @@
     android:viewportHeight="512">
     <!-- The SVG path data goes here -->
     <path
-        android:fillColor="@color/orange"
+        android:fillColor="@color/dark_orange"
         android:pathData="hand_shake.xml" />
 </vector>
