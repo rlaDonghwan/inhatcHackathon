@@ -86,4 +86,15 @@ public class AuthManager {
     public boolean deleteUserAccount(int userId) throws SQLException {
         return userDAO.deleteUser(userId);
     }
+
+    // 프로필 사진 이미지 업데이트(경로)
+    public boolean updateProfileImage(int userId, String imagePath) throws SQLException {
+        return userDAO.updateProfileImagePath(userId, imagePath);
+    }
+
+    // 프로필 사진 이미지 가져오기(경로)
+    public String getProfileImagePath(int userId) throws SQLException {
+        return userDAO.getProfileImagePath(userId);
+    }
+
 }

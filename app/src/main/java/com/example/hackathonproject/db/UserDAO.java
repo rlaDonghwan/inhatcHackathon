@@ -173,4 +173,40 @@ public class UserDAO {
         return volunteerHours; // 봉사 시간 반환
     }
 
+    // 프로필 이미지 경로 업데이트 메서드
+    public boolean updateProfileImagePath(int userId, String imagePath) throws SQLException {
+        String sql = "UPDATE User SET ProfileImagePath = ? WHERE UserID = ?";
+
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, imagePath);
+            pstmt.setInt(2, userId);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to update profile image path", e);
+            throw e;
+        }
+    }
+
+    // 사용자 ID로 프로필 이미지 경로 가져오기 메서드
+    public String getProfileImagePath(int userId) throws SQLException {
+        String sql = "SELECT ProfileImagePath FROM User WHERE UserID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("ProfileImagePath");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get profile image path by ID", e);
+            throw e;
+        }
+        return null;
+    }
+
+
 }
