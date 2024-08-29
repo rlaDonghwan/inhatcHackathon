@@ -93,7 +93,7 @@
                                 android:text="홍길동"
                                 android:textColor="#000"
                                 android:textSize="40sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"/>
 
                             <!-- 추가된 이미지 -->
                             <ImageView
