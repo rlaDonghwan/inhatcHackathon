@@ -88,8 +88,8 @@
                             <TextView
                                 android:id="@+id/question"
                                 android:layout_width="wrap_content"
-                                android:layout_height="40dp"
-                                android:fontFamily="@font/omyu_pretty"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/nanumsquare_neo_eb"
                                 android:text="홍길동"
                                 android:textColor="#000"
                                 android:textSize="40sp"

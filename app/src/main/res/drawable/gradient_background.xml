@@ -6,6 +6,8 @@
                 android:startColor="@color/light_orange"
                 android:endColor="@color/orange"
                 android:angle="45" />
+
+            <corners android:radius="16dp" /> <!-- 모서리 둥글게 -->
         </shape>
     </item>
 </layer-list>
