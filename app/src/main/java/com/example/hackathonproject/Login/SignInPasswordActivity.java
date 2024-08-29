@@ -22,8 +22,6 @@ import java.sql.SQLException;
 
 public class SignInPasswordActivity extends AppCompatActivity {
     private EditText passwordInput;
-    private Button confirmButton;
-    private TextView forgotPasswordText;
     private String phoneNumber;
 
     private AuthManager authManager;
@@ -48,8 +46,8 @@ public class SignInPasswordActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         passwordInput = findViewById(R.id.password_input);
-        confirmButton = findViewById(R.id.confirm_button);
-        forgotPasswordText = findViewById(R.id.forgot_password_text);
+        Button confirmButton = findViewById(R.id.confirm_button);
+        TextView forgotPasswordText = findViewById(R.id.forgot_password_text);
 
         //---------------------------------------------------------------------------------------------
         // SharedPreferences에서 폰트 크기 불러오기

@@ -1,7 +1,6 @@
 package com.example.hackathonproject.db;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -12,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class AuthManager {
-    private UserDAO userDAO; // 사용자 데이터베이스 접근 객체
+    private final UserDAO userDAO; // 사용자 데이터베이스 접근 객체
     private static final String TAG = "AuthManager";
 
     public AuthManager() {

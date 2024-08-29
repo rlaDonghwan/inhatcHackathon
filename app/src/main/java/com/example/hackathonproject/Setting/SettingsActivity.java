@@ -1,7 +1,6 @@
 package com.example.hackathonproject.Setting;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -26,9 +25,7 @@ import com.example.hackathonproject.Lecture.LectureActivity;
 import com.example.hackathonproject.db.AuthManager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.sql.SQLException;
 
 public class SettingsActivity extends AppCompatActivity {

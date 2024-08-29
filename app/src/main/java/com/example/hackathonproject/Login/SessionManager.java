@@ -12,8 +12,8 @@ public class SessionManager {
     private static final String KEY_IS_LOGGED_IN = "IsLoggedIn"; // 로그인 상태 저장용
     private static final String KEY_IS_ORGANIZATION = "IsOrganization"; // 기관 여부 저장용
 
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    private final SharedPreferences pref;
+    private final SharedPreferences.Editor editor;
 
     public SessionManager(Context context) {
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);

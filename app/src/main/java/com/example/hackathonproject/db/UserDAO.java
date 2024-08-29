@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class UserDAO {
     private static final String TAG = "UserDAO"; // 로그 태그
-    private DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
+    private final DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
 
 
     // 사용자가 존재하는지 확인하는 메서드
