@@ -79,7 +79,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void run() {
                 loadChatMessages(); // 주기적으로 메시지를 로드합니다.
-                handler.postDelayed(this, 1000); // 1초마다 반복 실행
+                handler.postDelayed(this, 500); // 0.5초마다 반복 실행
             }
         };
         handler.post(refreshRunnable); // Runnable 실행 시작
@@ -211,7 +211,7 @@ public class ChatActivity extends AppCompatActivity {
             new LoadMessagesTask().execute(chatId);
         } else {
             Log.e(TAG, "Database connection is null, unable to load messages.");
-            showErrorMessage("데이터베이스 연결이 설정되지 않았습니다.");
+//            showErrorMessage("데이터베이스 연결이 설정되지 않았습니다.");
         }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
