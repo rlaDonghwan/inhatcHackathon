@@ -47,33 +47,36 @@
             android:gravity="center"
             android:padding="10dp"
             android:text="전체"
-            android:textColor="@color/white"
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <!-- 판매 Button -->
         <TextView
-            android:id="@+id/button_sell"
+            android:id="@+id/button_education"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background"
             android:gravity="center"
             android:padding="10dp"
-            android:text="판매"
-            android:textColor="@color/gray"
+            android:text="교육"
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <!-- 구매 Button -->
         <TextView
-            android:id="@+id/button_buy"
+            android:id="@+id/button_lecture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background"
             android:gravity="center"
             android:padding="10dp"
-            android:text="구매"
-            android:textColor="@color/gray"
+            android:text="강연"
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
     </LinearLayout>

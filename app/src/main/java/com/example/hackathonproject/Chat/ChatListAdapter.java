@@ -82,16 +82,26 @@ public class ChatListAdapter extends BaseAdapter {
     // 메시지 시간을 현재 시간과 비교하여 포맷팅하는 메서드
     private String formatTimeAgo(String lastMessageTime) {
         try {
-            // ISO_LOCAL_DATE_TIME 형식의 시간을 파싱
             LocalDateTime dateTime = LocalDateTime.parse(lastMessageTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            LocalDateTime now = LocalDateTime.now();
 
-            // KST 시간대로 변환 후 "오후 5:20" 형식으로 변환하여 반환
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("a h:mm");
-            return dateTime.format(formatter);
+            if (dateTime.toLocalDate().equals(now.toLocalDate())) {
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("a h:mm");
+                return dateTime.format(timeFormatter);
+            } else {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM d, a h:mm");
+                return dateTime.format(dateFormatter);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return lastMessageTime;  // 파싱에 실패한 경우 원본 문자열 반환
         }
+    }
+
+    // 어댑터의 데이터셋을 업데이트하는 메서드
+    public void updateChatList(List<Chat> newChatList) {
+        this.chatList = newChatList;  // 새로운 채팅 목록으로 업데이트
+        notifyDataSetChanged();  // 데이터셋 변경을 알림
     }
 
     // 뷰 홀더 클래스: 뷰의 각 요소를 재사용하기 위해 사용

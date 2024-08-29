@@ -35,7 +35,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
-            android:text="교육 신청"
+            android:text="강연자 구직"
             android:textColor="#FFFFFF"
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nanumsquare_neo_bd"
-                android:text="구해요"
+                android:text="청년 참관 가능"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
@@ -95,25 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <CheckBox
-                android:id="@+id/checkbox_sell"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/orange"
-                android:scaleX="1.5"
-                android:scaleY="1.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/nanumsquare_neo_bd"
-                android:text="할게요"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-
-        </LinearLayout>
+            android:gravity="center_vertical"/>
 
     </LinearLayout>
 

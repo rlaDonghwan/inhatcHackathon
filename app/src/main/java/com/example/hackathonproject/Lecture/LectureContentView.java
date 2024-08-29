@@ -199,11 +199,11 @@ public class LectureContentView extends AppCompatActivity {
                         intent.putExtra("lectureId", currentPost.getLectureId());
                         intent.putExtra("title", currentPost.getTitle());
                         intent.putExtra("content", currentPost.getContent());
-                        intent.putExtra("fee", currentPost.getFee());
+                        intent.putExtra("fee", currentPost.getFee());  // 금액 전달
                         intent.putExtra("location", currentPost.getLocation());
-                        intent.putExtra("fee", currentPost.getFee());  // 교육료 전달
                         startActivity(intent);
                     });
+
                 } else {
                     // 사용자가 다른 사람의 강연을 본 경우
                     btnApply.setText("신청하기");

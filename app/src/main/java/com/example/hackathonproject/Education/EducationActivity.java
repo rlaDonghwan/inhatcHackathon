@@ -3,6 +3,7 @@ package com.example.hackathonproject.Education;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -21,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class EducationActivity extends AppCompatActivity {
     private RecyclerView recyclerView; // 게시글을 보여줄 RecyclerView
     private EducationAdapter adapter; // RecyclerView에 연결할 어댑터
@@ -52,30 +52,25 @@ public class EducationActivity extends AppCompatActivity {
             startActivityForResult(intent, 100); // 결과를 받기 위해 액티비티 시작
         });
 
-        loadEducationPosts(); // 게시글 로드
-
-        // 교육 받기 탭 클릭 시 EducationActivity로 이동
+        // 메뉴 버튼 설정
         LinearLayout firstMenuItem = findViewById(R.id.first_menu_item);
         firstMenuItem.setOnClickListener(v -> {
             Intent intent = new Intent(EducationActivity.this, EducationActivity.class);
             startActivity(intent);
         });
 
-        // 강연자 신청 탭 클릭 시 SeminarActivity로 이동
         LinearLayout secondMenuItem = findViewById(R.id.second_menu_item);
         secondMenuItem.setOnClickListener(v -> {
             Intent intent = new Intent(EducationActivity.this, LectureActivity.class);
             startActivity(intent);
         });
 
-        // 채팅 탭 클릭 시 ChatActivity로 이동
         LinearLayout thirdMenuItem = findViewById(R.id.third_menu_item);
         thirdMenuItem.setOnClickListener(v -> {
             Intent intent = new Intent(EducationActivity.this, ChatListActivity.class);
             startActivity(intent);
         });
 
-        // 설정 탭 클릭 시 SettingsActivity로 이동
         LinearLayout fourthMenuItem = findViewById(R.id.fourth_menu_item);
         fourthMenuItem.setOnClickListener(v -> {
             Intent intent = new Intent(EducationActivity.this, SettingsActivity.class);
@@ -83,6 +78,14 @@ public class EducationActivity extends AppCompatActivity {
         });
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 액티비티가 화면에 보일 때마다 게시글을 새로 로드
+        swipeRefreshLayout.setRefreshing(true); // 새로고침 UI 표시
+        loadEducationPosts();
+    }
 
     // 게시글을 로드하는 메서드
     private void loadEducationPosts() {
@@ -106,15 +109,15 @@ public class EducationActivity extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(false); // 새로고침 중지
 
             // 각 게시글 클릭 시 이벤트 처리
-            adapter.setOnItemClickListener(new EducationAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    EducationPost post = educationPostList.get(position);
-                    Intent intent = new Intent(EducationActivity.this, EducationContentView.class); // 게시글 내용 보기 액티비티로 이동
-                    intent.putExtra("educationId", post.getEducationId()); // 게시글 ID 전달
-                    startActivity(intent); // 액티비티 시작
-                }
+            adapter.setOnItemClickListener((view, position) -> {
+                EducationPost post = educationPostList.get(position);
+                int educationId = post.getEducationId();
+                Log.d("EducationActivity", "Selected educationId: " + educationId); // 로그 추가
+                Intent intent = new Intent(EducationActivity.this, EducationContentView.class);
+                intent.putExtra("educationId", educationId);
+                startActivity(intent);
             });
+
         }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------

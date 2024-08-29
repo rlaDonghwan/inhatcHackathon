@@ -44,6 +44,9 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
         // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
         EducationPost post = educationPostList.get(position);
         holder.postTitle.setText(post.getTitle()); // 제목 설정
+        String categoryText = "[" + post.getCategory() + "]";  // DB에서 가져온 카테고리 설정
+        holder.postCategory.setText(categoryText);
+
         holder.postViews.setText("조회수: " + post.getViews());  // 조회수 설정
 
         // 작성 시간을 현재 시간과 비교하여 "몇 시간 전", "몇 일 전"으로 표시
@@ -110,12 +113,13 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
 
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
     public class EducationViewHolder extends RecyclerView.ViewHolder {
-        public TextView postTitle, postDetails, postViews, postFee; // 뷰 요소들
+        public TextView postTitle, postDetails, postViews, postFee, postCategory; // 뷰 요소들
 
         public EducationViewHolder(View itemView) {
             super(itemView);
             // 각 뷰 요소를 아이템 뷰에서 초기화
             postTitle = itemView.findViewById(R.id.postTitle);
+            postCategory = itemView.findViewById(R.id.post_category);
             postDetails = itemView.findViewById(R.id.postDetails);
             postViews = itemView.findViewById(R.id.postViews);
             postFee = itemView.findViewById(R.id.postFee);

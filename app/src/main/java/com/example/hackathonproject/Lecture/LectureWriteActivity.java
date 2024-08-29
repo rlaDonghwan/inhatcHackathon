@@ -53,30 +53,33 @@ public class LectureWriteActivity extends AppCompatActivity {
         TextView toolbarTitle = findViewById(R.id.toolbar_title);  // 툴바 제목 TextView 초기화
 
 
+
+
         // Intent로 전달된 데이터 처리 (수정 모드인지 확인)
         Intent intent = getIntent();
         if (intent.hasExtra("lectureId")) {
             lectureId = intent.getIntExtra("lectureId", -1);  // 강연 게시글 ID 가져오기
             String title = intent.getStringExtra("title");  // 제목 가져오기
             String content = intent.getStringExtra("content");  // 내용 가져오기
-//            String category = intent.getStringExtra("category");  // 카테고리 가져오기
-            int fee = intent.getIntExtra("fee", 0);  // 교육료 가져오기
+            int fee = intent.getIntExtra("fee", 0);  // 강연료 가져오기
 
             titleEditText.setText(title);  // 제목 설정
             descriptionEditText.setText(content);  // 내용 설정
             priceEditText.setText(String.valueOf(fee));  // 강연료 설정
+
+            // 수정 모드이므로 툴바 제목을 "강연 수정"으로 변경
+            toolbarTitle.setText("강연 수정");
 
             // 수정 버튼 클릭 시 업데이트 처리
             submitButton.setOnClickListener(v -> updateLecture());  // 수정 버튼 클릭 시 처리
         } else {
             // 새 강연 작성 모드 설정
             submitButton.setOnClickListener(v -> submitLecture());  // 제출 버튼 클릭 시 처리
-            toolbarTitle.setText("교육 신청");
-
+            toolbarTitle.setText("강연 신청");
         }
     }
 
-    // 새 강연을 등록하는 메서드
+        // 새 강연을 등록하는 메서드
     private void submitLecture() {
         // UI 요소에서 입력값 가져오기
         String title = titleEditText.getText().toString().trim();

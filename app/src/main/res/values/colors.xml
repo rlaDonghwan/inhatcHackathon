@@ -26,4 +26,6 @@
     <color name="filter_disabled_color">#D3D3D3</color> <!-- 비활성화 상태일 때의 회색 -->
     <color name="filter_default_color">#87CEEB</color> <!-- 기본 상태에서의 skyBlue 색상 -->
 
+
+
 </resources>
