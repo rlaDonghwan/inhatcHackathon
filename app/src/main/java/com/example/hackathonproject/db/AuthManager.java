@@ -97,4 +97,10 @@ public class AuthManager {
         return userDAO.getProfileImagePath(userId);
     }
 
+    // 사용자 ID로 기관 여부를 확인하는 메서드 추가
+    public boolean isUserOrganization(int userId) throws SQLException {
+        return userDAO.isUserOrganization(userId); // UserDAO를 통해 기관 여부 확인
+    }
+
+
 }

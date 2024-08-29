@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
         profileImageView = findViewById(R.id.profile_image);
         TextView profileNameTextView = findViewById(R.id.question);
         TextView volunteerHoursTextView = findViewById(R.id.title_time);
+        ImageView authorizationIcon = findViewById(R.id.authorization_icon); // 인증 마크 이미지 뷰
 
         // 세션에서 사용자 정보 가져오기
         String userName = sessionManager.getUserName();
@@ -59,6 +61,16 @@ public class SettingsActivity extends AppCompatActivity {
         // 프로필 이름과 봉사 시간을 설정
         profileNameTextView.setText(userName);
         volunteerHoursTextView.setText(String.valueOf(volunteerHours));
+
+        // 사용자 기관 여부에 따라 인증 마크 가시성 설정
+        if (sessionManager.isUserOrganization()) {
+            authorizationIcon.setVisibility(View.VISIBLE); // 인증 마크 보이기
+        } else {
+            authorizationIcon.setVisibility(View.GONE); // 인증 마크 숨기기
+        }
+
+        // 프로필 이미지를 비동기로 로드
+        new LoadProfileImageTask(userId).execute();
 
         // 프로필 이미지를 비동기로 로드
         new LoadProfileImageTask(userId).execute();
