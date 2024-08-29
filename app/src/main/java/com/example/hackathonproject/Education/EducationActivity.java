@@ -21,6 +21,8 @@ import com.example.hackathonproject.db.EducationDAO;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 public class EducationActivity extends AppCompatActivity {
     private RecyclerView recyclerView; // 게시글을 보여줄 RecyclerView
@@ -104,6 +106,16 @@ public class EducationActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<EducationPost> posts) {
             // 게시글 로드 완료 후 UI 갱신
+            if (posts != null && !posts.isEmpty()) {
+                Collections.sort(posts, new Comparator<EducationPost>() {
+                    @Override
+                    public int compare(EducationPost p1, EducationPost p2) {
+                        // createdAt 필드를 기준으로 최신 순으로 정렬
+                        return p2.getCreatedAt().compareTo(p1.getCreatedAt());
+                    }
+                });
+            }
+
             educationPostList = posts;
             adapter.updateData(educationPostList); // 어댑터에 데이터 업데이트
             swipeRefreshLayout.setRefreshing(false); // 새로고침 중지
@@ -117,7 +129,6 @@ public class EducationActivity extends AppCompatActivity {
                 intent.putExtra("educationId", educationId);
                 startActivity(intent);
             });
-
         }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------

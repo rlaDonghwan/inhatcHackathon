@@ -43,7 +43,14 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
 
         // 작성 시간을 현재 시간과 비교하여 "몇 시간 전", "몇 일 전"으로 표시
         String formattedTime = formatTimeAgo(post.getCreatedAt());
-        holder.postDetails.setText(post.getLocation() + " - " + formattedTime);  // 포맷된 시간 표시
+
+        // "청년 참관 가능" 여부에 따라 postDetails 설정
+        String postDetailsText = post.getLocation() + " - " + formattedTime;
+        if (post.isYouthAudienceAllowed()) {
+            postDetailsText += " - 청년 참관 가능";
+        }
+        holder.postDetails.setText(postDetailsText);  // 포맷된 시간과 "청년 참관 가능" 표시
+
         holder.postViews.setText("조회수: " + post.getViews());  // 조회수 설정
 
         // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용

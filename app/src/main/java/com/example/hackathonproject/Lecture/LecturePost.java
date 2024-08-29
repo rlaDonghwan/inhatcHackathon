@@ -11,9 +11,10 @@ public class LecturePost {
     private String completedAt; // 강연 완료 시간
     private double fee; // 강연료
     private int views; // 조회수
+    private boolean isYouthAudienceAllowed; // 청년 참관 가능 여부
 
     // 생성자
-    public LecturePost(int lectureId, int userId, String userName, String title, String content, String location, String createdAt, String completedAt, double fee, int views) {
+    public LecturePost(int lectureId, int userId, String userName, String title, String content, String location, String createdAt, String completedAt, double fee, int views, boolean isYouthAudienceAllowed) {
         this.lectureId = lectureId;
         this.userId = userId;
         this.userName = userName; // 작성자 이름
@@ -24,6 +25,7 @@ public class LecturePost {
         this.completedAt = completedAt;
         this.fee = fee;
         this.views = views;
+        this.isYouthAudienceAllowed = isYouthAudienceAllowed; // 추가된 필드 초기화
     }
 
     // getter 메서드들
@@ -37,6 +39,7 @@ public class LecturePost {
     public String getCompletedAt() { return completedAt; }
     public double getFee() { return fee; }
     public int getViews() { return views; }
+    public boolean isYouthAudienceAllowed() { return isYouthAudienceAllowed; }
 
     // setter 메서드들
     public void setLectureId(int lectureId) { this.lectureId = lectureId; }
@@ -49,4 +52,5 @@ public class LecturePost {
     public void setCompletedAt(String completedAt) { this.completedAt = completedAt; }
     public void setFee(double fee) { this.fee = fee; }
     public void setViews(int views) { this.views = views; }
+    public void setYouthAudienceAllowed(boolean youthAudienceAllowed) { this.isYouthAudienceAllowed = youthAudienceAllowed; }
 }
