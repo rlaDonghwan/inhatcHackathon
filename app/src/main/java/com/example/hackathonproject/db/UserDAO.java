@@ -226,6 +226,23 @@ public class UserDAO {
         return false;
     }
 
+    // 사용자 ID로 Balance 값을 가져오는 메서드
+    public int getBalanceById(int userId) throws SQLException {
+        int balance = 0;
+        String sql = "SELECT Balance FROM User WHERE UserID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    balance = resultSet.getInt("Balance");
+                }
+            }
+        }
+        return balance;
+    }
+
 
 
 }

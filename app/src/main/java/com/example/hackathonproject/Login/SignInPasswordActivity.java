@@ -83,6 +83,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
         private String userName;
         private int userId;
         private int volunteerHours;
+        private int balance; // Balance 변수 추가
         private boolean isOrganization;  // 기관 여부 추가
 
         @Override
@@ -95,6 +96,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
                 if (userId != -1) {
                     userName = authManager.getUserNameById(userId);
                     volunteerHours = authManager.getVolunteerHoursById(userId);
+                    balance = authManager.getBalanceById(userId); // Balance 값을 가져옴
                     isOrganization = authManager.isUserOrganization(userId);  // 기관 여부 가져오기
                     return true;
                 } else {
@@ -109,8 +111,8 @@ public class SignInPasswordActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                // 로그인 성공 시 사용자 이름, ID, 누적 봉사 시간, 기관 여부를 SessionManager에 저장
-                sessionManager.createSession(userName, userId, volunteerHours, isOrganization);
+                // 로그인 성공 시 사용자 이름, ID, 누적 봉사 시간, Balance, 기관 여부를 SessionManager에 저장
+                sessionManager.createSession(userName, userId, volunteerHours, balance, isOrganization);
 
                 Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -120,5 +122,4 @@ public class SignInPasswordActivity extends AppCompatActivity {
             }
         }
     }
-
 }
