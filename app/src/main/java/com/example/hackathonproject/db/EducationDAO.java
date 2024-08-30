@@ -66,7 +66,11 @@ public class EducationDAO {
 
     // 특정 ID의 교육 게시글을 가져오는 메서드
     public EducationPost getEducationPostById(int educationId) {
-        String sql = "SELECT EducationID, Title, Category, Content, Location, Fee, Views, CreatedAt, CompletedAt, VolunteerHoursEarned, UserID FROM Education WHERE EducationID = ?";
+        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, " +
+                "e.CompletedAt, e.VolunteerHoursEarned, e.UserID, i.ImageData " +
+                "FROM Education e " +
+                "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID " +  // 이미지 데이터를 가져오기 위해 LEFT JOIN 사용
+                "WHERE e.EducationID = ?";
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, educationId);
@@ -80,12 +84,15 @@ public class EducationDAO {
                     int fee = rs.getInt("Fee");
                     int views = rs.getInt("Views");
                     String createdAt = rs.getString("CreatedAt");
-                    String completedAt = rs.getString("CompletedAt");  // 추가
-                    int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");  // 추가
+                    String completedAt = rs.getString("CompletedAt");
+                    int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                     int userId = rs.getInt("UserID");
+                    byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
                     String userName = getUserNameById(userId); // 사용자 이름 가져오기
-                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId);
+                    EducationPost post = new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId);
+                    post.setImageData(imageData);  // 이미지 데이터 설정
+                    return post;
                 }
             }
         } catch (SQLException e) {
@@ -93,6 +100,7 @@ public class EducationDAO {
         }
         return null; // 게시글이 없을 경우 null 반환
     }
+
 
 
     // 게시글 조회수를 증가시키는 메서드
@@ -171,39 +179,6 @@ public class EducationDAO {
         return postList; // 게시글 리스트 반환
     }
 
-    // 방금 삽입한 게시글의 ID를 가져오는 메서드
-    public int getLastInsertId() {
-        String sql = "SELECT LAST_INSERT_ID()";
-        try (Connection conn = dbConnection.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "마지막 삽입 ID 가져오기 실패", e);
-        }
-        return -1; // 실패 시 -1 반환
-    }
-
-
-    public boolean insertEducationImage(int postId, byte[] imageData) {
-        String sql = "INSERT INTO EducationImage (EducationID, ImageData) VALUES (?, ?)";
-
-        try (Connection conn = dbConnection.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, postId);
-            pstmt.setBytes(2, imageData);
-
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            Log.e(TAG, "이미지 삽입 실패", e);
-            return false;
-        }
-    }
-
-
     public boolean submitEducationWithImage(String title, String category, String description, String location, int fee, int userId, ZonedDateTime kstTime, byte[] imageData) {
         String insertPostSql = "INSERT INTO Education (UserID, Title, Category, Content, Location, Fee, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String insertImageSql = "INSERT INTO EducationImage (EducationID, ImageData) VALUES (?, ?)";
@@ -259,6 +234,22 @@ public class EducationDAO {
             Log.e(TAG, "트랜잭션 처리 중 오류", e);
             return false;
         }
+    }
+
+    public byte[] getEducationImage(int educationId) {
+        String sql = "SELECT ImageData FROM EducationImage WHERE EducationID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, educationId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBytes("ImageData");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "이미지 불러오기 실패", e);
+        }
+        return null; // 이미지가 없으면 null 반환
     }
 
 

@@ -28,6 +28,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class EducationWriteActivity extends AppCompatActivity {
+
     private EditText titleEditText;  // 제목을 입력하는 EditText
     private EditText descriptionEditText;  // 내용을 입력하는 EditText
     private EditText priceEditText;  // 금액을 입력하는 EditText

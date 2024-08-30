@@ -25,4 +25,9 @@ public class EducationManager {
     public List<EducationPost> getAllEducationPosts() {
         return educationDAO.getAllEducationPosts();
     }
+
+    public byte[] getEducationImage(int educationId) {
+        return educationDAO.getEducationImage(educationId);
+    }
+
 }

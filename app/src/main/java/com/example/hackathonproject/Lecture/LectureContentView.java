@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +41,7 @@ public class LectureContentView extends AppCompatActivity {
     private int lectureId;  // 강연 ID를 저장할 변수
     private TextView contentTextView, titleTextView, lecturerNameTextView, dateTextView, feeTextView, locationTextView;  // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
+    private ImageView contentImageView;  // 추가된 이미지뷰 참조
     private LectureDAO lectureDAO;  // 데이터베이스 접근 객체
     private LecturePost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
@@ -75,6 +79,7 @@ public class LectureContentView extends AppCompatActivity {
         feeTextView = findViewById(R.id.work_price);  // 강연료 텍스트뷰
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
+        contentImageView = findViewById(R.id.content_image);  // 이미지뷰 참조
 
         // 메뉴 버튼 클릭 시 팝업 메뉴 표시
         menuButton.setOnClickListener(this::showPopupMenu);
@@ -188,6 +193,15 @@ public class LectureContentView extends AppCompatActivity {
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
+                // 이미지 설정
+                byte[] imageData = post.getImageData();
+                if (imageData != null && imageData.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                    contentImageView.setImageBitmap(bitmap);  // 이미지 설정
+                } else {
+                    contentImageView.setVisibility(View.GONE);  // 이미지가 없을 경우 ImageView 숨기기
+                }
+
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);
                 if (loggedInUserId == post.getUserId()) {
@@ -207,7 +221,7 @@ public class LectureContentView extends AppCompatActivity {
                     // 메뉴 버튼을 표시
                     menuButton.setVisibility(View.VISIBLE);
 
-            } else {
+                } else {
                     // 사용자가 다른 사람의 강연을 본 경우
                     btnApply.setText("신청하기");
                     btnApply.setOnClickListener(v -> {
@@ -227,32 +241,31 @@ public class LectureContentView extends AppCompatActivity {
         }
     }
 
-        private String formatTimeAgo(String createdAt) {
-            // "2024-08-19 18:03:19.0"에서 ".0" 제거
-            if (createdAt != null && createdAt.endsWith(".0")) {
-                createdAt = createdAt.substring(0, createdAt.length() - 2);
-            }
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime postTime = LocalDateTime.parse(createdAt, formatter);
-
-            // 현재 시간을 KST로 가져옴
-            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-
-            // 작성 시간과 현재 시간의 차이 계산
-            long minutes = ChronoUnit.MINUTES.between(postTime, now);
-            long hours = ChronoUnit.HOURS.between(postTime, now);
-            long days = ChronoUnit.DAYS.between(postTime, now);
-
-            if (minutes < 60) {
-                return minutes + "분 전";
-            } else if (hours < 24) {
-                return hours + "시간 전";
-            } else {
-                return days + "일 전";
-            }
+    private String formatTimeAgo(String createdAt) {
+        // "2024-08-19 18:03:19.0"에서 ".0" 제거
+        if (createdAt != null && createdAt.endsWith(".0")) {
+            createdAt = createdAt.substring(0, createdAt.length() - 2);
         }
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime postTime = LocalDateTime.parse(createdAt, formatter);
+
+        // 현재 시간을 KST로 가져옴
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        // 작성 시간과 현재 시간의 차이 계산
+        long minutes = ChronoUnit.MINUTES.between(postTime, now);
+        long hours = ChronoUnit.HOURS.between(postTime, now);
+        long days = ChronoUnit.DAYS.between(postTime, now);
+
+        if (minutes < 60) {
+            return minutes + "분 전";
+        } else if (hours < 24) {
+            return hours + "시간 전";
+        } else {
+            return days + "일 전";
+        }
+    }
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
@@ -292,20 +305,19 @@ public class LectureContentView extends AppCompatActivity {
         popup.show();  // 팝업 메뉴 표시
     }
 
-
     // 강연 삭제를 확인하는 메서드
-        private void confirmDeleteLecture() {
-            new AlertDialog.Builder(this)
-                    .setTitle("강연 삭제")  // 다이얼로그 제목 설정
-                    .setMessage("정말로 이 게시글을 삭제하시겠습니까?")  // 다이얼로그 메시지 설정
-                    .setPositiveButton("삭제", new DialogInterface.OnClickListener() {  // 삭제 버튼 설정
-                        public void onClick(DialogInterface dialog, int which) {
-                            deleteLecture();  // 강연 삭제 메서드 호출
-                        }
-                    })
-                    .setNegativeButton("취소", null)  // 취소 버튼 설정
-                    .show();  // 다이얼로그 표시
-        }
+    private void confirmDeleteLecture() {
+        new AlertDialog.Builder(this)
+                .setTitle("강연 삭제")  // 다이얼로그 제목 설정
+                .setMessage("정말로 이 게시글을 삭제하시겠습니까?")  // 다이얼로그 메시지 설정
+                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {  // 삭제 버튼 설정
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteLecture();  // 강연 삭제 메서드 호출
+                    }
+                })
+                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                .show();  // 다이얼로그 표시
+    }
 
     // 게시글 완료를 확인하는 메서드
     private void confirmCompleteLecture() {
@@ -321,47 +333,46 @@ public class LectureContentView extends AppCompatActivity {
                 .show();  // 다이얼로그 표시
     }
 
-
     // 강연 삭제 메서드
-        @SuppressLint("StaticFieldLeak")
-        private void deleteLecture() {
-            new AsyncTask<Void, Void, Boolean>() {
-                @Override
-                protected Boolean doInBackground(Void... voids) {
-                    return lectureDAO.deleteLecturePost(lectureId);  // 데이터베이스에서 강연 삭제
+    @SuppressLint("StaticFieldLeak")
+    private void deleteLecture() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                return lectureDAO.deleteLecturePost(lectureId);  // 데이터베이스에서 강연 삭제
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    Toast.makeText(LectureContentView.this, "강연이 삭제되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
+                    finish();  // 액티비티 종료
+                } else {
+                    Toast.makeText(LectureContentView.this, "강연 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
                 }
-
-                @Override
-                protected void onPostExecute(Boolean success) {
-                    if (success) {
-                        Toast.makeText(LectureContentView.this, "강연이 삭제되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
-                        finish();  // 액티비티 종료
-                    } else {
-                        Toast.makeText(LectureContentView.this, "강연 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
-                    }
-                }
-            }.execute();  // 비동기 작업 실행
-        }
-
-        // 상단 바의 뒤로가기 버튼을 클릭 시 호출
-        @Override
-        public boolean onSupportNavigateUp() {
-            navigateBackToLectureActivity();
-            return true;
-        }
-
-        // 디바이스의 뒤로가기 버튼을 클릭 시 호출
-        @Override
-        public void onBackPressed() {
-            super.onBackPressed();
-            navigateBackToLectureActivity();
-        }
-
-        // LectureActivity를 돌아가는 메서드
-        private void navigateBackToLectureActivity() {
-            Intent intent = new Intent(this, LectureActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);  // 기존의 LectureActivity를 재사용
-            startActivity(intent);  // LectureActivity 시작
-            finish();  // 현재 액티비티 종료
-        }
+            }
+        }.execute();  // 비동기 작업 실행
     }
+
+    // 상단 바의 뒤로가기 버튼을 클릭 시 호출
+    @Override
+    public boolean onSupportNavigateUp() {
+        navigateBackToLectureActivity();
+        return true;
+    }
+
+    // 디바이스의 뒤로가기 버튼을 클릭 시 호출
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        navigateBackToLectureActivity();
+    }
+
+    // LectureActivity를 돌아가는 메서드
+    private void navigateBackToLectureActivity() {
+        Intent intent = new Intent(this, LectureActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);  // 기존의 LectureActivity를 재사용
+        startActivity(intent);  // LectureActivity 시작
+        finish();  // 현재 액티비티 종료
+    }
+}

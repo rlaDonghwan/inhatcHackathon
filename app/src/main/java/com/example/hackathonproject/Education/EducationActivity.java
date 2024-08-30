@@ -100,7 +100,22 @@ public class EducationActivity extends AppCompatActivity {
         @Override
         protected List<EducationPost> doInBackground(Void... voids) {
             // 비동기 작업으로 데이터베이스에서 게시글 불러오기
-            return educationManager.getAllEducationPosts();
+            List<EducationPost> posts = educationManager.getAllEducationPosts();
+
+            // 각 게시글에 대해 이미지를 로드하여 설정
+            for (EducationPost post : posts) {
+                int educationId = post.getEducationId();
+                byte[] imageData = educationManager.getEducationImage(educationId);
+
+                if (imageData != null && imageData.length > 0) {
+                    post.setImageData(imageData);
+                    Log.d("LoadPostsTask", "이미지 로드 성공: " + educationId);
+                } else {
+                    Log.d("LoadPostsTask", "이미지 없음 또는 로드 실패: " + educationId);
+                }
+            }
+
+            return posts;
         }
 
         @Override
@@ -131,6 +146,7 @@ public class EducationActivity extends AppCompatActivity {
             });
         }
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 글쓰기 액티비티에서 돌아왔을 때 처리

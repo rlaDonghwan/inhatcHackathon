@@ -13,6 +13,7 @@ public class EducationPost {
     private int volunteerHoursEarned;  // 획득한 봉사 시간
     private String userName;  // 작성자 이름
     private int userId;  // 작성자 ID
+    private byte[] imageData; // 이미지 데이터를 위한 필드
 
     // 생성자: 모든 필드를 초기화
     public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId) {
@@ -79,4 +80,8 @@ public class EducationPost {
     public int getUserId() {
         return userId;
     }
+
+    public byte[] getImageData() { return imageData; }
+
+    public void setImageData(byte[] imageData) { this.imageData = imageData; }
 }
