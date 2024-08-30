@@ -22,6 +22,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private String phoneNumber;
     private AuthManager authManager;
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         // 불러온 폰트 크기를 UI 요소에 적용
         passwordInput.setTextSize(savedFontSize);
         confirmButton.setTextSize(savedFontSize);
-        //---------------------------------------------------------------------------------------------------
+        //-----------------------------------------
 
         Intent intent = getIntent();
         phoneNumber = intent.getStringExtra("phoneNumber");
@@ -64,6 +65,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 뒤로가기 버튼의 동작을 정의
     @Override
@@ -71,6 +73,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class ChangePasswordTask extends AsyncTask<String, Void, Boolean> {
         @Override
@@ -97,4 +100,5 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

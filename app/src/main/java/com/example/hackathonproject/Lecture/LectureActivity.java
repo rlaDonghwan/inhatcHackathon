@@ -31,6 +31,7 @@ public class LectureActivity extends AppCompatActivity {
     private LectureManager lectureManager;
     private SessionManager sessionManager;  // SessionManager 변수 선언
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +98,7 @@ public class LectureActivity extends AppCompatActivity {
         // 데이터 로딩 호출
         loadLecturePosts(); // 화면을 로딩할 때도 데이터 새로 고침
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
@@ -105,10 +107,12 @@ public class LectureActivity extends AppCompatActivity {
         swipeRefreshLayout.setRefreshing(true); // 새로고침 UI 표시
         loadLecturePosts();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
     private void loadLecturePosts() {
         new LoadPostsTask().execute();
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class LoadPostsTask extends AsyncTask<Void, Void, List<LecturePost>> {
         @Override
@@ -134,5 +138,6 @@ public class LectureActivity extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(false); // 새로 고침 상태 해제
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 }

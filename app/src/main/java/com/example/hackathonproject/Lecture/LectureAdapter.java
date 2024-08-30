@@ -33,6 +33,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lecture_post, parent, false);
         return new LectureViewHolder(view);
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // ViewHolder에 데이터를 바인딩하는 메서드
     @Override
@@ -57,6 +58,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         DecimalFormat df = new DecimalFormat("#,###");
         holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private String formatTimeAgo(String createdAt) {
         // "2024-08-19 18:03:19.0"에서 ".0" 제거
@@ -83,28 +85,33 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             return days + "일 전";
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 어댑터에서 관리하는 아이템의 개수 반환
     @Override
     public int getItemCount() {
         return lecturePosts.size();  // 강연 게시글 리스트의 크기 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 데이터를 업데이트하고 RecyclerView를 갱신하는 메서드
     public void updateData(List<LecturePost> posts) {
         this.lecturePosts = posts;
         notifyDataSetChanged(); // 데이터 변경을 알림 (화면 갱신)
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 아이템 클릭 리스너 설정
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;  // 외부에서 리스너를 설정할 수 있게 함
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 아이템 클릭 리스너 인터페이스 정의
     public interface OnItemClickListener {
         void onItemClick(View view, int position);  // 아이템 클릭 시 호출되는 메서드
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
     public class LectureViewHolder extends RecyclerView.ViewHolder {
@@ -129,4 +136,5 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             });
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

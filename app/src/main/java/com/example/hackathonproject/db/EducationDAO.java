@@ -39,6 +39,7 @@ public class EducationDAO {
             return false; // 삽입 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 교육 게시글을 업데이트하는 메서드
     public boolean updateEducationPost(int educationId, String title, String category, String content, String location, int fee, int userId) {
@@ -61,6 +62,7 @@ public class EducationDAO {
             return false; // 업데이트 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 교육 게시글을 가져오는 메서드
     public EducationPost getEducationPostById(int educationId) {
@@ -94,6 +96,7 @@ public class EducationDAO {
         }
         return null; // 게시글이 없을 경우 null 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 조회수를 증가시키는 메서드
     public void incrementPostViews(int educationId) {
@@ -106,6 +109,7 @@ public class EducationDAO {
             Log.e(TAG, "게시글 조회수 업데이트 실패", e); // 오류 로그 출력
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 교육 게시글을 삭제하는 메서드
     public boolean deleteEducationPost(int educationId) {
@@ -120,6 +124,7 @@ public class EducationDAO {
             return false; // 삭제 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 사용자 이름을 가져오는 메서드
     private String getUserNameById(int userId) {
@@ -137,6 +142,7 @@ public class EducationDAO {
         }
         return null; // 사용자 이름이 없으면 null 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 교육 게시글을 가져오는 메서드
     public List<EducationPost> getAllEducationPosts() {
@@ -172,4 +178,5 @@ public class EducationDAO {
         }
         return postList;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

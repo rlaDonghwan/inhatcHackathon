@@ -20,6 +20,7 @@ public class SessionManager {
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 세션 생성 메서드
     public void createSession(String userName, int userId, int volunteerHours, int balance, boolean isOrganization) {
@@ -31,41 +32,49 @@ public class SessionManager {
         editor.putBoolean(KEY_IS_ORGANIZATION, isOrganization);
         editor.commit();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public int getBalance() {
         return pref.getInt(KEY_BALANCE, 0); // 기본값 0
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public int getUserId() {
         int userId = pref.getInt(KEY_USER_ID, -1);
         Log.d("SessionManager", "Retrieved UserId: " + userId);  // 로그 추가
         return userId;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public String getUserName() {
         return pref.getString(KEY_USER_NAME, "");
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public int getVolunteerHours() {
         return pref.getInt(KEY_VOLUNTEER_HOURS, 0); // 기본값 0
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGED_IN, false); // 로그인 상태를 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public boolean isUserOrganization() {
         return pref.getBoolean(KEY_IS_ORGANIZATION, false); // 기관 여부를 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public void logout() {
         editor.clear();
         editor.commit();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public void clearSession() {
         editor.clear();
         editor.commit();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

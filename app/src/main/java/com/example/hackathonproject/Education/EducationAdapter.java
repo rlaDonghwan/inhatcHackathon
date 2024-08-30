@@ -65,7 +65,6 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-
     private String formatTimeAgo(String createdAt) {
         // "2024-08-19 18:03:19.0"에서 ".0" 제거
         if (createdAt != null && createdAt.endsWith(".0")) {
