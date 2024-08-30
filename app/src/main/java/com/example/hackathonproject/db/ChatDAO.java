@@ -23,7 +23,6 @@ public class ChatDAO {
     }
 
     // 특정 사용자가 속한 모든 채팅방을 가져오는 메서드
-    // 특정 사용자가 속한 모든 채팅방을 가져오는 메서드
     public List<Chat> getAllChatsForUser(int userId) {
         List<Chat> chatList = new ArrayList<>();
         String query = "SELECT c.*, u1.Name AS UserName1, u2.Name AS UserName2 " +

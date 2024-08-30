@@ -64,7 +64,7 @@ public class EducationDAO {
 
     // 특정 ID의 교육 게시글을 가져오는 메서드
     public EducationPost getEducationPostById(int educationId) {
-        String sql = "SELECT EducationID, Title, Category, Content, Location, Fee, Views, CreatedAt, CompletedAt, VolunteerHoursEarned, UserID FROM Education WHERE EducationID = ?";
+        String sql = "SELECT EducationID, Title, Category, Content, Location, Fee, Views, CreatedAt, CompletedAt, VolunteerHoursEarned, u.Name, u.Role, e.UserID FROM Education e JOIN User u ON e.UserID = u.UserID WHERE EducationID = ?";
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, educationId);
@@ -78,12 +78,15 @@ public class EducationDAO {
                     int fee = rs.getInt("Fee");
                     int views = rs.getInt("Views");
                     String createdAt = rs.getString("CreatedAt");
-                    String completedAt = rs.getString("CompletedAt");  // 추가
-                    int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");  // 추가
+                    String completedAt = rs.getString("CompletedAt");
+                    int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
+                    String userName = rs.getString("Name");
+                    String role = rs.getString("Role");
                     int userId = rs.getInt("UserID");
 
-                    String userName = getUserNameById(userId); // 사용자 이름 가져오기
-                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId);
+                    boolean isInstitution = "기관".equals(role); // '기관' 역할인지 확인
+
+                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId, isInstitution);
                 }
             }
         } catch (SQLException e) {
@@ -91,7 +94,6 @@ public class EducationDAO {
         }
         return null; // 게시글이 없을 경우 null 반환
     }
-
 
     // 게시글 조회수를 증가시키는 메서드
     public void incrementPostViews(int educationId) {
@@ -138,15 +140,14 @@ public class EducationDAO {
 
     // 모든 교육 게시글을 가져오는 메서드
     public List<EducationPost> getAllEducationPosts() {
-        List<EducationPost> postList = new ArrayList<>(); // 게시글 목록을 담을 리스트
-        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.CompletedAt, e.VolunteerHoursEarned, u.Name, e.UserID " +
-                "FROM Education e JOIN User u ON e.UserID = u.UserID"; // SQL 쿼리
+        List<EducationPost> postList = new ArrayList<>();
+        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.CompletedAt, e.VolunteerHoursEarned, u.Name, u.Role, e.UserID " +
+                "FROM Education e JOIN User u ON e.UserID = u.UserID";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
-            // 결과 집합을 순회하며 각 게시글 객체를 생성하여 리스트에 추가
             while (rs.next()) {
                 int educationId = rs.getInt("EducationID");
                 String title = rs.getString("Title");
@@ -156,17 +157,19 @@ public class EducationDAO {
                 int fee = rs.getInt("Fee");
                 int views = rs.getInt("Views");
                 String createdAt = rs.getString("CreatedAt");
-                String completedAt = rs.getString("CompletedAt");  // 추가
-                int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");  // 추가
+                String completedAt = rs.getString("CompletedAt");
+                int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                 String userName = rs.getString("Name");
+                String role = rs.getString("Role");
                 int userId = rs.getInt("UserID");
 
-                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId));
+                boolean isInstitution = "기관".equals(role); // 역할이 '기관'인 경우 true 설정
+
+                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId, isInstitution));
             }
         } catch (SQLException e) {
-            Log.e(TAG, "게시글 불러오기 실패", e); // 오류 로그 출력
+            Log.e(TAG, "게시글 불러오기 실패", e);
         }
-        return postList; // 게시글 리스트 반환
+        return postList;
     }
-
 }

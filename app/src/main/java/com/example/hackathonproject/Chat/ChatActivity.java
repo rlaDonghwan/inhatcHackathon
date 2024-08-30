@@ -277,7 +277,28 @@ public class ChatActivity extends AppCompatActivity {
             if (connection != null) {
                 ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
                 if (chatId > 0) {
-                    return chatMessageDAO.addMessage(chatId, loggedInUserId, messageText, kstTime);  // 메시지를 데이터베이스에 저장
+                    // 메시지를 추가하는 작업
+                    boolean messageAdded = chatMessageDAO.addMessage(chatId, loggedInUserId, messageText, kstTime);
+
+                    if (messageAdded) {
+                        try {
+                            // AuthorID와 OtherUserID를 확인하여 상대방의 읽음 상태를 업데이트
+                            String updateQuery = "UPDATE Chat SET " +
+                                    "IsAuthorMessageRead = CASE WHEN AuthorID = ? THEN TRUE ELSE FALSE END, " +
+                                    "IsOtherUserMessageRead = CASE WHEN OtherUserID = ? THEN TRUE ELSE FALSE END " +
+                                    "WHERE ChatID = ?";
+                            try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+                                statement.setInt(1, loggedInUserId);  // 현재 사용자가 AuthorID이면 IsAuthorMessageRead를 TRUE로 설정
+                                statement.setInt(2, loggedInUserId);  // 현재 사용자가 OtherUserID이면 IsOtherUserMessageRead를 TRUE로 설정
+                                statement.setInt(3, chatId);
+                                statement.executeUpdate();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            return false;
+                        }
+                    }
+                    return messageAdded;
                 } else {
                     Log.e(TAG, "Invalid ChatID: " + chatId);
                     return false;
@@ -296,6 +317,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private void markMessagesAsRead() {
@@ -304,7 +326,6 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    // 비동기로 메시지를 읽음으로 표시하는 AsyncTask 클래스
     private class MarkMessagesAsReadTask extends AsyncTask<Integer, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Integer... params) {
