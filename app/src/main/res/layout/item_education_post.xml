@@ -15,7 +15,7 @@
         <LinearLayout
             android:id="@+id/main_content"
             android:layout_width="wrap_content"
-            android:layout_height="110dp"
+            android:layout_height="130dp"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
@@ -23,7 +23,8 @@
             <ImageView
                 android:id="@+id/content_image"
                 android:layout_width="110dp"
-                android:layout_height="110dp" />
+                android:layout_height="110dp"
+                android:layout_marginTop="5dp" />
 
             <!-- Left Group: Title and Author -->
             <LinearLayout
@@ -47,7 +48,7 @@
                         android:fontFamily="@font/nanum_squareneo_otf_hv"
                         android:text="[구해요]"
                         android:textColor="#000000"
-                        android:textSize="20sp" />
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/postTitle"
@@ -55,9 +56,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/nanum_squareneo_otf_eb"
-                        android:text="글 제목"
+                        android:text="글 제목 길게길게길게길게길게길게"
                         android:textColor="#000000"
-                        android:textSize="25sp" />
+                        android:textSize="23sp" />
 
                 </LinearLayout>
 
