@@ -28,19 +28,14 @@ public class ChatMessageDAO {
         }
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 특정 채팅방의 모든 메시지를 가져오는 메서드
     public List<ChatMessage> getMessagesByChatId(int chatId, int loggedInUserId) throws SQLException {
         List<ChatMessage> messages = new ArrayList<>();
         String query = "SELECT MessageID, ChatID, SenderUserID, MessageText, SentTime FROM ChatMessage WHERE ChatID = ?";
 
-        // SQL 쿼리를 준비하고 매개변수를 설정합니다.
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, chatId);
             try (ResultSet resultSet = statement.executeQuery()) {
-
-                // 결과 집합에서 각 메시지를 처리하여 리스트에 추가합니다.
                 while (resultSet.next()) {
                     ChatMessage message = new ChatMessage();
                     message.setMessageId(resultSet.getInt("MessageID"));
@@ -65,44 +60,54 @@ public class ChatMessageDAO {
         return messages;
     }
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 새로운 메시지를 추가하는 메서드
     public boolean addMessage(int chatId, int senderUserId, String messageText, ZonedDateTime kstTime) {
         String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, ?)";
+        String updateIsLastMessageReadQuery;
 
-        // 데이터베이스 연결을 확인하고 PreparedStatement를 사용하여 메시지를 추가합니다.
+        // 상대방의 읽음 상태를 업데이트하는 쿼리 작성
+        try {
+            if (isSenderAuthor(chatId, senderUserId)) {
+                // 메시지를 보낸 사람이 Author이면 OtherUser의 읽음 상태를 FALSE로 설정
+                updateIsLastMessageReadQuery = "UPDATE Chat SET IsOtherUserMessageRead = FALSE WHERE ChatID = ?";
+            } else {
+                // 메시지를 보낸 사람이 OtherUser이면 Author의 읽음 상태를 FALSE로 설정
+                updateIsLastMessageReadQuery = "UPDATE Chat SET IsAuthorMessageRead = FALSE WHERE ChatID = ?";
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error checking sender role: " + e.getMessage());
+            return false;
+        }
+
         try (Connection conn = this.connection != null && !this.connection.isClosed() ? this.connection : new DatabaseConnection().connect();
-             PreparedStatement statement = conn.prepareStatement(query)) {
+             PreparedStatement statement = conn.prepareStatement(query);
+             PreparedStatement updateReadStatusStatement = conn.prepareStatement(updateIsLastMessageReadQuery)) {
 
-            // 쿼리의 각 매개변수를 설정합니다.
             statement.setInt(1, chatId);
             statement.setInt(2, senderUserId);
             statement.setString(3, messageText);
-
-            // ZonedDateTime을 포맷팅된 문자열로 변환하여 저장합니다.
             String formattedDateTime = kstTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            statement.setString(4, formattedDateTime); // DATETIME 형식으로 저장
+            statement.setString(4, formattedDateTime);
 
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
                 Log.i(TAG, "Message successfully added.");
 
-                // 메시지 추가 후 로그를 출력합니다.
-                Log.d("ChatAdapter", "Message: " + messageText + ", Sender: " + senderUserId + ", SentTime: " + formattedDateTime);
-
-                // Chat 테이블의 LastMessage와 LastMessageTime을 업데이트합니다.
                 String updateChatQuery = "UPDATE Chat SET LastMessage = ?, LastMessageTime = ? WHERE ChatID = ?";
                 try (PreparedStatement updateChatStmt = conn.prepareStatement(updateChatQuery)) {
                     updateChatStmt.setString(1, messageText);
-                    updateChatStmt.setString(2, formattedDateTime); // 같은 KST 시간 사용
+                    updateChatStmt.setString(2, formattedDateTime);
                     updateChatStmt.setInt(3, chatId);
                     updateChatStmt.executeUpdate();
+                }
 
-                    if (!conn.getAutoCommit()) {
-                        conn.commit(); // 트랜잭션을 명시적으로 커밋합니다.
-                    }
+                // 상대방의 읽음 상태를 FALSE로 업데이트
+                updateReadStatusStatement.setInt(1, chatId);
+                updateReadStatusStatement.executeUpdate();
+
+                if (!conn.getAutoCommit()) {
+                    conn.commit();
                 }
                 return true;
             } else {
@@ -115,5 +120,19 @@ public class ChatMessageDAO {
             return false;
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 추가 메서드: senderUserId가 AuthorID와 같은지 확인
+    private boolean isSenderAuthor(int chatId, int senderUserId) throws SQLException {
+        String query = "SELECT AuthorID FROM Chat WHERE ChatID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, chatId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int authorId = resultSet.getInt("AuthorID");
+                    return authorId == senderUserId;
+                }
+            }
+        }
+        return false;
+    }
 }

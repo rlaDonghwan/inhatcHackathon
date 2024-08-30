@@ -72,8 +72,14 @@ public class ChatListAdapter extends BaseAdapter {
         // 마지막 메시지 시간을 현재 시간과 비교하여 포맷
         holder.lastMessageTime.setText(formatTimeAgo(chat.getLastMessageTime()));
 
-        // 새 메시지가 있는지 여부에 따라 아이콘 표시 여부 설정
-        holder.newMessageIcon.setVisibility(chat.isNewMessage() ? View.VISIBLE : View.GONE);
+        // 메시지의 읽음 상태에 따라 새 메시지 아이콘 표시 여부 설정
+        if (chat.getAuthorID() == loggedInUserId) {
+            // 내가 보낸 메시지라면 상대방이 읽지 않은 경우에만 아이콘 표시
+            holder.newMessageIcon.setVisibility(chat.isOtherUserMessageRead() ? View.GONE : View.VISIBLE);
+        } else {
+            // 상대방이 보낸 메시지라면 내가 읽지 않은 경우에만 아이콘 표시
+            holder.newMessageIcon.setVisibility(chat.isAuthorMessageRead() ? View.GONE : View.VISIBLE);
+        }
 
         return convertView;
     }
@@ -104,7 +110,7 @@ public class ChatListAdapter extends BaseAdapter {
         notifyDataSetChanged();  // 데이터셋 변경을 알림
     }
 
-    // 뷰 홀더 클래스: 뷰의 각 요소를 재사용하기 위해 사용
+    // ViewHolder 클래스에 있는 필드를 확인
     static class ViewHolder {
         TextView otherUserName;  // 상대방 이름 텍스트뷰
         TextView lastMessage;  // 마지막 메시지 텍스트뷰

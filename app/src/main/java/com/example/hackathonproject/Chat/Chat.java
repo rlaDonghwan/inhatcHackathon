@@ -4,10 +4,10 @@ public class Chat {
     // 채팅의 고유 ID
     private int chatID;
 
-    // 채팅에 참여한 첫 번째 사용자 ID
+    // 채팅에 참여한 첫 번째 사용자 ID (Author)
     private int authorID;
 
-    // 채팅에 참여한 두 번째 사용자 ID
+    // 채팅에 참여한 두 번째 사용자 ID (Other User)
     private int otherUserID;
 
     // 마지막으로 보낸 메시지 내용
@@ -19,6 +19,12 @@ public class Chat {
     // 새로운 메시지가 있는지 여부를 나타내는 플래그
     private boolean newMessage;
 
+    // Author의 메시지가 읽혔는지 여부를 나타내는 플래그
+    private boolean isAuthorMessageRead;
+
+    // Other User의 메시지가 읽혔는지 여부를 나타내는 플래그
+    private boolean isOtherUserMessageRead;
+
     // 상대방의 이름을 저장하는 필드
     private String otherUserName;
 
@@ -29,7 +35,8 @@ public class Chat {
     private Integer lectureID;
 
     // 생성자
-    public Chat(int chatID, int authorID, int otherUserID, String lastMessage, String lastMessageTime, Integer educationID, Integer lectureID) {
+    public Chat(int chatID, int authorID, int otherUserID, String lastMessage, String lastMessageTime, Integer educationID,
+                Integer lectureID, boolean isAuthorMessageRead, boolean isOtherUserMessageRead) {
         this.chatID = chatID;
         this.authorID = authorID;
         this.otherUserID = otherUserID;
@@ -38,6 +45,8 @@ public class Chat {
         this.newMessage = false; // 기본값으로 새로운 메시지 없음으로 설정
         this.educationID = educationID;
         this.lectureID = lectureID;
+        this.isAuthorMessageRead = isAuthorMessageRead; // 새로운 필드 초기화
+        this.isOtherUserMessageRead = isOtherUserMessageRead; // 새로운 필드 초기화
         this.otherUserName = ""; // 기본값으로 빈 문자열 설정
     }
 
@@ -74,6 +83,22 @@ public class Chat {
 
     public void setNewMessage(boolean newMessage) {
         this.newMessage = newMessage;
+    }
+
+    public boolean isAuthorMessageRead() {
+        return isAuthorMessageRead;
+    }
+
+    public void setAuthorMessageRead(boolean isAuthorMessageRead) {
+        this.isAuthorMessageRead = isAuthorMessageRead;
+    }
+
+    public boolean isOtherUserMessageRead() {
+        return isOtherUserMessageRead;
+    }
+
+    public void setOtherUserMessageRead(boolean isOtherUserMessageRead) {
+        this.isOtherUserMessageRead = isOtherUserMessageRead;
     }
 
     public String getOtherUserName() {

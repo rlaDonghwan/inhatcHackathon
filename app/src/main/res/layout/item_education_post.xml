@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="169dp"
         android:padding="16dp">
 
         <LinearLayout
@@ -27,10 +27,10 @@
 
             <!-- Left Group: Title and Author -->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_width="260dp"
+                android:layout_height="110dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -75,11 +75,11 @@
                     android:id="@+id/postFee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="교육료: 500,000원"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
                     android:layout_marginTop="8dp"
-                    android:gravity="end"/>
+                    android:gravity="end"
+                    android:text="교육료: 500,000원"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -88,10 +88,10 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:gravity="end">
+            android:layout_alignParentBottom="true"
+            android:gravity="end"
+            android:orientation="vertical">
 
 
             <TextView
@@ -99,10 +99,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/main_content"
+                android:gravity="end"
                 android:text="조회수: 123"
-                android:textSize="14sp"
                 android:textColor="@color/gray"
-                android:gravity="end"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
     </RelativeLayout>

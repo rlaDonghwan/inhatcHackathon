@@ -23,6 +23,7 @@ public class ChatDAO {
     }
 
     // 특정 사용자가 속한 모든 채팅방을 가져오는 메서드
+    // 특정 사용자가 속한 모든 채팅방을 가져오는 메서드
     public List<Chat> getAllChatsForUser(int userId) {
         List<Chat> chatList = new ArrayList<>();
         String query = "SELECT c.*, u1.Name AS UserName1, u2.Name AS UserName2 " +
@@ -45,6 +46,9 @@ public class ChatDAO {
                     String lastMessage = resultSet.getString("LastMessage");
                     String lastMessageTime = resultSet.getString("LastMessageTime");
 
+                    boolean isAuthorMessageRead = resultSet.getBoolean("IsAuthorMessageRead");
+                    boolean isOtherUserMessageRead = resultSet.getBoolean("IsOtherUserMessageRead");
+
                     String otherUserName = userId == authorId ? resultSet.getString("UserName2") : resultSet.getString("UserName1");
 
                     // KST로 시간을 변환
@@ -56,8 +60,10 @@ public class ChatDAO {
                                 .toLocalDateTime();
                     }
 
-                    // Chat 객체 생성 시 lectureId를 포함하도록 수정
-                    Chat chat = new Chat(chatId, authorId, otherUserId, lastMessage, lastMessageTimeKST != null ? lastMessageTimeKST.toString() : null, educationId, lectureId);
+                    // Chat 객체 생성 시 읽음 상태를 포함하도록 수정
+                    Chat chat = new Chat(chatId, authorId, otherUserId, lastMessage,
+                            lastMessageTimeKST != null ? lastMessageTimeKST.toString() : null,
+                            educationId, lectureId, isAuthorMessageRead, isOtherUserMessageRead);
 
                     chat.setOtherUserName(otherUserName);
                     chatList.add(chat);
@@ -68,7 +74,6 @@ public class ChatDAO {
         }
         return chatList;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 채팅방을 가져오거나 새로 생성하는 메서드
     public void getOrCreateChatRoom(int loggedInUserId, int otherUserId, Integer educationId, Integer lectureId, ChatRoomCallback callback) {
@@ -180,7 +185,6 @@ public class ChatDAO {
 
         }).start();
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private boolean isEducationIdValid(Integer educationId) {
         if (educationId == null) {
@@ -217,7 +221,6 @@ public class ChatDAO {
         }
         return false;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // ChatRoomCallback 인터페이스 정의
     public interface ChatRoomCallback {
