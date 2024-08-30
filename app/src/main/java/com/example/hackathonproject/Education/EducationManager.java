@@ -20,9 +20,11 @@ public class EducationManager {
         ZonedDateTime kstTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return educationDAO.insertEducationPost(title, category, content, location, fee, userId, kstTime);
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 교육 게시글을 가져오는 메서드
     public List<EducationPost> getAllEducationPosts() {
         return educationDAO.getAllEducationPosts();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

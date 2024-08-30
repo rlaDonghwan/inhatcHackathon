@@ -66,9 +66,6 @@ public class SignUpActivity extends AppCompatActivity {
         checkboxText.setTextSize(savedFontSize);
         //---------------------------------------------------------------------------------------------
 
-
-
-
         // 전화번호 입력 필드에 최대 13자리 제한 및 형식화 적용
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         etPhoneNum.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
@@ -99,6 +96,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 입력 필드 자동 이동 설정
     private void setupFieldAutoMove() {
@@ -154,6 +152,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기로 회원가입 작업을 수행하는 클래스
     private class RegisterUserTask extends AsyncTask<Object, Void, Boolean> {
@@ -171,7 +170,6 @@ public class SignUpActivity extends AppCompatActivity {
                 return false;
             }
         }
-
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
@@ -184,4 +182,5 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

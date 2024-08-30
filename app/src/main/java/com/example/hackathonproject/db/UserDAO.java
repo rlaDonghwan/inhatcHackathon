@@ -136,6 +136,7 @@ public class UserDAO {
             throw e;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 계정 삭제 메서드
     public boolean deleteUser(int userId) throws SQLException {
@@ -152,6 +153,7 @@ public class UserDAO {
             throw e;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public int getVolunteerHoursById(int userId) throws SQLException {
         String sql = "SELECT VolunteerHours FROM User WHERE UserID = ?"; // SQL 쿼리
@@ -172,6 +174,7 @@ public class UserDAO {
 
         return volunteerHours; // 봉사 시간 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 프로필 이미지 경로 업데이트 메서드
     public boolean updateProfileImagePath(int userId, String imagePath) throws SQLException {
@@ -189,6 +192,7 @@ public class UserDAO {
             throw e;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 프로필 이미지 경로 가져오기 메서드
     public String getProfileImagePath(int userId) throws SQLException {
@@ -207,6 +211,7 @@ public class UserDAO {
         }
         return null;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 기관 여부를 확인하는 메서드
     public boolean isUserOrganization(int userId) throws SQLException {
@@ -225,6 +230,7 @@ public class UserDAO {
         }
         return false;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 Balance 값을 가져오는 메서드
     public int getBalanceById(int userId) throws SQLException {
@@ -242,7 +248,5 @@ public class UserDAO {
         }
         return balance;
     }
-
-
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
