@@ -48,7 +48,7 @@
                         android:fontFamily="@font/nanum_squareneo_otf_hv"
                         android:text="[구해요]"
                         android:textColor="#000000"
-                        android:textSize="17sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/postTitle"
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="게시시간"
+                    android:text="30분 전"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
