@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -168,5 +170,96 @@ public class EducationDAO {
         }
         return postList; // 게시글 리스트 반환
     }
+
+    // 방금 삽입한 게시글의 ID를 가져오는 메서드
+    public int getLastInsertId() {
+        String sql = "SELECT LAST_INSERT_ID()";
+        try (Connection conn = dbConnection.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "마지막 삽입 ID 가져오기 실패", e);
+        }
+        return -1; // 실패 시 -1 반환
+    }
+
+
+    public boolean insertEducationImage(int postId, byte[] imageData) {
+        String sql = "INSERT INTO EducationImage (EducationID, ImageData) VALUES (?, ?)";
+
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, postId);
+            pstmt.setBytes(2, imageData);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            Log.e(TAG, "이미지 삽입 실패", e);
+            return false;
+        }
+    }
+
+
+    public boolean submitEducationWithImage(String title, String category, String description, String location, int fee, int userId, ZonedDateTime kstTime, byte[] imageData) {
+        String insertPostSql = "INSERT INTO Education (UserID, Title, Category, Content, Location, Fee, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertImageSql = "INSERT INTO EducationImage (EducationID, ImageData) VALUES (?, ?)";
+
+        try (Connection conn = dbConnection.connect()) {
+            conn.setAutoCommit(false);  // 트랜잭션 시작
+
+            int postId;
+            // 1. 게시글 삽입
+            try (PreparedStatement pstmt = conn.prepareStatement(insertPostSql, Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.setInt(1, userId);
+                pstmt.setString(2, title);
+                pstmt.setString(3, category);
+                pstmt.setString(4, description);
+                pstmt.setString(5, location);
+                pstmt.setInt(6, fee);
+                pstmt.setString(7, kstTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    return false;
+                }
+
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        postId = generatedKeys.getInt(1);
+                    } else {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            // 2. 이미지 삽입
+            if (imageData != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(insertImageSql)) {
+                    pstmt.setInt(1, postId);
+                    pstmt.setBytes(2, imageData);
+
+                    int imageRowsAffected = pstmt.executeUpdate();
+                    if (imageRowsAffected == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            conn.commit();  // 트랜잭션 커밋
+            return true;
+
+        } catch (SQLException e) {
+            Log.e(TAG, "트랜잭션 처리 중 오류", e);
+            return false;
+        }
+    }
+
 
 }
