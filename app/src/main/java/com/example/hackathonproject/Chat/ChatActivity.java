@@ -22,6 +22,7 @@ import com.example.hackathonproject.db.DatabaseConnection;
 import com.example.hackathonproject.Login.SessionManager;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -82,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
                 handler.postDelayed(this, 500); // 0.5초마다 반복 실행
             }
         };
+
         handler.post(refreshRunnable); // Runnable 실행 시작
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -130,6 +132,7 @@ public class ChatActivity extends AppCompatActivity {
                                         chatId = retrievedChatId;  // 가져온 채팅 ID를 저장
                                         initializeChatUI(loggedInUserId, otherUserName);
                                         loadChatMessages(); // 채팅 메시지를 로드합니다.
+                                        markMessagesAsRead(); // 메시지를 읽음으로 표시
                                     });
                                 }
 
@@ -143,6 +146,7 @@ public class ChatActivity extends AppCompatActivity {
                             // 기존 채팅방이 있을 때
                             initializeChatUI(loggedInUserId, otherUserName);
                             loadChatMessages();
+                            markMessagesAsRead(); // 메시지를 읽음으로 표시
                         }
                     }
 
@@ -292,6 +296,51 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    private void markMessagesAsRead() {
+        if (connection != null) {
+            new MarkMessagesAsReadTask().execute(chatId);
+        }
+    }
+
+    // 비동기로 메시지를 읽음으로 표시하는 AsyncTask 클래스
+    private class MarkMessagesAsReadTask extends AsyncTask<Integer, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            int chatId = params[0];
+            try (Connection conn = new DatabaseConnection().connect()) {
+                if (conn != null) {
+                    // 현재 사용자가 작성한 메시지가 아닌 경우에만 읽음 상태를 업데이트
+                    String query = "UPDATE Chat SET " +
+                            "IsAuthorMessageRead = CASE WHEN AuthorID <> ? THEN TRUE ELSE IsAuthorMessageRead END, " +
+                            "IsOtherUserMessageRead = CASE WHEN OtherUserID <> ? THEN TRUE ELSE IsOtherUserMessageRead END " +
+                            "WHERE ChatID = ?";
+                    try (PreparedStatement statement = conn.prepareStatement(query)) {
+                        statement.setInt(1, loggedInUserId); // 현재 사용자의 ID
+                        statement.setInt(2, loggedInUserId); // 현재 사용자의 ID
+                        statement.setInt(3, chatId);
+                        int rowsUpdated = statement.executeUpdate();
+                        return rowsUpdated > 0;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (success) {
+                Log.d("ChatActivity", "Messages marked as read.");
+                loadChatMessages(); // UI를 새로고침하여 아이콘이 사라지도록 함
+            } else {
+                Log.e("ChatActivity", "Failed to mark messages as read.");
+            }
+        }
+    }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 에러 메시지를 화면에 표시하는 메서드
