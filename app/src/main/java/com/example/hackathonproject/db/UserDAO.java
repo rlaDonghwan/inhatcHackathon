@@ -269,4 +269,61 @@ public class UserDAO {
         }
         return null; // 사용자가 없으면 null 반환
     }
+
+    // Method to get the company or school name by user ID
+    public String getBusinessNameByUserId(int userId) throws SQLException {
+        String sql = "SELECT CompanyName, SchoolName, Role FROM User WHERE UserID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String role = rs.getString("Role");
+                    if ("기관".equals(role)) {
+                        return rs.getString("CompanyName");
+                    } else if ("학교".equals(role)) {
+                        return rs.getString("SchoolName");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get business or school name by user ID", e);
+            throw e;
+        }
+        return null; // Return null if no matching record is found
+    }
+
+    public String getSchoolNameByUserId(int userId) throws SQLException {
+        String sql = "SELECT SchoolName FROM User WHERE UserID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("SchoolName");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get school name by user ID", e);
+            throw e;
+        }
+        return null; // 학교 이름이 없으면 null 반환
+    }
+
+    public String getUserRoleByUserId(int userId) throws SQLException {
+        String sql = "SELECT Role FROM User WHERE UserID = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Role");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get user role by user ID", e);
+            throw e;
+        }
+        return null;
+    }
 }

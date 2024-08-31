@@ -173,14 +173,15 @@
 
                                 <!-- 텍스트 섹션 -->
                                 <TextView
-                                    android:id="@+id/name2"
+                                    android:id="@+id/business_or_school"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="start"
                                     android:fontFamily="@font/nanumsquare_neo_eb"
                                     android:text="기관명"
                                     android:textColor="#757575"
-                                    android:textSize="15sp" />
+                                    android:textSize="15sp"
+                                    android:visibility="invisible"/>
                             </LinearLayout>
                         </LinearLayout>
 

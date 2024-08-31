@@ -34,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     private AuthManager authManager;
     private static final int PICK_IMAGE = 1;
     private ImageView profileImageView;
+    private TextView businessOrSchoolTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +49,14 @@ public class SettingsActivity extends AppCompatActivity {
         profileImageView = findViewById(R.id.profile_image);
         TextView profileNameTextView = findViewById(R.id.question);
         TextView balanceTextView = findViewById(R.id.title_time); // balance 값을 표시할 텍스트뷰
+        businessOrSchoolTextView = findViewById(R.id.business_or_school); // TextView for business/school name
         ImageView authorizationIcon = findViewById(R.id.authorization_icon);
 
         // 세션에서 사용자 정보 가져오기
         String userName = sessionManager.getUserName();
         int balance = sessionManager.getBalance(); // Balance 값을 가져옴
         int userId = sessionManager.getUserId();
+        String role = sessionManager.getUserRole(); // 역할 가져오기
 
         // 프로필 이름과 봉사 시간, Balance를 설정
         profileNameTextView.setText(userName);
@@ -66,8 +69,8 @@ public class SettingsActivity extends AppCompatActivity {
             authorizationIcon.setVisibility(View.GONE);
         }
 
-        // 프로필 이미지를 비동기로 로드
-        new LoadProfileImageTask(userId).execute();
+        // Load and display the business or school name
+        new LoadBusinessOrSchoolNameTask(userId, role).execute();
 
         // 프로필 이미지를 비동기로 로드
         new LoadProfileImageTask(userId).execute();
@@ -86,8 +89,6 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(SettingsActivity.this, SettingFontSizeActivity.class);
             startActivity(intent);
         });
-
-
 
         logoutOption.setOnClickListener(v -> {
             sessionManager.clearSession();  // 세션 정보 제거
@@ -129,7 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
             startActivityForResult(intent, PICK_IMAGE);
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -247,8 +247,40 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    // Task to load and display business or school name
+    private class LoadBusinessOrSchoolNameTask extends AsyncTask<Void, Void, String> {
+        private int userId;
+        private String role;
 
+        public LoadBusinessOrSchoolNameTask(int userId, String role) {
+            this.userId = userId;
+            this.role = role;
+        }
 
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                if (role.equals("기관")) {
+                    return authManager.getBusinessNameByUserId(userId);
+                } else if (role.equals("학교")) {
+                    return authManager.getSchoolNameByUserId(userId);
+                }
+                return null;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 
+        @Override
+        protected void onPostExecute(String name) {
+            if (name != null && !name.isEmpty()) {
+                businessOrSchoolTextView.setText(name);
+                businessOrSchoolTextView.setVisibility(View.VISIBLE);
+            } else {
+                businessOrSchoolTextView.setVisibility(View.GONE);
+            }
+        }
+    }
 
 }
