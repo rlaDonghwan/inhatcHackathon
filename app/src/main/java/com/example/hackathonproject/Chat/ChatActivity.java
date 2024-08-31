@@ -1,13 +1,16 @@
 package com.example.hackathonproject.Chat;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,9 @@ public class ChatActivity extends AppCompatActivity {
     private Handler handler;  // Handler for periodic updates
     private Runnable refreshRunnable;
     private ChatDAO chatDAO; // ChatDAO 객체 추가
+    private ImageButton chatMenuButton;
+
+
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -64,6 +70,12 @@ public class ChatActivity extends AppCompatActivity {
         educationID = getIntent().hasExtra("educationId") ? getIntent().getIntExtra("educationId", -1) : null;
         lectureID = getIntent().hasExtra("lectureId") ? getIntent().getIntExtra("lectureId", -1) : null;
 
+        // ImageButton 초기화
+        chatMenuButton = findViewById(R.id.chat_menu_button);
+
+        // ImageButton 클릭 시 PopupMenu 표시
+        chatMenuButton.setOnClickListener(view -> showPopupMenu(view));
+
         // UI 초기화
         initializeUI();
 
@@ -75,13 +87,217 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void run() {
                 loadChatMessages(); // 주기적으로 메시지를 로드합니다.
-                handler.postDelayed(this, 500); // 0.5초마다 반복 실행
+                handler.postDelayed(this, 2000); // 0.5초마다 반복 실행
             }
         };
 
         handler.post(refreshRunnable); // Runnable 실행 시작
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    private void showPopupMenu(View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+
+        // 채팅방 나가기 메뉴 추가
+        popup.getMenu().add(0, 0, 0, "채팅방 나가기");
+
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    Chat chat = chatDAO.getChatById(chatId);
+                    return loggedInUserId == chat.getAuthorID();
+                } catch (SQLException e) {
+                    Log.e(TAG, "Failed to fetch chat details", e);
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean isAuthor) {
+                if (isAuthor) {
+                    popup.getMenu().add(0, 1, 1, "약속 완료");
+                }
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case 0:
+                            leaveChatRoom();
+                            return true;
+                        case 1:
+                            completeAgreement();  // 약속 완료 메서드 호출
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+                popup.show();
+            }
+        }.execute();
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    @SuppressLint("StaticFieldLeak")
+    private void leaveChatRoom() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    ensureConnectionIsOpen(); // 연결 상태 확인
+
+                    if (chatDAO != null) {
+                        return chatDAO.deleteChatRoom(chatId); // 채팅방 삭제
+                    } else {
+                        return false;
+                    }
+                } catch (SQLException e) {
+                    Log.e(TAG, "Failed to delete chat room", e);
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    Toast.makeText(ChatActivity.this, "채팅방이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                    // 삭제 후 ChatListActivity로 돌아가기 전에 목록 새로고침을 트리거하는 코드 추가
+                    Intent returnIntent = new Intent();
+                    setResult(RESULT_OK, returnIntent);
+                    finish(); // 현재 액티비티를 종료하여 이전 화면으로 돌아감
+                } else {
+                    Toast.makeText(ChatActivity.this, "채팅방 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    @SuppressLint("StaticFieldLeak")
+    private void completeAgreement() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    ensureConnectionIsOpen(); // 연결 상태 확인
+
+                    int fee = 0;
+
+                    // Chat 테이블에서 EducationID 또는 LectureID 값을 가져오기
+                    String query = "SELECT EducationID, LectureID FROM Chat WHERE ChatID = ?";
+                    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.setInt(1, chatId);
+                        try (ResultSet rs = pstmt.executeQuery()) {
+                            if (rs.next()) {
+                                educationID = rs.getInt("EducationID");
+                                lectureID = rs.getInt("LectureID");
+                            }
+                        }
+                    }
+
+                    // EducationID가 있는 경우 해당 Fee 값을 가져옴
+                    if (educationID != null && educationID > 0) {
+                        Log.d(TAG, "Fetching fee for EducationID: " + educationID);
+                        String feeQuery = "SELECT Fee FROM Education WHERE EducationID = ?";
+                        try (PreparedStatement pstmt = connection.prepareStatement(feeQuery)) {
+                            pstmt.setInt(1, educationID);
+                            try (ResultSet rs = pstmt.executeQuery()) {
+                                if (rs.next()) {
+                                    fee = rs.getInt("Fee");
+                                    Log.d(TAG, "Fee for Education: " + fee);
+                                }
+                            }
+                        }
+                    }
+                    // LectureID가 있는 경우 해당 Fee 값을 가져옴
+                    else if (lectureID != null && lectureID > 0) {
+                        Log.d(TAG, "Fetching fee for LectureID: " + lectureID);
+                        String feeQuery = "SELECT Fee FROM Lecture WHERE LectureID = ?";
+                        try (PreparedStatement pstmt = connection.prepareStatement(feeQuery)) {
+                            pstmt.setInt(1, lectureID);
+                            try (ResultSet rs = pstmt.executeQuery()) {
+                                if (rs.next()) {
+                                    fee = rs.getInt("Fee");
+                                    Log.d(TAG, "Fee for Lecture: " + fee);
+                                }
+                            }
+                        }
+                    }
+
+                    if (fee > 0) {
+                        // Balance 업데이트
+                        Log.d(TAG, "Updating Balance for OtherUserID: " + otherUserId);
+                        String updateBalanceQuery = "UPDATE User SET Balance = Balance + ? WHERE UserID = ?";
+                        try (PreparedStatement pstmt = connection.prepareStatement(updateBalanceQuery)) {
+                            pstmt.setInt(1, fee);
+                            pstmt.setInt(2, otherUserId);
+                            int rowsUpdated = pstmt.executeUpdate();
+                            Log.d(TAG, "Balance updated, rows affected: " + rowsUpdated);
+                        }
+
+                        // Education 또는 Lecture 삭제
+                        if (educationID != null && educationID > 0) {
+                            Log.d(TAG, "Deleting Education record with ID: " + educationID);
+                            String deleteEducationQuery = "DELETE FROM Education WHERE EducationID = ?";
+                            try (PreparedStatement pstmt = connection.prepareStatement(deleteEducationQuery)) {
+                                pstmt.setInt(1, educationID);
+                                int rowsDeleted = pstmt.executeUpdate();
+                                Log.d(TAG, "Education deleted, rows affected: " + rowsDeleted);
+                            }
+                        } else if (lectureID != null && lectureID > 0) {
+                            Log.d(TAG, "Deleting Lecture record with ID: " + lectureID);
+                            String deleteLectureQuery = "DELETE FROM Lecture WHERE LectureID = ?";
+                            try (PreparedStatement pstmt = connection.prepareStatement(deleteLectureQuery)) {
+                                pstmt.setInt(1, lectureID);
+                                int rowsDeleted = pstmt.executeUpdate();
+                                Log.d(TAG, "Lecture deleted, rows affected: " + rowsDeleted);
+                            }
+                        }
+
+                        // Chat 메시지 삭제
+                        Log.d(TAG, "Deleting Chat Messages for ChatID: " + chatId);
+                        String deleteChatMessagesQuery = "DELETE FROM ChatMessage WHERE ChatID = ?";
+                        try (PreparedStatement pstmt = connection.prepareStatement(deleteChatMessagesQuery)) {
+                            pstmt.setInt(1, chatId);
+                            int rowsDeleted = pstmt.executeUpdate();
+                            Log.d(TAG, "Chat Messages deleted, rows affected: " + rowsDeleted);
+                        }
+
+                        // Chat 삭제
+                        Log.d(TAG, "Deleting Chat for ChatID: " + chatId);
+                        String deleteChatQuery = "DELETE FROM Chat WHERE ChatID = ?";
+                        try (PreparedStatement pstmt = connection.prepareStatement(deleteChatQuery)) {
+                            pstmt.setInt(1, chatId);
+                            int rowsDeleted = pstmt.executeUpdate();
+                            Log.d(TAG, "Chat deleted, rows affected: " + rowsDeleted);
+                        }
+
+                        return true;
+                    } else {
+                        Log.e(TAG, "Fee is 0, cannot complete agreement");
+                        return false;
+                    }
+                } catch (SQLException e) {
+                    Log.e(TAG, "약속 완료 처리 중 오류 발생", e);
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    Toast.makeText(ChatActivity.this, "약속이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                    Intent returnIntent = new Intent();
+                    setResult(RESULT_OK, returnIntent);
+                    finish(); // 현재 액티비티를 종료하여 이전 화면으로 돌아감
+                } else {
+                    Toast.makeText(ChatActivity.this, "약속 완료 처리에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private void initializeChatDAO() {
         DatabaseConnection databaseConnection = new DatabaseConnection();
@@ -384,6 +600,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }).start();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 연결이 유효한지 확인하고 필요하면 새로 연결하는 메서드
     private void ensureConnectionIsOpen() throws SQLException {
@@ -392,12 +609,27 @@ public class ChatActivity extends AppCompatActivity {
             chatDAO = new ChatDAO(connection); // 새로운 연결로 ChatDAO 초기화
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
         super.onResume();
         // 채팅방에 들어올 때 읽음 상태 업데이트
         markMessagesAsRead(chatId);
+
+        // 화면이 보일 때만 새로고침을 시작
+        handler.post(refreshRunnable);
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // 화면이 보이지 않으면 새로고침을 중지
+        if (handler != null && refreshRunnable != null) {
+            handler.removeCallbacks(refreshRunnable);
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 

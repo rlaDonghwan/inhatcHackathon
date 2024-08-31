@@ -36,7 +36,19 @@
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="35sp" />
+
+        <ImageButton
+            android:id="@+id/chat_menu_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="메뉴"
+            app:iconTint="@android:color/white"
+            tools:ignore="UsingOnClickInXml" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- RecyclerView for chat messages -->

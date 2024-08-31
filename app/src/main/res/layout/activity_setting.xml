@@ -122,38 +122,6 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                                <!-- 텍스트 섹션 -->
-                                <TextView
-                                    android:id="@+id/Vtitle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="start"
-                                    android:fontFamily="@font/nanumsquare_neo_eb"
-                                    android:text="봉사 | "
-                                    android:textColor="#757575"
-                                    android:textSize="15sp" />
-
-                                <TextView
-                                    android:id="@+id/title_Vtime"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="start"
-                                    android:layout_marginLeft="5dp"
-                                    android:fontFamily="@font/nanumsquare_neo_eb"
-                                    android:text="NN"
-                                    android:textColor="#757575"
-                                    android:textSize="17sp" />
-
-                                <TextView
-                                    android:id="@+id/Vtitle_time2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="start"
-                                    android:layout_marginLeft="5dp"
-                                    android:fontFamily="@font/nanumsquare_neo_eb"
-                                    android:text="시간"
-                                    android:textColor="#757575"
-                                    android:textSize="15sp" />
 
 
                             </LinearLayout>

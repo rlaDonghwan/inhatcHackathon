@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="채팅"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Filter buttons -->
@@ -49,7 +49,7 @@
             android:text="전체"
             android:fontFamily="@font/nanumsquare_neo_eb"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="20sp" />
 
         <!-- 판매 Button -->
         <TextView
@@ -63,7 +63,7 @@
             android:text="교육"
             android:fontFamily="@font/nanumsquare_neo_eb"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="20sp" />
 
         <!-- 구매 Button -->
         <TextView
@@ -77,7 +77,7 @@
             android:text="강연"
             android:fontFamily="@font/nanumsquare_neo_eb"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 

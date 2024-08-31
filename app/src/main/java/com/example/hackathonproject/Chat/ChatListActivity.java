@@ -109,7 +109,7 @@ public class ChatListActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // ChatListActivity에서 클릭 이벤트 처리 부분
+        // ChatListActivity에서 ChatActivity를 시작하는 코드
         chatListView.setOnItemClickListener((parent, view, position, id) -> {
             Chat selectedChat = filteredChatList.get(position);
 
@@ -126,10 +126,10 @@ public class ChatListActivity extends AppCompatActivity {
             intent.putExtra("otherUserId", selectedChat.getCounterpartUserID(loggedInUserId));
             intent.putExtra("educationID", selectedChat.getEducationID());
             intent.putExtra("lectureID", selectedChat.getLectureID());
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         });
 
-        // 주기적으로 채팅 목록을 새로고침하기 위한 Runnable 설정
+        // Handler와 Runnable 설정
         handler = new Handler(Looper.getMainLooper());
         refreshRunnable = new Runnable() {
             @Override
@@ -138,26 +138,47 @@ public class ChatListActivity extends AppCompatActivity {
                 handler.postDelayed(this, 1000); // 1초마다 반복 실행
             }
         };
-
-        handler.post(refreshRunnable); // Runnable 실행 시작
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // 액티비티가 화면에 보일 때마다 채팅 목록을 새로 로드
-        swipeRefreshLayout.setRefreshing(true);
-        new LoadChatListTask(new DatabaseConnection()).execute();
+        refreshChatList();  // 새로 고침 함수 호출
+        handler.post(refreshRunnable); // Runnable 실행 시작
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (handler != null && refreshRunnable != null) {
+            handler.removeCallbacks(refreshRunnable); // 화면이 보이지 않으면 새로고침을 중지
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // 채팅방 삭제 후 돌아왔을 때 목록을 새로 고침
+            refreshChatList();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Handler의 반복 실행을 중지하기 전에 null 확인
         if (handler != null && refreshRunnable != null) {
-            handler.removeCallbacks(refreshRunnable);
+            handler.removeCallbacks(refreshRunnable); // 반복 실행 중지
         }
     }
+
+// 나머지 코드 그대로 유지
+
+    private void refreshChatList() {
+        swipeRefreshLayout.setRefreshing(true);
+        new LoadChatListTask(new DatabaseConnection()).execute();
+    }
+
 
     // 비동기로 채팅 목록을 로드하는 AsyncTask 클래스
     private class LoadChatListTask extends AsyncTask<Void, Void, List<Chat>> {
@@ -205,6 +226,7 @@ public class ChatListActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 필터 버튼 클릭 시 선택된 버튼을 강조하고 필터를 설정하는 메서드
     private void setFilter(TextView selectedButton, String filterType) {
@@ -215,28 +237,44 @@ public class ChatListActivity extends AppCompatActivity {
         selectedButton.setBackgroundResource(R.drawable.round_button_background_selected);
 
         // 필터링 로직
-        if (filterType.equals("전체")) {
-            filteredChatList = new ArrayList<>(chatList);  // 전체 채팅을 표시
-        } else if (filterType.equals("교육")) {
-            filteredChatList = new ArrayList<>();
-            for (Chat chat : chatList) {
-                if (chat.getEducationID() != null && chat.getEducationID() > 0) {
-                    filteredChatList.add(chat);  // 교육 ID가 있는 채팅만 추가
+        if (chatList == null || chatList.isEmpty()) {
+            Log.e("ChatListActivity", "채팅 목록이 없습니다.");
+            filteredChatList = new ArrayList<>();  // 빈 목록으로 초기화
+        } else {
+            if (filterType.equals("전체")) {
+                filteredChatList = new ArrayList<>(chatList);  // 전체 채팅을 표시
+            } else if (filterType.equals("교육")) {
+                filteredChatList = new ArrayList<>();
+                for (Chat chat : chatList) {
+                    if (chat.getEducationID() != null && chat.getEducationID() > 0) {
+                        filteredChatList.add(chat);  // 교육 ID가 있는 채팅만 추가
+                    }
+                }
+            } else if (filterType.equals("강연")) {
+                filteredChatList = new ArrayList<>();
+                for (Chat chat : chatList) {
+                    if (chat.getLectureID() != null && chat.getLectureID() > 0) {
+                        filteredChatList.add(chat);  // 강연 ID가 있는 채팅만 추가
+                    }
                 }
             }
-        } else if (filterType.equals("강연")) {
-            filteredChatList = new ArrayList<>();
-            for (Chat chat : chatList) {
-                if (chat.getLectureID() != null && chat.getLectureID() > 0) {
-                    filteredChatList.add(chat);  // 강연 ID가 있는 채팅만 추가
-                }
+
+            if (filteredChatList.isEmpty()) {
+                Log.e("ChatListActivity", "필터링된 채팅 목록이 없습니다.");
             }
         }
 
-        // 필터링된 채팅 목록을 어댑터에 설정
-        chatListAdapter.updateChatList(filteredChatList);
-        chatListAdapter.notifyDataSetChanged();
+        // chatListAdapter가 초기화되지 않은 경우 초기화
+        if (chatListAdapter == null) {
+            chatListAdapter = new ChatListAdapter(ChatListActivity.this, filteredChatList, loggedInUserId);
+            chatListView.setAdapter(chatListAdapter);
+        } else {
+            // 필터링된 채팅 목록을 어댑터에 설정
+            chatListAdapter.updateChatList(filteredChatList);
+            chatListAdapter.notifyDataSetChanged();
+        }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 필터 버튼의 선택 상태를 초기화하는 메서드
     private void resetFilterButtons() {
@@ -248,4 +286,5 @@ public class ChatListActivity extends AppCompatActivity {
             button.setBackgroundResource(R.drawable.round_button_background);
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

@@ -290,6 +290,23 @@ public class ChatDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 
+    // 채팅방 삭제 메서드
+    public boolean deleteChatRoom(int chatId) throws SQLException {
+        try (PreparedStatement deleteMessagesStmt = connection.prepareStatement("DELETE FROM ChatMessage WHERE ChatID = ?");
+             PreparedStatement deleteChatStmt = connection.prepareStatement("DELETE FROM Chat WHERE ChatID = ?")) {
+
+            // 채팅방의 모든 메시지 삭제
+            deleteMessagesStmt.setInt(1, chatId);
+            deleteMessagesStmt.executeUpdate();
+
+            // 채팅방 삭제
+            deleteChatStmt.setInt(1, chatId);
+            int rowsAffected = deleteChatStmt.executeUpdate();
+
+            return rowsAffected > 0;
+        }
+    }
+
     // ChatRoomCallback 인터페이스 정의
     public interface ChatRoomCallback {
         void onSuccess(int chatId);
