@@ -1,6 +1,9 @@
 package com.example.hackathonproject.Chat;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         // 두 컨테이너 모두 초기화하여 안보이도록 설정
         holder.myMessageContainer.setVisibility(View.GONE);
         holder.otherMessageContainer.setVisibility(View.GONE);
+
+        // SharedPreferences에서 폰트 크기 가져오기
+        SharedPreferences preferences = holder.itemView.getContext().getSharedPreferences("fontSizePrefs", Context.MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 폰트 크기를 적용
+        holder.myMessageTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        holder.otherMessageTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        holder.myMessageTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        holder.otherMessageTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
 
         if (message.getSenderUserId() == loggedInUserId) {
             // 내가 보낸 메시지인 경우
