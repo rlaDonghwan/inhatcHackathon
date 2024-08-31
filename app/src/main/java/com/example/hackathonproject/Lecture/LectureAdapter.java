@@ -1,8 +1,11 @@
 package com.example.hackathonproject.Lecture;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,8 +60,17 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용
         DecimalFormat df = new DecimalFormat("#,###");
         holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");  // 강연료 설정
+
+        // 이미지 데이터를 ImageView에 설정
+        if (post.getImageData() != null && post.getImageData().length > 0) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(post.getImageData(), 0, post.getImageData().length);
+            holder.contentImage.setImageBitmap(bitmap);
+        } else {
+            holder.contentImage.setImageResource(R.drawable.placeholder);  // 이미지가 없는 경우 기본 이미지 설정
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 
     private String formatTimeAgo(String createdAt) {
         // "2024-08-19 18:03:19.0"에서 ".0" 제거
@@ -116,6 +128,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
     public class LectureViewHolder extends RecyclerView.ViewHolder {
         public TextView postTitle, postDetails, postViews, postFee; // 뷰 요소들
+        public ImageView contentImage;
 
         public LectureViewHolder(View itemView) {
             super(itemView);
@@ -124,6 +137,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             postDetails = itemView.findViewById(R.id.postDetails);
             postViews = itemView.findViewById(R.id.postViews);
             postFee = itemView.findViewById(R.id.postFee);
+            contentImage = itemView.findViewById(R.id.content_image);
 
             // 아이템 뷰 클릭 시 리스너 호출
             itemView.setOnClickListener(v -> {

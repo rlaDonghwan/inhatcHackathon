@@ -27,4 +27,10 @@ public class EducationManager {
         return educationDAO.getAllEducationPosts();
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    public byte[] getEducationImage(int educationId) {
+        return educationDAO.getEducationImage(educationId);
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 }

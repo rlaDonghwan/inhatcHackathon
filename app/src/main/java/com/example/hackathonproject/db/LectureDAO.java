@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,9 +46,12 @@ public class LectureDAO {
 
     // 모든 강연 게시글을 가져오는 메서드
     public List<LecturePost> getAllLecturePosts() {
-        List<LecturePost> postList = new ArrayList<>();
-        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt, IsYouthAudienceAllowed " +
-                "FROM Lecture l JOIN User u ON l.UserID = u.UserID";
+        String sql = "SELECT Lecture.LectureID, Lecture.UserID, User.Name, Lecture.Title, Lecture.Content, Lecture.Location, Lecture.CreatedAt, Lecture.CompletedAt, Lecture.Fee, Lecture.Views, Lecture.isYouthAudienceAllowed, LectureImage.ImageData " +
+                "FROM Lecture " +
+                "LEFT JOIN User ON Lecture.UserID = User.UserID " +  // User 테이블과 조인하여 작성자 이름 가져오기
+                "LEFT JOIN LectureImage ON Lecture.LectureID = LectureImage.LectureID"; // LectureImage 테이블과 조인하여 이미지 데이터 가져오기
+
+        List<LecturePost> posts = new ArrayList<>();
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -56,29 +60,36 @@ public class LectureDAO {
             while (rs.next()) {
                 int lectureId = rs.getInt("LectureID");
                 int userId = rs.getInt("UserID");
-                String userName = rs.getString("Name");
+                String userName = rs.getString("Name");  // 작성자 이름 가져오기
                 String title = rs.getString("Title");
                 String content = rs.getString("Content");
                 String location = rs.getString("Location");
-                double fee = rs.getDouble("Fee");
-                int views = rs.getInt("Views");
                 String createdAt = rs.getString("CreatedAt");
                 String completedAt = rs.getString("CompletedAt");
-                boolean isYouthAudienceAllowed = rs.getBoolean("IsYouthAudienceAllowed");
+                double fee = rs.getDouble("Fee");
+                int views = rs.getInt("Views");
+                boolean isYouthAudienceAllowed = rs.getBoolean("isYouthAudienceAllowed");
+                byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
-                postList.add(new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed));
+                // LecturePost 객체 생성
+                LecturePost post = new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed, imageData);
+                posts.add(post);
             }
         } catch (SQLException e) {
-            Log.e(TAG, "강연 게시글 불러오기 실패", e);
+            e.printStackTrace();
         }
-        return postList;
+
+        return posts;
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 강연 게시글을 가져오는 메서드
     public LecturePost getLecturePostById(int lectureId) {
-        String sql = "SELECT LectureID, l.UserID, u.Name, Title, Content, Location, Fee, Views, CreatedAt, CompletedAt, IsYouthAudienceAllowed " +
-                "FROM Lecture l JOIN User u ON l.UserID = u.UserID WHERE LectureID = ?";
+        String sql = "SELECT l.LectureID, l.UserID, u.Name, l.Title, l.Content, l.Location, l.Fee, l.Views, l.CreatedAt, l.CompletedAt, l.IsYouthAudienceAllowed, li.ImageData " +
+                "FROM Lecture l " +
+                "JOIN User u ON l.UserID = u.UserID " +
+                "LEFT JOIN LectureImage li ON l.LectureID = li.LectureID " +  // LectureImage 테이블과 조인하여 이미지 데이터를 가져옴
+                "WHERE l.LectureID = ?";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -95,8 +106,9 @@ public class LectureDAO {
                     String createdAt = rs.getString("CreatedAt");
                     String completedAt = rs.getString("CompletedAt");
                     boolean isYouthAudienceAllowed = rs.getBoolean("IsYouthAudienceAllowed");
+                    byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
-                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed);
+                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed, imageData);
                 }
             }
         } catch (SQLException e) {
@@ -105,6 +117,7 @@ public class LectureDAO {
         return null;
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 
     // 강연 게시글의 조회수를 증가시키는 메서드
     public void incrementLecturePostViews(int lectureId) {
@@ -158,4 +171,62 @@ public class LectureDAO {
         }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 강연 게시글과 이미지를 함께 삽입하는 메서드
+    public boolean submitLectureWithImage(String title, String content, String location, double fee, int userId, ZonedDateTime kstTime, boolean isYouthAudienceAllowed, byte[] imageData) {
+        String insertLectureSql = "INSERT INTO Lecture (UserID, Title, Content, Location, Fee, CreatedAt, isYouthAudienceAllowed) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertImageSql = "INSERT INTO LectureImage (LectureID, ImageData) VALUES (?, ?)";
+
+        try (Connection conn = dbConnection.connect()) {
+            conn.setAutoCommit(false);  // 트랜잭션 시작
+
+            int lectureId;
+            // 1. 강연 게시글 삽입
+            try (PreparedStatement pstmt = conn.prepareStatement(insertLectureSql, Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.setInt(1, userId);
+                pstmt.setString(2, title);
+                pstmt.setString(3, content);
+                pstmt.setString(4, location);
+                pstmt.setDouble(5, fee);
+                pstmt.setString(6, kstTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                pstmt.setBoolean(7, isYouthAudienceAllowed);
+
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    return false;
+                }
+
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        lectureId = generatedKeys.getInt(1);
+                    } else {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            // 2. 이미지 삽입
+            if (imageData != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(insertImageSql)) {
+                    pstmt.setInt(1, lectureId);
+                    pstmt.setBytes(2, imageData);
+
+                    int imageRowsAffected = pstmt.executeUpdate();
+                    if (imageRowsAffected == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            conn.commit();  // 트랜잭션 커밋
+            return true;
+
+        } catch (SQLException e) {
+            Log.e(TAG, "트랜잭션 처리 중 오류", e);
+            return false;
+        }
+    }
 }

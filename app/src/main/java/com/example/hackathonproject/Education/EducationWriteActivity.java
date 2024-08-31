@@ -1,13 +1,16 @@
 package com.example.hackathonproject.Education;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,10 +19,16 @@ import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.EducationDAO;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class EducationWriteActivity extends AppCompatActivity {
+
     private EditText titleEditText;  // 제목을 입력하는 EditText
     private EditText descriptionEditText;  // 내용을 입력하는 EditText
     private EditText priceEditText;  // 금액을 입력하는 EditText
@@ -29,6 +38,9 @@ public class EducationWriteActivity extends AppCompatActivity {
     private EducationDAO educationDAO;  // 데이터베이스 접근 객체
     private SessionManager sessionManager;  // 사용자 세션 관리 객체
     private int educationId = -1; // 수정 시 사용할 교육 게시글 ID
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri imageUri;
+
 
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -100,9 +112,40 @@ public class EducationWriteActivity extends AppCompatActivity {
             submitButton.setOnClickListener(v -> submitEducation());  // 제출 버튼 클릭 시 처리
             toolbarTitle.setText("교육 신청");
         }
+
+        Button imageButton = findViewById(R.id.image_button);
+        imageButton.setOnClickListener(v -> openImagePicker());
+
+        // 기존 submitButton 클릭 리스너에서 추가적인 이미지 처리 로직을 넣어줍니다.
+        submitButton.setOnClickListener(v -> {
+            if (educationId != -1) {
+                updateEducationPost();
+            } else {
+                submitEducation();
+            }
+        });
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    private void openImagePicker() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            ImageView imagePreview = findViewById(R.id.image_preview);
+            imagePreview.setVisibility(View.VISIBLE);
+            imagePreview.setImageURI(imageUri);
+        }
+    }
+
 
     // 새 교육 게시글을 등록하는 메서드
     private void submitEducation() {
@@ -118,7 +161,7 @@ public class EducationWriteActivity extends AppCompatActivity {
         }
 
         // 비동기 작업으로 게시글 등록
-        new SubmitEducationTask().execute(title, category, description, "서울", fee);  // 위치는 임의로 "서울"로 설정
+        new SubmitEducationTask().execute(title, category, description, "서울", fee, imageUri); // 위치는 임의로 "서울"로 설정
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -140,7 +183,6 @@ public class EducationWriteActivity extends AppCompatActivity {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 비동기 작업으로 새 게시글을 데이터베이스에 등록하는 클래스
     private class SubmitEducationTask extends AsyncTask<Object, Void, Boolean> {
 
         @Override
@@ -150,38 +192,51 @@ public class EducationWriteActivity extends AppCompatActivity {
             String description = (String) params[2];
             String location = (String) params[3];
             int fee = (int) params[4];
-            int userId = sessionManager.getUserId(); // SessionManager를 통해 사용자 ID 가져오기
+            int userId = sessionManager.getUserId();
+            Uri imageUri = params.length > 5 ? (Uri) params[5] : null;
 
-            if (userId == -1) {
-                Log.e("SubmitEducationTask", "Invalid user ID: " + userId);
-                return false; // 사용자 ID가 유효하지 않으면 실패 처리
+            byte[] imageBytes = null;
+            if (imageUri != null) {
+                imageBytes = getImageBytes(imageUri);
             }
 
-            try {
-                // 현재 시간을 한국 표준시(KST)로 변환
-                ZonedDateTime kstTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-                Log.d("SubmitEducationTask", "KST Time: " + kstTime);
-
-                // 데이터를 데이터베이스에 삽입
-                return educationDAO.insertEducationPost(title, category, description, location, fee, userId, kstTime);
-            } catch (Exception e) {
-                Log.e("SubmitEducationTask", "Error inserting post", e);
-                return false;
-            }
+            // EducationDAO의 메서드를 호출하여 게시글과 이미지를 함께 처리
+            return educationDAO.submitEducationWithImage(title, category, description, location, fee, userId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")), imageBytes);
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Toast.makeText(EducationWriteActivity.this, "게시글이 성공적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();  // 성공 메시지 표시
-                setResult(RESULT_OK);  // 결과 설정
-                finish();  // 액티비티 종료
+                Toast.makeText(EducationWriteActivity.this, "게시글이 성공적으로 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
             } else {
-                Toast.makeText(EducationWriteActivity.this, "게시글 등록에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
+                Toast.makeText(EducationWriteActivity.this, "게시글 등록에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private byte[] getImageBytes(Uri uri) {
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+                ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+                int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
+
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    byteBuffer.write(buffer, 0, len);
+                }
+                return byteBuffer.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
         }
     }
+
+
+
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업으로 기존 게시글을 데이터베이스에서 수정하는 클래스

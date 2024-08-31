@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Chat.ChatActivity;
 import com.example.hackathonproject.db.ChatDAO;
 import com.example.hackathonproject.db.DatabaseConnection;
@@ -37,11 +39,13 @@ import java.time.temporal.ChronoUnit;
 
 public class EducationContentView extends AppCompatActivity {
     private int educationId;  // 게시글 ID를 저장할 변수
-    private TextView contentTextView, titleTextView, teacherNameTextView, dateTextView, feeTextView, locationTextView; // UI 요소들
+    private TextView contentTextView, titleTextView, teacherNameTextView, dateTextView, feeTextView,locationTextView; // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
     private EducationDAO educationDAO;  // 데이터베이스 접근 객체
     private EducationPost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
+    private ImageView contentImageView;  // 이미지 뷰를 저장할 변수
+
 
     // 로그인한 사용자의 ID를 가져오는 메서드
     private int getLoggedInUserId() {
@@ -78,6 +82,8 @@ public class EducationContentView extends AppCompatActivity {
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
         feeTextView = findViewById(R.id.work_price);
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
+        contentImageView = findViewById(R.id.content_image);  // 이미지 뷰 초기화
+
 
         menuButton.setOnClickListener(this::showPopupMenu);  // 메뉴 버튼 클릭 시 팝업 메뉴 표시
 
@@ -205,6 +211,20 @@ public class EducationContentView extends AppCompatActivity {
                 feeTextView.setText(df.format(post.getFee()));  // 강연료 설정
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
+
+                byte[] imageData = post.getImageData();  // EducationPost 객체에서 이미지 데이터 가져오기
+                if (imageData != null && imageData.length > 0) {
+                    Log.d("EducationContentView", "Image data size: " + imageData.length);
+                    Glide.with(EducationContentView.this)
+                            .asBitmap()  // 바이트 배열을 Bitmap으로 처리
+                            .load(imageData)
+                            .placeholder(R.drawable.placeholder)  // 로딩 중에 표시할 이미지
+                            .error(R.drawable.error_image)  // 오류 시 표시할 이미지
+                            .into(contentImageView);  // 이미지뷰에 설정
+                } else {
+                    Log.d("EducationContentView", "No image data found, using placeholder.");
+                    contentImageView.setImageResource(R.drawable.placeholder);  // 기본 이미지 설정
+                }
 
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);

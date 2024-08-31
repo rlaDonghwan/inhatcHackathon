@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +41,7 @@ public class LectureContentView extends AppCompatActivity {
     private int lectureId;  // 강연 ID를 저장할 변수
     private TextView contentTextView, titleTextView, lecturerNameTextView, dateTextView, feeTextView, locationTextView;  // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
+    private ImageView contentImageView;  // 추가된 이미지뷰 참조
     private LectureDAO lectureDAO;  // 데이터베이스 접근 객체
     private LecturePost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
@@ -78,6 +82,7 @@ public class LectureContentView extends AppCompatActivity {
         feeTextView = findViewById(R.id.work_price);  // 강연료 텍스트뷰
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
+        contentImageView = findViewById(R.id.content_image);  // 이미지뷰 참조
 
         // 메뉴 버튼 클릭 시 팝업 메뉴 표시
         menuButton.setOnClickListener(this::showPopupMenu);
@@ -194,6 +199,15 @@ public class LectureContentView extends AppCompatActivity {
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
+                // 이미지 설정
+                byte[] imageData = post.getImageData();
+                if (imageData != null && imageData.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                    contentImageView.setImageBitmap(bitmap);  // 이미지 설정
+                } else {
+                    contentImageView.setVisibility(View.GONE);  // 이미지가 없을 경우 ImageView 숨기기
+                }
+
                 int loggedInUserId = getLoggedInUserId();
                 Button btnApply = findViewById(R.id.btnApply);
                 if (loggedInUserId == post.getUserId()) {
@@ -260,6 +274,7 @@ public class LectureContentView extends AppCompatActivity {
             return days + "일 전";
         }
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 팝업 메뉴를 보여주는 메서드
@@ -303,30 +318,26 @@ public class LectureContentView extends AppCompatActivity {
 
     // 강연 삭제를 확인하는 메서드
     private void confirmDeleteLecture() {
-        new AlertDialog.Builder(this)
-                .setTitle("강연 삭제")  // 다이얼로그 제목 설정
+        new AlertDialog.Builder(this).setTitle("강연 삭제")  // 다이얼로그 제목 설정
                 .setMessage("정말로 이 게시글을 삭제하시겠습니까?")  // 다이얼로그 메시지 설정
                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {  // 삭제 버튼 설정
                     public void onClick(DialogInterface dialog, int which) {
                         deleteLecture();  // 강연 삭제 메서드 호출
                     }
-                })
-                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 완료를 확인하는 메서드
     private void confirmCompleteLecture() {
-        new AlertDialog.Builder(this)
-                .setTitle("게시글 완료")  // 다이얼로그 제목 설정
+        new AlertDialog.Builder(this).setTitle("게시글 완료")  // 다이얼로그 제목 설정
                 .setMessage("정말로 이 게시글을 완료하시겠습니까? 완료된 게시글은 삭제됩니다.")  // 다이얼로그 메시지 설정
                 .setPositiveButton("완료", new DialogInterface.OnClickListener() {  // 완료 버튼 설정
                     public void onClick(DialogInterface dialog, int which) {
                         deleteLecture();  // 강연 삭제 메서드 호출
                     }
-                })
-                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
