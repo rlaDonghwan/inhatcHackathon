@@ -111,18 +111,28 @@ public class SignUpActivity extends AppCompatActivity {
                 month = month.length() == 1 ? "0" + month : month;
                 day = day.length() == 1 ? "0" + day : day;
 
+                // birthYear의 길이가 4자리인지 확인
+                if (birthYear.length() != 4) {
+                    Toast.makeText(SignUpActivity.this, "올바른 생년을 입력하세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String birthDate = birthYear + month + day;
 
                 // 인증이 필요한 경우
                 if (isOrganization || isSchool) {
-                    // 인증 화면으로 이동
+                    // 인증 화면으로 이동하면서 데이터를 전달
                     Intent intent = new Intent(SignUpActivity.this, CertificationActivity.class);
+                    intent.putExtra("name", name);
+                    intent.putExtra("password", password);
+                    intent.putExtra("phoneNum", phoneNum);
+                    intent.putExtra("birthDate", birthDate);
                     intent.putExtra("isOrganization", isOrganization);
                     intent.putExtra("isSchool", isSchool);
                     startActivity(intent);
                 } else {
-                    // 회원가입 작업 실행
-                    new RegisterUserTask().execute(name, password, phoneNum, birthDate, isOrganization);
+                    // 인증이 필요 없는 경우 바로 회원가입 처리
+                    new RegisterUserTask().execute(name, password, phoneNum, birthDate, isOrganization, null, null);
                 }
             }
         });
@@ -189,9 +199,11 @@ public class SignUpActivity extends AppCompatActivity {
             String phoneNum = (String) params[2];
             String birthDate = (String) params[3];
             boolean isOrganization = (boolean) params[4];
+            String companyName = (String) params[5];  // companyName is null if not organization
+            String schoolName = (String) params[6];   // schoolName is null if not school
 
             try {
-                return authManager.registerUser(name, password, phoneNum, birthDate, isOrganization);
+                return authManager.registerUser(name, password, phoneNum, birthDate, isOrganization, companyName, schoolName);
             } catch (SQLException e) {
                 return false;
             }

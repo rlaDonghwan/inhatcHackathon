@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,12 +13,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hackathonproject.R;
+import com.example.hackathonproject.db.AuthManager;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +34,11 @@ public class CertificationActivity extends AppCompatActivity {
     private Button companyCertifyButton;
     private ArrayList<String> companyList;
     private ArrayList<String> schoolList;
+
+    private String name;
+    private String password;
+    private String phoneNum;
+    private String birthDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +57,23 @@ public class CertificationActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
 
-        // SignUpActivity에서 넘어온 Intent 데이터 받기
-        boolean isSchoolChecked = getIntent().getBooleanExtra("isSchool", false);
-        boolean isCompanyChecked = getIntent().getBooleanExtra("isOrganization", false);
+        // 이전 Activity에서 전달된 데이터 받기
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+        password = intent.getStringExtra("password");
+        phoneNum = intent.getStringExtra("phoneNum");
+        birthDate = intent.getStringExtra("birthDate");
+        boolean isOrganization = intent.getBooleanExtra("isOrganization", false);
+        boolean isSchool = intent.getBooleanExtra("isSchool", false);
 
-        // 초기 상태 설정
-        schoolNameInput.setEnabled(isSchoolChecked);
-        schoolCertifyButton.setEnabled(isSchoolChecked);
-        companyNameInput.setEnabled(isCompanyChecked);
-        companyCertifyButton.setEnabled(isCompanyChecked);
+        // 필드 활성화/비활성화 설정
+        setupFieldActivation(isSchool, isOrganization);
 
-        // 학교 인증 버튼 클릭 이벤트
-        schoolCertifyButton.setOnClickListener(v -> {
+        // 검색 버튼 추가 및 클릭 리스너 설정
+        ImageButton schoolSearchButton = findViewById(R.id.school_search_button);
+        ImageButton companySearchButton = findViewById(R.id.company_search_button);
+
+        schoolSearchButton.setOnClickListener(v -> {
             String schoolName = schoolNameInput.getText().toString().trim();
             if (!schoolName.isEmpty()) {
                 new SchoolCertificationTask().execute(schoolName);
@@ -71,8 +82,7 @@ public class CertificationActivity extends AppCompatActivity {
             }
         });
 
-        // 기관 인증 버튼 클릭 이벤트
-        companyCertifyButton.setOnClickListener(v -> {
+        companySearchButton.setOnClickListener(v -> {
             String companyName = companyNameInput.getText().toString().trim();
             if (!companyName.isEmpty()) {
                 new CompanyCertificationTask().execute(companyName);
@@ -80,6 +90,24 @@ public class CertificationActivity extends AppCompatActivity {
                 Toast.makeText(CertificationActivity.this, "기관 이름을 입력하세요", Toast.LENGTH_SHORT).show();
             }
         });
+
+        // 인증 버튼 클릭 이벤트 추가
+        schoolCertifyButton.setOnClickListener(v -> verifyAndRegister("school", schoolNameInput.getText().toString(), null));
+        companyCertifyButton.setOnClickListener(v -> verifyAndRegister("company", null, companyNameInput.getText().toString()));
+    }
+
+    private void setupFieldActivation(boolean isSchool, boolean isOrganization) {
+        if (isSchool) {
+            schoolNameInput.setEnabled(true);
+            schoolCertifyButton.setEnabled(true);
+            companyNameInput.setEnabled(false);
+            companyCertifyButton.setEnabled(false);
+        } else if (isOrganization) {
+            schoolNameInput.setEnabled(false);
+            schoolCertifyButton.setEnabled(false);
+            companyNameInput.setEnabled(true);
+            companyCertifyButton.setEnabled(true);
+        }
     }
 
     @Override
@@ -89,6 +117,91 @@ public class CertificationActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private void verifyAndRegister(String type, String schoolName, String companyName) {
+        String institutionName = type.equals("school") ? schoolName : companyName;
+        if (institutionName == null || institutionName.isEmpty()) {
+            Toast.makeText(this, "이름을 입력하세요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 사용자 존재 여부 확인 및 학교 또는 기관 인증 작업 실행
+        new VerifyTask().execute(type, institutionName, name, password, phoneNum, birthDate, schoolName, companyName);
+    }
+
+    private class VerifyTask extends AsyncTask<Object, Void, Boolean> {
+
+        private String type;
+        private String inputName;
+        private String schoolName;
+        private String companyName;
+        private String existingUserName;
+
+        @Override
+        protected Boolean doInBackground(Object... params) {
+            type = (String) params[0];
+            inputName = (String) params[1];
+            schoolName = (String) params[6];
+            companyName = (String) params[7];
+
+            AuthManager authManager = new AuthManager();
+            try {
+                // 사용자 존재 여부 확인
+                existingUserName = authManager.getUserNameByPhone(phoneNum);
+                if (existingUserName != null) {
+                    return false; // 이미 존재하는 사용자
+                }
+
+                String apiUrl;
+                if (type.equals("school")) {
+                    apiUrl = "https://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=5b97e5ba11232b7661bc0c69df34e5bd&svcType=api&svcCode=SCHOOL&contentType=xml&gubun=univ_list&searchSchulNm=" + inputName;
+                } else {
+                    apiUrl = "https://apis.data.go.kr/1160100/service/GetCorpBasicInfoService_V2/getCorpOutline_V2?ServiceKey=z%2F5j97wfXdV4OfQ1Ze%2FszF79mEXa4NL2O0CVaRm5J7D4mxFJJvqbR%2BLrgvwAv%2FTExOmAxygPZu6HDNc9SezHTw%3D%3D&pageNo=1&numOfRows=20&resultType=xml&corpNm=" + inputName;
+                }
+
+                URL url = new URL(apiUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(connection.getInputStream());
+
+                NodeList nodeList = type.equals("school") ? doc.getElementsByTagName("schoolName") : doc.getElementsByTagName("corpNm");
+
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    if (inputName.equals(nodeList.item(i).getTextContent())) {
+                        return true; // 인증 성공
+                    }
+                }
+
+                return false; // 인증 실패
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isVerified) {
+            if (existingUserName != null) {
+                Toast.makeText(CertificationActivity.this, existingUserName + "님, 이미 존재하는 사용자입니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (isVerified) {
+                // 인증 성공 메시지 표시 및 회원가입 완료 처리
+                Toast.makeText(CertificationActivity.this, inputName + " 인증 완료! 회원가입을 완료합니다.", Toast.LENGTH_SHORT).show();
+
+                // 회원가입 작업 실행
+                new RegisterUserTask().execute(name, password, phoneNum, birthDate, type.equals("company"), companyName, schoolName);
+
+            } else {
+                Toast.makeText(CertificationActivity.this, inputName + " 인증 실패. 다시 시도하세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     // 학교 인증 처리
@@ -182,7 +295,7 @@ public class CertificationActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String selectedSchool = schoolList.get(which);
                 schoolNameInput.setText(selectedSchool);
-                Toast.makeText(CertificationActivity.this, "선택된 학교: " + selectedSchool, Toast.LENGTH_SHORT).show();
+                schoolCertifyButton.setEnabled(true);
             }
         });
         builder.show();
@@ -197,9 +310,43 @@ public class CertificationActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String selectedCompany = companyList.get(which);
                 companyNameInput.setText(selectedCompany);
-                Toast.makeText(CertificationActivity.this, "선택된 기관: " + selectedCompany, Toast.LENGTH_SHORT).show();
+                companyCertifyButton.setEnabled(true);
             }
         });
         builder.show();
+    }
+
+    // 회원가입 작업을 백그라운드에서 처리하는 AsyncTask 클래스
+    private class RegisterUserTask extends AsyncTask<Object, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Object... params) {
+            String name = (String) params[0];
+            String password = (String) params[1];
+            String phoneNum = (String) params[2];
+            String birthDate = (String) params[3];
+            boolean isOrganization = (boolean) params[4];
+            String companyName = (String) params[5];
+            String schoolName = (String) params[6];
+
+            try {
+                AuthManager authManager = new AuthManager();
+                return authManager.registerUser(name, password, phoneNum, birthDate, isOrganization, companyName, schoolName);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(CertificationActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CertificationActivity.this, SignInPhoneNumActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(CertificationActivity.this, "회원가입 실패: 이미 존재하는 사용자", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
