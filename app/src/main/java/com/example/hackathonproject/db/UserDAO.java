@@ -34,8 +34,8 @@ public class UserDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자를 등록하는 메서드
-    public void registerUser(String name, String password, String phoneNum, int age, String role) throws SQLException {
-        String sql = "INSERT INTO User (Name, Password, PhoneNumber, Age, Role) VALUES (?, ?, ?, ?, ?)";
+    public void registerUser(String name, String password, String phoneNum, int age, String role, String companyName, String schoolName) throws SQLException {
+        String sql = "INSERT INTO User (Name, Password, PhoneNumber, Age, Role, CompanyName, SchoolName) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt()); // 비밀번호 해시 처리
 
         try (Connection conn = dbConnection.connect();
@@ -45,6 +45,8 @@ public class UserDAO {
             pstmt.setString(3, phoneNum); // 전화번호 설정
             pstmt.setInt(4, age); // 나이 설정
             pstmt.setString(5, role); // 역할 설정
+            pstmt.setString(6, companyName); // 기관명 설정
+            pstmt.setString(7, schoolName); // 학교명 설정
             pstmt.executeUpdate(); // 사용자 등록 쿼리 실행
         } catch (SQLException e) {
             Log.e(TAG, "Failed to register user", e); // 오류 로그 출력
@@ -249,4 +251,22 @@ public class UserDAO {
         return balance;
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // 전화번호로 사용자의 이름을 조회하는 메서드
+    public String getUserNameByPhone(String phoneNum) throws SQLException {
+        String sql = "SELECT Name FROM User WHERE PhoneNumber = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, phoneNum);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Name");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Failed to get user name by phone number", e);
+            throw e;
+        }
+        return null; // 사용자가 없으면 null 반환
+    }
 }

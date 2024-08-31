@@ -75,7 +75,6 @@ public class SettingsActivity extends AppCompatActivity {
         // 옵션 클릭 리스너 설정
         LinearLayout editProfileOption = findViewById(R.id.option_edit_profile);
         LinearLayout aboutB1A3Option = findViewById(R.id.option_about_b1a3);
-        LinearLayout qnaOption = findViewById(R.id.option_qna);
         LinearLayout logoutOption = findViewById(R.id.logout_option);
 
         editProfileOption.setOnClickListener(v -> {
@@ -88,10 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        qnaOption.setOnClickListener(v -> {
-            Intent intent = new Intent(SettingsActivity.this, QnaActivity.class);
-            startActivity(intent);
-        });
+
 
         logoutOption.setOnClickListener(v -> {
             sessionManager.clearSession();  // 세션 정보 제거
