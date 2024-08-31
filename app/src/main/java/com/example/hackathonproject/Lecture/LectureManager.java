@@ -12,6 +12,7 @@ public class LectureManager {
     public LectureManager(LectureDAO lectureDAO) {
         this.lectureDAO = lectureDAO;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 추가하는 메서드
     public boolean addLecturePost(int userId, String title, String content, String location, double fee, boolean isYouthAudienceAllowed) {
@@ -20,10 +21,12 @@ public class LectureManager {
         // 강연 게시글을 데이터베이스에 삽입
         return lectureDAO.insertLecturePost(userId, title, content, location, fee, kstTime, isYouthAudienceAllowed);
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 강연 게시글을 가져오는 메서드
     public List<LecturePost> getAllLecturePosts() {
         // 강연 게시글 목록을 데이터베이스에서 가져옴
         return lectureDAO.getAllLecturePosts();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

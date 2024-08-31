@@ -74,6 +74,7 @@ public class FontSizeActivity extends Activity {
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());  // 현재 액티비티 종료
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private void saveFontSize(int fontSize) {
         SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
@@ -81,4 +82,5 @@ public class FontSizeActivity extends Activity {
         editor.putInt("fontSize", fontSize);
         editor.apply();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

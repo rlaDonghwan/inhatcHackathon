@@ -1,5 +1,6 @@
 package com.example.hackathonproject.Education;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,17 +44,27 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
     // ViewHolder에 데이터를 바인딩하는 메서드
     @Override
     public void onBindViewHolder(@NonNull EducationViewHolder holder, int position) {
+        // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
         EducationPost post = educationPostList.get(position);
-        holder.postTitle.setText(post.getTitle());
-        String categoryText = "[" + post.getCategory() + "]";
+        holder.postTitle.setText(post.getTitle()); // 제목 설정
+        String categoryText = "[" + post.getCategory() + "]";  // DB에서 가져온 카테고리 설정
         holder.postCategory.setText(categoryText);
-
         holder.postViews.setText("조회수: " + post.getViews());
-
         String formattedTime = formatTimeAgo(post.getCreatedAt());
-        holder.postDetails.setText(post.getLocation() + " - " + formattedTime);
+        holder.postDetails.setText(post.getLocation()+" - "+formattedTime);  // 포맷된 시간 표시
 
+        // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용
         DecimalFormat df = new DecimalFormat("#,###");
+        holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");
+
+        // 디버그용 로그 추가
+        Log.d("EducationAdapter", "Post Title: " + post.getTitle() + " | Is Institution: " + post.isInstitution());
+
+        if (post.isInstitution()) {
+            holder.certificationMark.setVisibility(View.VISIBLE);
+        } else {
+            holder.certificationMark.setVisibility(View.GONE);
+        }
         holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");
 
         // 이미지 로드
@@ -67,7 +78,7 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
             holder.contentImage.setImageResource(R.drawable.placeholder); // 기본 이미지
         }
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private String formatTimeAgo(String createdAt) {
         // "2024-08-19 18:03:19.0"에서 ".0" 제거
@@ -125,16 +136,19 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
     public class EducationViewHolder extends RecyclerView.ViewHolder {
         public TextView postTitle, postDetails, postViews, postFee, postCategory;
+        public ImageView certificationMark; // 인증 마크 이미지 뷰 추가
         public ImageView contentImage; // 추가: 이미지뷰
 
         public EducationViewHolder(View itemView) {
             super(itemView);
+            // 각 뷰 요소를 아이템 뷰에서 초기화
             postTitle = itemView.findViewById(R.id.postTitle);
             postCategory = itemView.findViewById(R.id.post_category);
             postDetails = itemView.findViewById(R.id.postDetails);
             postViews = itemView.findViewById(R.id.postViews);
             postFee = itemView.findViewById(R.id.postFee);
             contentImage = itemView.findViewById(R.id.content_image); // 추가: 이미지뷰 초기화
+            certificationMark = itemView.findViewById(R.id.certification_mark); // 인증 마크 초기화
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -146,6 +160,5 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
             });
         }
     }
-
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

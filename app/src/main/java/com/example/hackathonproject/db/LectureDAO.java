@@ -42,7 +42,9 @@ public class LectureDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    // 모든 강연 게시글을 가져오는 메서드
     public List<LecturePost> getAllLecturePosts() {
         String sql = "SELECT Lecture.LectureID, Lecture.UserID, User.Name, Lecture.Title, Lecture.Content, Lecture.Location, Lecture.CreatedAt, Lecture.CompletedAt, Lecture.Fee, Lecture.Views, Lecture.isYouthAudienceAllowed, LectureImage.ImageData " +
                 "FROM Lecture " +
@@ -79,8 +81,7 @@ public class LectureDAO {
 
         return posts;
     }
-
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 강연 게시글을 가져오는 메서드
     public LecturePost getLecturePostById(int lectureId) {
@@ -115,6 +116,7 @@ public class LectureDAO {
         }
         return null;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 
     // 강연 게시글의 조회수를 증가시키는 메서드
@@ -129,6 +131,7 @@ public class LectureDAO {
             Log.e(TAG, "강연 게시글 조회수 업데이트 실패", e);
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 삭제하는 메서드
     public boolean deleteLecturePost(int lectureId) {
@@ -144,6 +147,7 @@ public class LectureDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 업데이트하는 메서드
     public boolean updateLecturePost(int lectureId, String title, String content, String location, double fee, int userId, boolean isYouthAudienceAllowed) {
@@ -166,6 +170,7 @@ public class LectureDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글과 이미지를 함께 삽입하는 메서드
     public boolean submitLectureWithImage(String title, String content, String location, double fee, int userId, ZonedDateTime kstTime, boolean isYouthAudienceAllowed, byte[] imageData) {

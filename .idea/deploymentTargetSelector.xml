@@ -18,11 +18,6 @@
                 <DeviceId pluginId="LocalEmulator" identifier="path=/Users/donghwan/.android/avd/Pixel_8_Pro_API_35.avd" />
               </handle>
             </Target>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=/Users/donghwan/.android/avd/Pixel_8_Pro_API_35_2.avd" />
-              </handle>
-            </Target>
           </targets>
         </DialogSelection>
       </SelectionState>

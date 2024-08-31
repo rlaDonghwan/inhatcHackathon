@@ -41,6 +41,7 @@ public class EducationDAO {
             return false; // 삽입 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 교육 게시글을 업데이트하는 메서드
     public boolean updateEducationPost(int educationId, String title, String category, String content, String location, int fee, int userId) {
@@ -63,19 +64,23 @@ public class EducationDAO {
             return false; // 업데이트 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 특정 ID의 교육 게시글을 가져오는 메서드
     public EducationPost getEducationPostById(int educationId) {
         String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, " +
-                "e.CompletedAt, e.VolunteerHoursEarned, e.UserID, i.ImageData " +
+                "e.CompletedAt, e.VolunteerHoursEarned, e.UserID, u.Name, u.Role, i.ImageData " +
                 "FROM Education e " +
-                "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID " +  // 이미지 데이터를 가져오기 위해 LEFT JOIN 사용
+                "JOIN User u ON e.UserID = u.UserID " +
+                "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID " +
                 "WHERE e.EducationID = ?";
+
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, educationId);
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
+                    // 교육 게시글 정보 가져오기
                     int id = rs.getInt("EducationID");
                     String title = rs.getString("Title");
                     String category = rs.getString("Category");
@@ -87,21 +92,22 @@ public class EducationDAO {
                     String completedAt = rs.getString("CompletedAt");
                     int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                     int userId = rs.getInt("UserID");
+                    String userName = rs.getString("Name");
+                    String role = rs.getString("Role");
                     byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
-                    String userName = getUserNameById(userId); // 사용자 이름 가져오기
-                    EducationPost post = new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId);
-                    post.setImageData(imageData);  // 이미지 데이터 설정
-                    return post;
+                    boolean isInstitution = "기관".equals(role);
+
+                    // 새로운 생성자 사용
+                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId, isInstitution, imageData);
                 }
             }
         } catch (SQLException e) {
-            Log.e(TAG, "ID로 게시글 불러오기 실패", e); // 오류 로그 출력
+            Log.e(TAG, "ID로 게시글 불러오기 실패", e);
         }
         return null; // 게시글이 없을 경우 null 반환
     }
-
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 조회수를 증가시키는 메서드
     public void incrementPostViews(int educationId) {
@@ -114,6 +120,7 @@ public class EducationDAO {
             Log.e(TAG, "게시글 조회수 업데이트 실패", e); // 오류 로그 출력
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 교육 게시글을 삭제하는 메서드
     public boolean deleteEducationPost(int educationId) {
@@ -128,6 +135,7 @@ public class EducationDAO {
             return false; // 삭제 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 사용자 이름을 가져오는 메서드
     private String getUserNameById(int userId) {
@@ -145,12 +153,17 @@ public class EducationDAO {
         }
         return null; // 사용자 이름이 없으면 null 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 교육 게시글을 가져오는 메서드
     public List<EducationPost> getAllEducationPosts() {
-        List<EducationPost> postList = new ArrayList<>(); // 게시글 목록을 담을 리스트
-        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.CompletedAt, e.VolunteerHoursEarned, u.Name, e.UserID " +
-                "FROM Education e JOIN User u ON e.UserID = u.UserID"; // SQL 쿼리
+        List<EducationPost> postList = new ArrayList<>();
+        // 교육 게시글과 관련된 사용자 정보 및 이미지 데이터를 가져오는 SQL 쿼리
+        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.CompletedAt, e.VolunteerHoursEarned, " +
+                "u.Name, u.Role, e.UserID, i.ImageData " +
+                "FROM Education e " +
+                "JOIN User u ON e.UserID = u.UserID " +
+                "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID"; // 이미지 데이터를 가져오기 위해 LEFT JOIN 사용
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -166,18 +179,24 @@ public class EducationDAO {
                 int fee = rs.getInt("Fee");
                 int views = rs.getInt("Views");
                 String createdAt = rs.getString("CreatedAt");
-                String completedAt = rs.getString("CompletedAt");  // 추가
-                int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");  // 추가
+                String completedAt = rs.getString("CompletedAt");
+                int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                 String userName = rs.getString("Name");
+                String role = rs.getString("Role");
                 int userId = rs.getInt("UserID");
+                byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
-                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId));
+                boolean isInstitution = "기관".equals(role); // 역할이 '기관'인 경우 true 설정
+
+                // 'EducationPost' 객체 생성: 수정된 생성자를 사용
+                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId, isInstitution, imageData));
             }
         } catch (SQLException e) {
-            Log.e(TAG, "게시글 불러오기 실패", e); // 오류 로그 출력
+            Log.e(TAG, "게시글 불러오기 실패", e);
         }
-        return postList; // 게시글 리스트 반환
+        return postList;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public boolean submitEducationWithImage(String title, String category, String description, String location, int fee, int userId, ZonedDateTime kstTime, byte[] imageData) {
         String insertPostSql = "INSERT INTO Education (UserID, Title, Category, Content, Location, Fee, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)";

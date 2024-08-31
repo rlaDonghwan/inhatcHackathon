@@ -27,6 +27,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
     private AuthManager authManager;
     private SessionManager sessionManager;
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
             startActivity(forgotPasswordIntent);
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class LoginUserTask extends AsyncTask<String, Void, Boolean> {
         private String userName;
@@ -122,4 +124,5 @@ public class SignInPasswordActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

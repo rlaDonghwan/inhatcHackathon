@@ -52,7 +52,9 @@ public class EducationContentView extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
         return pref.getInt("UserID", -1); // 로그인하지 않은 경우 -1 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,21 +157,24 @@ public class EducationContentView extends AppCompatActivity {
             });
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
         super.onResume();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 새로고침 메서드
     private void refreshContent() {
         loadPostContent();  // 게시글 내용 로드
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 내용을 로드하는 메서드
     private void loadPostContent() {
         new LoadPostTask().execute(educationId); // 비동기 작업으로 데이터베이스에서 게시글 내용 불러오기
-    }
+    }//-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @SuppressLint("StaticFieldLeak")
     private class LoadPostTask extends AsyncTask<Integer, Void, EducationPost> {
@@ -187,6 +192,7 @@ public class EducationContentView extends AppCompatActivity {
                 return null;
             }
         }
+        //-----------------------------------------------------------------------------------------------------------------------------------------------
 
         @Override
         protected void onPostExecute(EducationPost post) {
@@ -252,13 +258,15 @@ public class EducationContentView extends AppCompatActivity {
                 }
 
                 menuButton.setOnClickListener(v -> showPopupMenu(v));
+
+
             } else {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
         }
-
-
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 
     private String formatTimeAgo(String createdAt) {
         // "2024-08-19 18:03:19.0"에서 ".0" 제거
@@ -285,8 +293,8 @@ public class EducationContentView extends AppCompatActivity {
             return days + "일 전";
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 팝업 메뉴를 보여주는 메서드
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
         PopupMenu popup = new PopupMenu(this, view);
@@ -320,7 +328,7 @@ public class EducationContentView extends AppCompatActivity {
         });
         popup.show();  // 팝업 메뉴 표시
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 삭제를 확인하는 메서드
     private void confirmDeletePost() {
@@ -349,7 +357,7 @@ public class EducationContentView extends AppCompatActivity {
                 .setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 삭제 메서드
     @SuppressLint("StaticFieldLeak")
@@ -376,18 +384,21 @@ public class EducationContentView extends AppCompatActivity {
             }
         }.execute();  // 비동기 작업 실행
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public boolean onSupportNavigateUp() {
         navigateBackToEducationActivity();  // 상단 바의 뒤로가기 버튼을 클릭 시 처리
         return true;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         navigateBackToEducationActivity();  // 디바이스의 뒤로가기 버튼을 클릭 시 처리
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private void navigateBackToEducationActivity() {
         Intent intent = new Intent(this, EducationActivity.class);
@@ -395,4 +406,5 @@ public class EducationContentView extends AppCompatActivity {
         startActivity(intent);  // EducationActivity 시작
         finish();  // 현재 액티비티 종료
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

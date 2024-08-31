@@ -46,11 +46,14 @@ public class LectureContentView extends AppCompatActivity {
     private LecturePost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
 
+    // 로그인한 사용자의 ID를 가져오는 메서드
     private int getLoggedInUserId() {
         SharedPreferences pref = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
         return pref.getInt("UserID", -1); // 로그인하지 않은 경우 -1 반환
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,23 +148,26 @@ public class LectureContentView extends AppCompatActivity {
                 }
             });
         });
-
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void onResume() {
         super.onResume();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 새로고침 메서드
     private void refreshContent() {
         loadLectureContent();  // 강연 내용 로드
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 내용을 로드하는 메서드
     private void loadLectureContent() {
         new LoadLectureTask().execute(lectureId); // 비동기 작업으로 데이터베이스에서 강연 내용 불러오기
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업으로 강연 내용을 로드하는 클래스
     @SuppressLint("StaticFieldLeak")
@@ -240,7 +246,9 @@ public class LectureContentView extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    // 시간을 "몇 분 전" 등의 형식으로 변환하는 메서드
     private String formatTimeAgo(String createdAt) {
         // "2024-08-19 18:03:19.0"에서 ".0" 제거
         if (createdAt != null && createdAt.endsWith(".0")) {
@@ -266,6 +274,8 @@ public class LectureContentView extends AppCompatActivity {
             return days + "일 전";
         }
     }
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
@@ -304,34 +314,33 @@ public class LectureContentView extends AppCompatActivity {
         });
         popup.show();  // 팝업 메뉴 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제를 확인하는 메서드
     private void confirmDeleteLecture() {
-        new AlertDialog.Builder(this)
-                .setTitle("강연 삭제")  // 다이얼로그 제목 설정
+        new AlertDialog.Builder(this).setTitle("강연 삭제")  // 다이얼로그 제목 설정
                 .setMessage("정말로 이 게시글을 삭제하시겠습니까?")  // 다이얼로그 메시지 설정
                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {  // 삭제 버튼 설정
                     public void onClick(DialogInterface dialog, int which) {
                         deleteLecture();  // 강연 삭제 메서드 호출
                     }
-                })
-                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 완료를 확인하는 메서드
     private void confirmCompleteLecture() {
-        new AlertDialog.Builder(this)
-                .setTitle("게시글 완료")  // 다이얼로그 제목 설정
+        new AlertDialog.Builder(this).setTitle("게시글 완료")  // 다이얼로그 제목 설정
                 .setMessage("정말로 이 게시글을 완료하시겠습니까? 완료된 게시글은 삭제됩니다.")  // 다이얼로그 메시지 설정
                 .setPositiveButton("완료", new DialogInterface.OnClickListener() {  // 완료 버튼 설정
                     public void onClick(DialogInterface dialog, int which) {
                         deleteLecture();  // 강연 삭제 메서드 호출
                     }
-                })
-                .setNegativeButton("취소", null)  // 취소 버튼 설정
+                }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제 메서드
     @SuppressLint("StaticFieldLeak")
@@ -353,6 +362,7 @@ public class LectureContentView extends AppCompatActivity {
             }
         }.execute();  // 비동기 작업 실행
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 상단 바의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -360,6 +370,7 @@ public class LectureContentView extends AppCompatActivity {
         navigateBackToLectureActivity();
         return true;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 디바이스의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -367,12 +378,14 @@ public class LectureContentView extends AppCompatActivity {
         super.onBackPressed();
         navigateBackToLectureActivity();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // LectureActivity를 돌아가는 메서드
+    // LectureActivity로 돌아가는 메서드
     private void navigateBackToLectureActivity() {
         Intent intent = new Intent(this, LectureActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);  // 기존의 LectureActivity를 재사용
         startActivity(intent);  // LectureActivity 시작
         finish();  // 현재 액티비티 종료
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

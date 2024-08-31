@@ -14,24 +14,33 @@ public class EducationPost {
     private String userName;  // 작성자 이름
     private int userId;  // 작성자 ID
     private byte[] imageData; // 이미지 데이터를 위한 필드
+    private boolean isInstitution;  // 기관 사용자 여부
 
-    // 생성자: 모든 필드를 초기화
-    public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId) {
+    // 생성자
+    public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId, boolean isInstitution, byte[] imageData) {
         this.educationId = educationId;
         this.title = title;
         this.category = category;
         this.content = content;
         this.location = location;
         this.fee = fee;
-        this.views = views;  // 조회수 초기화
+        this.views = views;
         this.createdAt = createdAt;
         this.completedAt = completedAt;
         this.volunteerHoursEarned = volunteerHoursEarned;
         this.userName = userName;
         this.userId = userId;
+        this.isInstitution = isInstitution;
+        this.imageData = imageData; // 이미지 데이터 초기화
     }
 
-    // getter 메서드: 각 필드에 접근할 수 있는 메서드들
+    public boolean isInstitution() {
+        return isInstitution;
+    }
+
+    public void setInstitution(boolean institution) {
+        isInstitution = institution;
+    }
 
     public int getEducationId() {
         return educationId;
@@ -81,7 +90,11 @@ public class EducationPost {
         return userId;
     }
 
-    public byte[] getImageData() { return imageData; }
+    public byte[] getImageData() {
+        return imageData;
+    }
 
-    public void setImageData(byte[] imageData) { this.imageData = imageData; }
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
 }

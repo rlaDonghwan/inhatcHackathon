@@ -21,7 +21,7 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
     private Button confirmButton;
     private Button createAccountButton;
     private TextView firstTimeText;
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +74,7 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public void onBackPressed() {
@@ -82,6 +83,7 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
         startActivity(intent);
         finish();  // 현재 액티비티 종료
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class PhoneNumberFormattingTextWatcher implements TextWatcher {
 
@@ -127,4 +129,5 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
