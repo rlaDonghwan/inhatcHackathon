@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="채팅"
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="50sp" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Filter buttons -->

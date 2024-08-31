@@ -1,6 +1,11 @@
 package com.example.hackathonproject.Education;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,40 +49,45 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
     // ViewHolder에 데이터를 바인딩하는 메서드
     @Override
     public void onBindViewHolder(@NonNull EducationViewHolder holder, int position) {
-        // 현재 위치의 게시글 데이터를 가져와 ViewHolder에 바인딩
         EducationPost post = educationPostList.get(position);
-        holder.postTitle.setText(post.getTitle()); // 제목 설정
-        String categoryText = "[" + post.getCategory() + "]";  // DB에서 가져온 카테고리 설정
+        holder.postTitle.setText(post.getTitle());
+        String categoryText = "[" + post.getCategory() + "]";
         holder.postCategory.setText(categoryText);
         holder.postViews.setText("조회수: " + post.getViews());
         String formattedTime = formatTimeAgo(post.getCreatedAt());
-        holder.postDetails.setText(post.getLocation()+" - "+formattedTime);  // 포맷된 시간 표시
+        holder.postDetails.setText(post.getLocation() + " - " + formattedTime);
 
-        // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용
         DecimalFormat df = new DecimalFormat("#,###");
         holder.postFee.setText("교육비: " + df.format(post.getFee()) + "원");
 
-        // 디버그용 로그 추가
-        Log.d("EducationAdapter", "Post Title: " + post.getTitle() + " | Is Institution: " + post.isInstitution());
-
-        if (post.isInstitution()) {
+        if (post.isInstitutionOrSchool()) {
             holder.certificationMark.setVisibility(View.VISIBLE);
         } else {
             holder.certificationMark.setVisibility(View.GONE);
         }
-        holder.postFee.setText("교육비: " + df.format(post.getFee()) + "원");
 
-        // 이미지 로드
         byte[] imageBytes = post.getImageData();
         if (imageBytes != null) {
             Glide.with(holder.itemView.getContext())
                     .load(imageBytes)
-                    .placeholder(R.drawable.placeholder) // 로딩 중에 보여줄 기본 이미지
+                    .placeholder(R.drawable.placeholder)
                     .into(holder.contentImage);
         } else {
-            holder.contentImage.setImageResource(R.drawable.placeholder); // 기본 이미지
+            holder.contentImage.setImageResource(R.drawable.placeholder);
         }
+
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = holder.itemView.getContext().getSharedPreferences("fontSizePrefs", Context.MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 텍스트 크기 적용
+        holder.postTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize -5);  // 제목은 조금 더 크게
+        holder.postCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);
+        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11); // 세부사항은 더 작게
+        holder.postViews.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
+        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private String formatTimeAgo(String createdAt) {

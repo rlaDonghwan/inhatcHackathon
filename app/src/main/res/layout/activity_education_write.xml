@@ -134,6 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_edit_text"
+        android:fontFamily="@font/nanumsquare_neo_eb"
         android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:text="이미지 선택" />

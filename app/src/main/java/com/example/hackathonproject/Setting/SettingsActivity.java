@@ -1,6 +1,7 @@
 package com.example.hackathonproject.Setting;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,9 +50,39 @@ public class SettingsActivity extends AppCompatActivity {
         // UI 요소 초기화
         profileImageView = findViewById(R.id.profile_image);
         TextView profileNameTextView = findViewById(R.id.question);
-        TextView balanceTextView = findViewById(R.id.title_time); // balance 값을 표시할 텍스트뷰
-        businessOrSchoolTextView = findViewById(R.id.business_or_school); // TextView for business/school name
-        ImageView authorizationIcon = findViewById(R.id.authorization_icon);
+        TextView balanceTextView1 = findViewById(R.id.title); // balance 값을 표시할 텍스트뷰
+        TextView balanceTextView2 = findViewById(R.id.title_time); // balance 값을 표시할 텍스트뷰
+        TextView balanceTextView3 = findViewById(R.id.title_time2); // balance 값을 표시할 텍스트뷰
+        businessOrSchoolTextView = findViewById(R.id.business_or_school); // 회사 또는 학교명을 표시할 텍스트뷰
+        ImageView authorizationIcon = findViewById(R.id.authorization_icon); // 인증 아이콘
+        TextView editMyProfileTextView = findViewById(R.id.edit_my_profile); // 프로필 편집 텍스트뷰
+        TextView fontSizeTextView = findViewById(R.id.font_size); // 글씨 크기 텍스트뷰
+        TextView logoutTextView = findViewById(R.id.logout); // 로그아웃 텍스트뷰
+        TextView welcomeMessageTextView = findViewById(R.id.welcome_message); // 환영 메시지 텍스트뷰
+        TextView school = findViewById(R.id.business_or_school); // 환영 메시지 텍스트뷰
+
+        // 로컬 기본 폰트 크기 설정
+        int LocalFontSize = 35;
+        int LocalFontSize2 = 19;
+        int LocalFontSize3= 22;
+
+        profileNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);
+        balanceTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize2);
+        balanceTextView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize2);
+        balanceTextView3.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize2);
+        school.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize2);
+        welcomeMessageTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize3);
+        // ---------------------------------------------------------------------------------------------
+
+        // ---------------------------------------------------------------------------------------------
+        // 세션에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        editMyProfileTextView.setTextSize(savedFontSize);
+        fontSizeTextView.setTextSize(savedFontSize);
+        logoutTextView.setTextSize(savedFontSize);
+        // ---------------------------------------------------------------------------------------------
 
         // 세션에서 사용자 정보 가져오기
         String userName = sessionManager.getUserName();
@@ -58,18 +90,18 @@ public class SettingsActivity extends AppCompatActivity {
         int userId = sessionManager.getUserId();
         String role = sessionManager.getUserRole(); // 역할 가져오기
 
-        // 프로필 이름과 봉사 시간, Balance를 설정
+        // 프로필 이름과 Balance를 설정
         profileNameTextView.setText(userName);
-        balanceTextView.setText(String.valueOf(balance)); // Balance 값을 설정
+        balanceTextView2.setText(String.valueOf(balance)); // Balance 값을 설정
 
-        // 사용자 기관 여부에 따라 인증 마크 가시성 설정
-        if (sessionManager.isUserOrganization()) {
+        // 사용자 Role이 "기관" 또는 "학교"일 경우 인증 마크 가시성 설정
+        if (role.equals("기관") || role.equals("학교")) {
             authorizationIcon.setVisibility(View.VISIBLE);
         } else {
             authorizationIcon.setVisibility(View.GONE);
         }
 
-        // Load and display the business or school name
+        // 회사 또는 학교 이름을 비동기적으로 로드하여 표시
         new LoadBusinessOrSchoolNameTask(userId, role).execute();
 
         // 프로필 이미지를 비동기로 로드
@@ -77,19 +109,22 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 옵션 클릭 리스너 설정
         LinearLayout editProfileOption = findViewById(R.id.option_edit_profile);
-        LinearLayout aboutB1A3Option = findViewById(R.id.option_about_b1a3);
+        LinearLayout fontSizeption = findViewById(R.id.option_about_b1a3);
         LinearLayout logoutOption = findViewById(R.id.logout_option);
 
+        // 프로필 편집 옵션 클릭 리스너
         editProfileOption.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, EditProfileActivity.class);
             startActivity(intent);
         });
 
-        aboutB1A3Option.setOnClickListener(v -> {
+        // 글씨 크기 조정 옵션 클릭 리스너
+        fontSizeption.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, SettingFontSizeActivity.class);
             startActivity(intent);
         });
 
+        // 로그아웃 옵션 클릭 리스너
         logoutOption.setOnClickListener(v -> {
             sessionManager.clearSession();  // 세션 정보 제거
             Intent intent = new Intent(SettingsActivity.this, StartActivity.class);
@@ -149,6 +184,7 @@ public class SettingsActivity extends AppCompatActivity {
             profileImageView.setImageURI(imageUri);
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private String saveImageToInternalStorage(Uri imageUri) {
         try {
@@ -176,6 +212,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         return null;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업을 수행하는 내부 클래스
     private class UpdateProfileImageTask extends AsyncTask<Void, Void, Boolean> {
@@ -206,6 +243,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class LoadProfileImageTask extends AsyncTask<Void, Void, String> {
         private int userId;
@@ -246,8 +284,9 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // Task to load and display business or school name
+    // 회사 또는 학교 이름을 로드하고 표시하는 비동기 작업 클래스
     private class LoadBusinessOrSchoolNameTask extends AsyncTask<Void, Void, String> {
         private int userId;
         private String role;
@@ -282,5 +321,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 }
