@@ -1,0 +1,164 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primaryBackground">
+
+    <!-- AppBar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_arrow_back"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textStyle="bold"
+            app:iconTint="@android:color/white"
+            android:contentDescription="@string/back_button" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="기관 및 학교 인증"
+                android:textSize="40sp"
+                android:fontFamily="@font/kangwon_tntnche" />
+
+            <!-- Form for School -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+                <!-- School Search Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="대학교 검색"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:paddingBottom="4dp" />
+
+                <!-- School Name Input -->
+                <EditText
+                    android:id="@+id/school_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/edit_text_background"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:hint="대학교 이름"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:padding="12dp"
+                    android:textSize="17sp"
+                    android:enabled="false" />
+
+                <!-- School Certification Button -->
+                <Button
+                    android:id="@+id/school_certify_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/orange"
+                    android:text="인증"
+                    android:textSize="30sp"
+                    android:fontFamily="@font/kangwon_tntnche"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="20dp"
+                    android:enabled="false" />
+
+                <!-- Terms and Conditions for School -->
+                <TextView
+                    android:id="@+id/school_terms_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/kangwon_tntnche"
+                    android:gravity="center"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Form for Company -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+                <!-- Company Search Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="기관 검색"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:paddingBottom="4dp" />
+
+                <!-- Company Name Input -->
+                <EditText
+                    android:id="@+id/company_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/edit_text_background"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:hint="기관 이름"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:padding="12dp"
+                    android:textSize="17sp"
+                    android:enabled="false" />
+
+                <!-- Company Certification Button -->
+                <Button
+                    android:id="@+id/company_certify_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/orange"
+                    android:text="인증"
+                    android:textSize="30sp"
+                    android:fontFamily="@font/kangwon_tntnche"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="20dp"
+                    android:enabled="false" />
+
+                <!-- Terms and Conditions for Company -->
+                <TextView
+                    android:id="@+id/company_terms_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/kangwon_tntnche"
+                    android:gravity="center"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
