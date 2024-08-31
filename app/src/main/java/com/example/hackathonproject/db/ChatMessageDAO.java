@@ -64,7 +64,7 @@ public class ChatMessageDAO {
     // 새로운 메시지를 데이터베이스에 추가하는 메서드
     public boolean addMessage(int chatId, int senderUserId, String messageText, ZonedDateTime kstTime) {
         String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, ?)";
-        String updateIsLastMessageReadQuery;
+        String updateReadStatusQuery;
 
         try (Connection conn = this.connection != null && !this.connection.isClosed() ? this.connection : new DatabaseConnection().connect();
              PreparedStatement statement = conn.prepareStatement(query);
@@ -74,8 +74,6 @@ public class ChatMessageDAO {
             statement.setInt(1, chatId);
             statement.setInt(2, senderUserId);
             statement.setString(3, messageText);
-
-            // 현재 시간을 포맷팅하여 문자열로 변환 후 설정
             String formattedDateTime = kstTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             statement.setString(4, formattedDateTime);
 
@@ -92,10 +90,16 @@ public class ChatMessageDAO {
                     authorId = rs.getInt("AuthorID");
                 }
 
+                // 현재 메시지 전송자가 Author인지 OtherUser인지에 따라 읽음 상태를 업데이트
                 if (authorId == senderUserId) {
-                    updateIsLastMessageReadQuery = "UPDATE Chat SET IsOtherUserMessageRead = FALSE WHERE ChatID = ?";
+                    updateReadStatusQuery = "UPDATE Chat SET IsOtherUserMessageRead = FALSE WHERE ChatID = ?";
                 } else {
-                    updateIsLastMessageReadQuery = "UPDATE Chat SET IsAuthorMessageRead = FALSE WHERE ChatID = ?";
+                    updateReadStatusQuery = "UPDATE Chat SET IsAuthorMessageRead = FALSE WHERE ChatID = ?";
+                }
+                // 읽음 상태를 업데이트
+                try (PreparedStatement updateReadStatus = conn.prepareStatement(updateReadStatusQuery)) {
+                    updateReadStatus.setInt(1, chatId);
+                    updateReadStatus.executeUpdate();
                 }
 
                 // 마지막 메시지와 그 시간을 업데이트
@@ -105,12 +109,6 @@ public class ChatMessageDAO {
                     updateChatStmt.setString(2, formattedDateTime);
                     updateChatStmt.setInt(3, chatId);
                     updateChatStmt.executeUpdate();
-                }
-
-                // 읽음 상태를 업데이트
-                try (PreparedStatement updateReadStatus = conn.prepareStatement(updateIsLastMessageReadQuery)) {
-                    updateReadStatus.setInt(1, chatId);
-                    updateReadStatus.executeUpdate();
                 }
 
                 // 자동 커밋이 꺼져 있다면 명시적으로 커밋

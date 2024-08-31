@@ -46,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     private String otherUserName; // 상대방 이름을 저장할 변수
     private Handler handler;  // Handler for periodic updates
     private Runnable refreshRunnable;
+    private ChatDAO chatDAO; // ChatDAO 객체 추가
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -53,11 +54,9 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        // 먼저 SessionManager를 통해 loggedInUserId를 가져옴
+        // 세션에서 로그인된 사용자 ID를 가져옴
         SessionManager sessionManager = new SessionManager(this);
-        loggedInUserId = sessionManager.getUserId();  // 세션에서 로그인된 사용자 ID를 가져와서 클래스 변수에 설정
-
-        Log.d(TAG, "LoggedInUserId in onCreate: " + loggedInUserId);  // 로그로 확인
+        loggedInUserId = sessionManager.getUserId();
 
         // Intent로 전달된 chatId, otherUserId, educationID, lectureID 값을 가져옴
         chatId = getIntent().getIntExtra("chatId", -1);
@@ -65,15 +64,11 @@ public class ChatActivity extends AppCompatActivity {
         educationID = getIntent().hasExtra("educationId") ? getIntent().getIntExtra("educationId", -1) : null;
         lectureID = getIntent().hasExtra("lectureId") ? getIntent().getIntExtra("lectureId", -1) : null;
 
-        // 로그 추가하여 전달된 ID들 확인
-        Log.d(TAG, "Received educationID: " + educationID + ", lectureID: " + lectureID);
-
-        // UI를 초기화
+        // UI 초기화
         initializeUI();
 
-        // 데이터베이스 연결을 시도하고 완료된 후 UI 초기화 및 데이터 로드
-        createOrRetrieveChatRoom(loggedInUserId, otherUserId);
-
+        // ChatDAO 초기화
+        initializeChatDAO();
         // Handler and Runnable 설정
         handler = new Handler(Looper.getMainLooper());
         refreshRunnable = new Runnable() {
@@ -85,6 +80,26 @@ public class ChatActivity extends AppCompatActivity {
         };
 
         handler.post(refreshRunnable); // Runnable 실행 시작
+
+    }
+
+    private void initializeChatDAO() {
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
+            @Override
+            public void onSuccess(Connection conn) {
+                connection = conn;
+                chatDAO = new ChatDAO(connection);
+                // 여기서 추가 작업 수행 (예: 채팅방 생성 또는 불러오기)
+                createOrRetrieveChatRoom(loggedInUserId, otherUserId);
+            }
+
+            @Override
+            public void onError(SQLException e) {
+                Log.e(TAG, "Database connection error: " + e.getMessage());
+                showErrorMessage("데이터베이스 연결에 실패했습니다.");
+            }
+        });
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -110,57 +125,66 @@ public class ChatActivity extends AppCompatActivity {
 
     // 채팅방을 생성하거나 기존 채팅방을 가져오는 메서드
     private void createOrRetrieveChatRoom(int loggedInUserId, int otherUserId) {
-        DatabaseConnection databaseConnection = new DatabaseConnection();
-        databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
+        if (chatDAO == null) {
+            // ChatDAO가 아직 초기화되지 않은 경우 초기화
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
+                @Override
+                public void onSuccess(Connection conn) {
+                    connection = conn;  // 데이터베이스 연결 성공 시 연결 객체를 저장
+                    chatDAO = new ChatDAO(connection); // ChatDAO 초기화
+                    Log.d(TAG, "Database connection established.");
+                    fetchOtherUserNameAndCreateRoom(loggedInUserId, otherUserId);
+                }
+
+                @Override
+                public void onError(SQLException e) {
+                    runOnUiThread(() -> showErrorMessage("데이터베이스 연결에 실패했습니다."));
+                    Log.e(TAG, "Database connection error: " + e.getMessage());
+                }
+            });
+        } else {
+            // 이미 ChatDAO가 초기화되어 있는 경우 바로 채팅방 생성/조회
+            fetchOtherUserNameAndCreateRoom(loggedInUserId, otherUserId);
+        }
+    }
+
+    private void fetchOtherUserNameAndCreateRoom(int loggedInUserId, int otherUserId) {
+        // 상대방의 이름을 가져오는 메서드 호출
+        fetchOtherUserName(otherUserId, new UserNameCallback() {
             @Override
-            public void onSuccess(Connection conn) {
-                connection = conn;  // 데이터베이스 연결 성공 시 연결 객체를 저장
-                Log.d(TAG, "Database connection established.");
-
-                // 상대방의 이름을 가져오는 메서드 호출
-                fetchOtherUserName(otherUserId, new UserNameCallback() {
-                    @Override
-                    public void onUserNameRetrieved(String userName) {
-                        otherUserName = userName; // 상대방 이름 저장
-                        if (chatId == -1) {
-                            // 채팅방이 존재하지 않으면 새로 생성
-                            ChatDAO chatDAO = new ChatDAO(connection);
-                            chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, educationID, lectureID, new ChatDAO.ChatRoomCallback() {
-                                @Override
-                                public void onSuccess(int retrievedChatId) {
-                                    runOnUiThread(() -> {
-                                        chatId = retrievedChatId;  // 가져온 채팅 ID를 저장
-                                        initializeChatUI(loggedInUserId, otherUserName);
-                                        loadChatMessages(); // 채팅 메시지를 로드합니다.
-                                        markMessagesAsRead(); // 메시지를 읽음으로 표시
-                                    });
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    runOnUiThread(() -> showErrorMessage("채팅방을 생성할 수 없습니다. 다시 시도해 주세요."));
-                                    Log.e(TAG, "Error creating chat room: " + e.getMessage());
-                                }
+            public void onUserNameRetrieved(String userName) {
+                otherUserName = userName; // 상대방 이름 저장
+                if (chatId == -1) {
+                    // 채팅방이 존재하지 않으면 새로 생성
+                    chatDAO.getOrCreateChatRoom(loggedInUserId, otherUserId, educationID, lectureID, new ChatDAO.ChatRoomCallback() {
+                        @Override
+                        public void onSuccess(int retrievedChatId) {
+                            runOnUiThread(() -> {
+                                chatId = retrievedChatId;  // 가져온 채팅 ID를 저장
+                                initializeChatUI(loggedInUserId, otherUserName);
+                                loadChatMessages(); // 채팅 메시지를 로드합니다.
+                                markMessagesAsRead(chatId); // 메시지를 읽음으로 표시
                             });
-                        } else {
-                            // 기존 채팅방이 있을 때
-                            initializeChatUI(loggedInUserId, otherUserName);
-                            loadChatMessages();
-                            markMessagesAsRead(); // 메시지를 읽음으로 표시
                         }
-                    }
 
-                    @Override
-                    public void onError(SQLException e) {
-                        runOnUiThread(() -> showErrorMessage("상대방 이름을 불러오는 데 실패했습니다."));
-                    }
-                });
+                        @Override
+                        public void onError(Exception e) {
+                            runOnUiThread(() -> showErrorMessage("채팅방을 생성할 수 없습니다. 다시 시도해 주세요."));
+                            Log.e(TAG, "Error creating chat room: " + e.getMessage());
+                        }
+                    });
+                } else {
+                    // 기존 채팅방이 있을 때
+                    initializeChatUI(loggedInUserId, otherUserName);
+                    loadChatMessages();
+                    markMessagesAsRead(chatId); // 메시지를 읽음으로 표시
+                }
             }
 
             @Override
             public void onError(SQLException e) {
-                runOnUiThread(() -> showErrorMessage("데이터베이스 연결에 실패했습니다."));
-                Log.e(TAG, "Database connection error: " + e.getMessage());
+                runOnUiThread(() -> showErrorMessage("상대방 이름을 불러오는 데 실패했습니다."));
             }
         });
     }
@@ -265,7 +289,7 @@ public class ChatActivity extends AppCompatActivity {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 비동기로 메시지를 전송하는 AsyncTask 클래스
+    // 메시지를 전송하는 메서드
     private class SendMessageTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
@@ -274,37 +298,49 @@ public class ChatActivity extends AppCompatActivity {
 
             ZonedDateTime kstTime = ZonedDateTime.parse(kstTimeString); // 문자열을 ZonedDateTime으로 변환
 
-            if (connection != null) {
-                ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
+            try {
+                // 연결이 유효하지 않으면 새로 연결 시도
+                ensureConnectionIsOpen();
+
                 if (chatId > 0) {
                     // 메시지를 추가하는 작업
+                    ChatMessageDAO chatMessageDAO = new ChatMessageDAO(connection);
                     boolean messageAdded = chatMessageDAO.addMessage(chatId, loggedInUserId, messageText, kstTime);
 
                     if (messageAdded) {
-                        try {
-                            // AuthorID와 OtherUserID를 확인하여 상대방의 읽음 상태를 업데이트
-                            String updateQuery = "UPDATE Chat SET " +
-                                    "IsAuthorMessageRead = CASE WHEN AuthorID = ? THEN TRUE ELSE FALSE END, " +
-                                    "IsOtherUserMessageRead = CASE WHEN OtherUserID = ? THEN TRUE ELSE FALSE END " +
-                                    "WHERE ChatID = ?";
-                            try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-                                statement.setInt(1, loggedInUserId);  // 현재 사용자가 AuthorID이면 IsAuthorMessageRead를 TRUE로 설정
-                                statement.setInt(2, loggedInUserId);  // 현재 사용자가 OtherUserID이면 IsOtherUserMessageRead를 TRUE로 설정
-                                statement.setInt(3, chatId);
-                                statement.executeUpdate();
-                            }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            return false;
-                        }
+                        // 읽음 상태 업데이트
+                        updateReadStatus();
                     }
                     return messageAdded;
                 } else {
                     Log.e(TAG, "Invalid ChatID: " + chatId);
                     return false;
                 }
+            } catch (SQLException e) {
+                Log.e(TAG, "Failed to reconnect to database", e);
+                return false; // 연결 실패 시 작업 중단
             }
-            return false;
+        }
+
+        private void updateReadStatus() {
+            try {
+                // 연결이 유효하지 않으면 새로 연결 시도
+                ensureConnectionIsOpen();
+
+                String updateQuery = "UPDATE Chat SET " +
+                        "IsAuthorMessageRead = CASE WHEN AuthorID = ? THEN TRUE ELSE FALSE END, " +
+                        "IsOtherUserMessageRead = CASE WHEN OtherUserID = ? THEN TRUE ELSE FALSE END " +
+                        "WHERE ChatID = ?";
+
+                try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+                    statement.setInt(1, loggedInUserId);  // 현재 사용자가 AuthorID이면 IsAuthorMessageRead를 TRUE로 설정
+                    statement.setInt(2, loggedInUserId);  // 현재 사용자가 OtherUserID이면 IsOtherUserMessageRead를 TRUE로 설정
+                    statement.setInt(3, chatId);
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                Log.e(TAG, "Failed to update read status", e);
+            }
         }
 
         @Override
@@ -317,51 +353,52 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
-
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    private void markMessagesAsRead() {
-        if (connection != null) {
-            new MarkMessagesAsReadTask().execute(chatId);
-        }
-    }
+    // 메시지 읽음 상태를 업데이트하는 메서드
+    private void markMessagesAsRead(int chatId) {
+        new Thread(() -> {
+            try {
+                // 연결이 유효하지 않으면 새로 연결 시도
+                ensureConnectionIsOpen();
 
-    private class MarkMessagesAsReadTask extends AsyncTask<Integer, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            int chatId = params[0];
-            try (Connection conn = new DatabaseConnection().connect()) {
-                if (conn != null) {
-                    // 현재 사용자가 작성한 메시지가 아닌 경우에만 읽음 상태를 업데이트
-                    String query = "UPDATE Chat SET " +
-                            "IsAuthorMessageRead = CASE WHEN AuthorID <> ? THEN TRUE ELSE IsAuthorMessageRead END, " +
-                            "IsOtherUserMessageRead = CASE WHEN OtherUserID <> ? THEN TRUE ELSE IsOtherUserMessageRead END " +
-                            "WHERE ChatID = ?";
-                    try (PreparedStatement statement = conn.prepareStatement(query)) {
-                        statement.setInt(1, loggedInUserId); // 현재 사용자의 ID
-                        statement.setInt(2, loggedInUserId); // 현재 사용자의 ID
-                        statement.setInt(3, chatId);
-                        int rowsUpdated = statement.executeUpdate();
-                        return rowsUpdated > 0;
+                String query;
+                Chat chat = chatDAO.getChatById(chatId);
+
+                if (chat != null) {
+                    if (chat.getAuthorID() == loggedInUserId) {
+                        query = "UPDATE Chat SET IsOtherUserMessageRead = TRUE WHERE ChatID = ?";
+                    } else {
+                        query = "UPDATE Chat SET IsAuthorMessageRead = TRUE WHERE ChatID = ?";
                     }
+
+                    try (PreparedStatement statement = connection.prepareStatement(query)) {
+                        statement.setInt(1, chatId);
+                        statement.executeUpdate();
+                    }
+                } else {
+                    Log.e(TAG, "Chat not found for chatId: " + chatId);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to update message read status", e);
             }
-            return false;
-        }
+        }).start();
+    }
 
-        @Override
-        protected void onPostExecute(Boolean success) {
-            if (success) {
-                Log.d("ChatActivity", "Messages marked as read.");
-                loadChatMessages(); // UI를 새로고침하여 아이콘이 사라지도록 함
-            } else {
-                Log.e("ChatActivity", "Failed to mark messages as read.");
-            }
+    // 연결이 유효한지 확인하고 필요하면 새로 연결하는 메서드
+    private void ensureConnectionIsOpen() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connection = new DatabaseConnection().connect(); // 새 연결 시도
+            chatDAO = new ChatDAO(connection); // 새로운 연결로 ChatDAO 초기화
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 채팅방에 들어올 때 읽음 상태 업데이트
+        markMessagesAsRead(chatId);
+    }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 에러 메시지를 화면에 표시하는 메서드
@@ -382,14 +419,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
 
-        // Handler의 반복 실행을 중지
-        handler.removeCallbacks(refreshRunnable);
+        // Handler의 반복 실행을 중지하기 전에 null 확인
+        if (handler != null && refreshRunnable != null) {
+            handler.removeCallbacks(refreshRunnable);
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 이름을 비동기적으로 가져오기 위한 콜백 인터페이스 정의
     interface UserNameCallback {
         void onUserNameRetrieved(String userName);  // 사용자 이름을 성공적으로 가져왔을 때 호출
+
         void onError(SQLException e);  // 오류가 발생했을 때 호출
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
