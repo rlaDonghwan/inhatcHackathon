@@ -68,7 +68,7 @@ public class EducationDAO {
 
     public EducationPost getEducationPostById(int educationId) {
         String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, " +
-                "e.VolunteerHoursEarned, e.UserID, u.Name, u.Role, i.ImageData " +
+                "e.VolunteerHoursEarned, e.UserID, u.Name, u.Role, i.ImageData, u.ProfileImagePath " +
                 "FROM Education e " +
                 "JOIN User u ON e.UserID = u.UserID " +
                 "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID " +
@@ -94,11 +94,12 @@ public class EducationDAO {
                     String userName = rs.getString("Name");
                     String role = rs.getString("Role");
                     byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
+                    byte[] profileImageData = rs.getBytes("ProfileImagePath");  // 프로필 이미지 데이터 가져오기
 
                     boolean isInstitution = "기관".equals(role);
 
-                    // 새로운 생성자 사용
-                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData);
+                    // 새로운 생성자 사용, 프로필 이미지 데이터 포함
+                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, profileImageData);
                 }
             }
         } catch (SQLException e) {
@@ -106,6 +107,7 @@ public class EducationDAO {
         }
         return null; // 게시글이 없을 경우 null 반환
     }
+
 
     // 게시글 조회수를 증가시키는 메서드
     public void incrementPostViews(int educationId) {
@@ -155,7 +157,7 @@ public class EducationDAO {
         List<EducationPost> postList = new ArrayList<>();
         // 교육 게시글과 관련된 사용자 정보 및 이미지 데이터를 가져오는 SQL 쿼리
         String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.VolunteerHoursEarned, " +
-                "u.Name, u.Role, e.UserID, i.ImageData " +
+                "u.Name, u.Role, u.ProfileImagePath AS UserProfileImage, e.UserID, i.ImageData " +
                 "FROM Education e " +
                 "JOIN User u ON e.UserID = u.UserID " +
                 "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID"; // 이미지 데이터를 가져오기 위해 LEFT JOIN 사용
@@ -179,11 +181,12 @@ public class EducationDAO {
                 String role = rs.getString("Role");
                 int userId = rs.getInt("UserID");
                 byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
+                byte[] userProfileImage = rs.getBytes("UserProfileImage"); // 사용자 프로필 이미지 데이터 가져오기
 
                 boolean isInstitution = "기관".equals(role); // 역할이 '기관'인 경우 true 설정
 
                 // 'EducationPost' 객체 생성: 수정된 생성자를 사용
-                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData));
+                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, userProfileImage));
             }
         } catch (SQLException e) {
             Log.e(TAG, "게시글 불러오기 실패", e);
@@ -269,6 +272,7 @@ public class EducationDAO {
     public boolean updateEducationPostWithImage(int educationId, String title, String category, String content, String location, int fee, int userId, byte[] imageData) {
         String updatePostSql = "UPDATE Education SET Title = ?, Category = ?, Content = ?, Location = ?, Fee = ? WHERE EducationID = ? AND UserID = ?";
         String updateImageSql = "UPDATE EducationImage SET ImageData = ? WHERE EducationID = ?";
+        String insertImageSql = "INSERT INTO EducationImage (EducationID, ImageData) VALUES (?, ?)";
 
         try (Connection conn = dbConnection.connect()) {
             conn.setAutoCommit(false);  // 트랜잭션 시작
@@ -284,22 +288,36 @@ public class EducationDAO {
                 pstmt.setInt(7, userId);
 
                 int rowsAffected = pstmt.executeUpdate();
+                Log.d("DAO", "Post update rows affected: " + rowsAffected);
                 if (rowsAffected == 0) {
                     conn.rollback();
                     return false;
                 }
             }
 
-            // 이미지 업데이트
+            // 이미지 업데이트 또는 삽입
             if (imageData != null) {
+                int imageRowsAffected;
                 try (PreparedStatement pstmt = conn.prepareStatement(updateImageSql)) {
                     pstmt.setBytes(1, imageData);
                     pstmt.setInt(2, educationId);
 
-                    int imageRowsAffected = pstmt.executeUpdate();
-                    if (imageRowsAffected == 0) {
-                        conn.rollback();
-                        return false;
+                    imageRowsAffected = pstmt.executeUpdate();
+                    Log.d("DAO", "Image update rows affected: " + imageRowsAffected);
+                }
+
+                // 이미지 업데이트가 이루어지지 않은 경우, 이미지 삽입
+                if (imageRowsAffected == 0) {
+                    try (PreparedStatement pstmt = conn.prepareStatement(insertImageSql)) {
+                        pstmt.setInt(1, educationId);
+                        pstmt.setBytes(2, imageData);
+
+                        int insertRowsAffected = pstmt.executeUpdate();
+                        Log.d("DAO", "Image insert rows affected: " + insertRowsAffected);
+                        if (insertRowsAffected == 0) {
+                            conn.rollback();
+                            return false;
+                        }
                     }
                 }
             }
@@ -308,7 +326,7 @@ public class EducationDAO {
             return true;
 
         } catch (SQLException e) {
-            Log.e(TAG, "게시글 및 이미지 업데이트 중 오류", e);
+            Log.e("DAO", "게시글 및 이미지 업데이트 중 오류", e);
             return false;
         }
     }

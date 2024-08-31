@@ -83,9 +83,9 @@ public class LectureWriteActivity extends AppCompatActivity {
         checkBoxWant = findViewById(R.id.checkbox_want);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         selectedImageView = findViewById(R.id.selected_image_view);
-        Button chooseImageButton = findViewById(R.id.choose_image_button);
 
-        chooseImageButton.setOnClickListener(v -> openImageChooser());
+        // 이미지 프리뷰 클릭 시 이미지 선택 창 열기
+        selectedImageView.setOnClickListener(v -> openImageChooser());
 
         // 위치 권한 요청 및 위치 정보 가져오기
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -128,6 +128,7 @@ public class LectureWriteActivity extends AppCompatActivity {
             submitButton.setOnClickListener(v -> submitLecture());
         }
     }
+
 
     private void getLastKnownLocation() {
         fusedLocationClient.getLastLocation()

@@ -121,7 +121,6 @@ public class EducationWriteActivity extends AppCompatActivity {
             priceEditText.setText(String.valueOf(fee));
 
             if (imageData != null) {
-                imageUri = Uri.parse("");  // URI로 설정할 수 없으므로, 다른 방법으로 이미지 표시
                 Glide.with(this)
                         .load(imageData)
                         .into(imagePreview);  // 이미지 미리보기 설정
@@ -141,8 +140,8 @@ public class EducationWriteActivity extends AppCompatActivity {
             submitButton.setOnClickListener(v -> submitEducation());
         }
 
-        Button imageButton = findViewById(R.id.image_button);
-        imageButton.setOnClickListener(v -> openImagePicker());
+        // 이미지 프리뷰 클릭 시 이미지 선택 창 열기
+        imagePreview.setOnClickListener(v -> openImagePicker());
 
         // 기존 submitButton 클릭 리스너에서 추가적인 이미지 처리 로직을 넣어줍니다.
         submitButton.setOnClickListener(v -> {
@@ -153,6 +152,7 @@ public class EducationWriteActivity extends AppCompatActivity {
             }
         });
     }
+
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     private void getLastKnownLocation() {
@@ -367,16 +367,20 @@ public class EducationWriteActivity extends AppCompatActivity {
             String description = (String) params[3];
             String location = (String) params[4];
             int fee = (int) params[5];
-            byte[] imageData = (byte[]) params[6]; // 이미지 데이터 가져오기
+            byte[] imageData = (byte[]) params[6];
             int userId = sessionManager.getUserId();
 
             try {
-                return educationDAO.updateEducationPostWithImage(educationId, title, category, description, location, fee, userId, imageData);
+                Log.d("UpdateEducationTask", "Attempting to update post with ID: " + educationId);
+                boolean success = educationDAO.updateEducationPostWithImage(educationId, title, category, description, location, fee, userId, imageData);
+                Log.d("UpdateEducationTask", "Update success: " + success);
+                return success;
             } catch (Exception e) {
                 Log.e("UpdateEducationTask", "Error updating post", e);
                 return false;
             }
         }
+
 
         @Override
         protected void onPostExecute(Boolean success) {

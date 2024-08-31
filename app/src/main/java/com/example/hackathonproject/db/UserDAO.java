@@ -179,12 +179,12 @@ public class UserDAO {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 프로필 이미지 경로 업데이트 메서드
-    public boolean updateProfileImagePath(int userId, String imagePath) throws SQLException {
+    public boolean updateProfileImagePath(int userId, byte[] imageBytes) throws SQLException {
         String sql = "UPDATE User SET ProfileImagePath = ? WHERE UserID = ?";
 
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, imagePath);
+            pstmt.setBytes(1, imageBytes); // 이미지를 BLOB으로 저장
             pstmt.setInt(2, userId);
 
             int rowsAffected = pstmt.executeUpdate();
@@ -194,25 +194,29 @@ public class UserDAO {
             throw e;
         }
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 프로필 이미지 경로 가져오기 메서드
-    public String getProfileImagePath(int userId) throws SQLException {
+    public byte[] getProfileImagePath(int userId) throws SQLException {
         String sql = "SELECT ProfileImagePath FROM User WHERE UserID = ?";
+
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("ProfileImagePath");
+                    return rs.getBytes("ProfileImagePath"); // BLOB 데이터를 byte[]로 반환
                 }
             }
         } catch (SQLException e) {
-            Log.e(TAG, "Failed to get profile image path by ID", e);
+            Log.e(TAG, "Failed to load profile image", e);
             throw e;
         }
-        return null;
+        return null; // 이미지가 없으면 null 반환
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 기관 여부를 확인하는 메서드

@@ -86,13 +86,13 @@ public class AuthManager {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 프로필 사진 이미지 업데이트(경로)
-    public boolean updateProfileImage(int userId, String imagePath) throws SQLException {
-        return userDAO.updateProfileImagePath(userId, imagePath);
+    public boolean updateProfileImage(int userId, byte[] imageBytes) throws SQLException {
+        return userDAO.updateProfileImagePath(userId, imageBytes);
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 프로필 사진 이미지 가져오기(경로)
-    public String getProfileImagePath(int userId) throws SQLException {
+    public byte[] getProfileImage(int userId) throws SQLException {
         return userDAO.getProfileImagePath(userId);
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
