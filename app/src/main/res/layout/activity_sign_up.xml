@@ -180,30 +180,62 @@
                     android:id="@+id/checkbox_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="18dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
+                    android:orientation="horizontal"
+                    android:paddingTop="18dp">
 
                     <CheckBox
-                        android:id="@+id/checkbox"
+                        android:id="@+id/company_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:buttonTint="@color/orange"
-                        android:scaleX="1.5"
-                        android:scaleY="1.5"
                         android:checked="false"
-                        android:background="?attr/selectableItemBackgroundBorderless" />
+                        android:scaleX="1.5"
+                        android:scaleY="1.5" />
 
                     <TextView
-                        android:id="@+id/checkbox_text"
+                        android:id="@+id/company_checkbox_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="46dp"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
+                        android:paddingBottom="4dp"
+                        android:text="기업 담당자입니까?"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/school_checkbox_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:paddingTop="18dp">
+
+                    <CheckBox
+                        android:id="@+id/school_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="기관 담당자입니까?"
-                        android:textSize="20sp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:buttonTint="@color/orange"
+                        android:checked="false"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5" />
+
+                    <TextView
+                        android:id="@+id/school_checkbox_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
                         android:fontFamily="@font/nanumsquare_neo_eb"
-                        android:paddingBottom="4dp" />
+                        android:paddingBottom="4dp"
+                        android:text="학교 담당자입니까?"
+                        android:textSize="20sp" />
+
+
                 </LinearLayout>
 
                 <!-- Sign Up Button -->

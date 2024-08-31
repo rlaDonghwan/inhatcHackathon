@@ -24,10 +24,12 @@ import java.sql.SQLException;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText etName, etPassword, etPhoneNum, etBirthYear, etMonth, etDay;
-    private CheckBox cbIsOrganization ;
+    private CheckBox cbIsOrganization, cbIsSchool;
     private AuthManager authManager;
     private Button btnRegister;
-    private TextView checkboxText;
+    private TextView CompanyCheckboxText;
+    private TextView SchoolCheckboxText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
-
 
         authManager = new AuthManager();  // AuthManager 초기화
 
@@ -45,11 +46,15 @@ public class SignUpActivity extends AppCompatActivity {
         etBirthYear = findViewById(R.id.birthYear_input);
         etMonth = findViewById(R.id.month_input);
         etDay = findViewById(R.id.day_input);
-        cbIsOrganization = findViewById(R.id.checkbox);
-        btnRegister = findViewById(R.id.sign_up_button);
-        checkboxText = findViewById(R.id.checkbox_text);
 
-        //---------------------------------------------------------------------------------------------
+        cbIsOrganization = findViewById(R.id.company_checkbox);
+        cbIsSchool = findViewById(R.id.school_checkbox);
+
+        CompanyCheckboxText = findViewById(R.id.company_checkbox_text);
+        SchoolCheckboxText = findViewById(R.id.school_checkbox_text);
+
+        btnRegister = findViewById(R.id.sign_up_button);
+
         // SharedPreferences에서 폰트 크기 불러오기
         SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
@@ -62,9 +67,10 @@ public class SignUpActivity extends AppCompatActivity {
         etMonth.setTextSize(savedFontSize);
         etDay.setTextSize(savedFontSize);
         cbIsOrganization.setTextSize(savedFontSize);
+        cbIsSchool.setTextSize(savedFontSize);
         btnRegister.setTextSize(savedFontSize);
-        checkboxText.setTextSize(savedFontSize);
-        //---------------------------------------------------------------------------------------------
+        CompanyCheckboxText.setTextSize(savedFontSize);
+        SchoolCheckboxText.setTextSize(savedFontSize);
 
         // 전화번호 입력 필드에 최대 13자리 제한 및 형식화 적용
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
@@ -82,6 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
             String month = etMonth.getText().toString();
             String day = etDay.getText().toString();
             boolean isOrganization = cbIsOrganization.isChecked();
+            boolean isSchool = cbIsSchool.isChecked();
 
             // 모든 필드가 입력되었는지 확인
             if (name.isEmpty() || password.isEmpty() || phoneNum.isEmpty() || birthYear.isEmpty() || month.isEmpty() || day.isEmpty()) {
@@ -92,19 +99,27 @@ public class SignUpActivity extends AppCompatActivity {
                 day = day.length() == 1 ? "0" + day : day;
 
                 String birthDate = birthYear + month + day;
-                new RegisterUserTask().execute(name, password, phoneNum, birthDate, isOrganization);
+
+                // 인증이 필요한 경우
+                if (isOrganization || isSchool) {
+                    // 인증 화면으로 이동
+                    Intent intent = new Intent(SignUpActivity.this, CertificationActivity.class);
+                    intent.putExtra("isOrganization", isOrganization);
+                    intent.putExtra("isSchool", isSchool);
+                    startActivity(intent);
+                } else {
+                    // 회원가입 작업 실행
+                    new RegisterUserTask().execute(name, password, phoneNum, birthDate, isOrganization);
+                }
             }
         });
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 입력 필드 자동 이동 설정
     private void setupFieldAutoMove() {
         etBirthYear.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         etMonth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         etDay.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
 
-        // 연도 입력 완료 후 월 입력으로 자동 이동
         etBirthYear.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -120,7 +135,6 @@ public class SignUpActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // 월 입력 완료 후 일 입력으로 자동 이동
         etMonth.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -136,7 +150,6 @@ public class SignUpActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // 일 입력 완료 후 회원가입 버튼으로 자동 이동
         etDay.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -152,9 +165,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 비동기로 회원가입 작업을 수행하는 클래스
     private class RegisterUserTask extends AsyncTask<Object, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Object... params) {
@@ -165,11 +176,12 @@ public class SignUpActivity extends AppCompatActivity {
             boolean isOrganization = (boolean) params[4];
 
             try {
-                return authManager.registerUser(name, password, phoneNum, birthDate, isOrganization);  // AuthManager 사용
+                return authManager.registerUser(name, password, phoneNum, birthDate, isOrganization);
             } catch (SQLException e) {
                 return false;
             }
         }
+
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
@@ -182,5 +194,4 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
