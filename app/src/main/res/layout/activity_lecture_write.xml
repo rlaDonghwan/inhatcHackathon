@@ -35,12 +35,26 @@
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- Image Preview (툴바 아래, 제목 위에 배치) -->
+    <ImageView
+        android:id="@+id/selected_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_image"
+        android:background="@android:color/darker_gray"
+        android:visibility="visible" />
+
     <!-- Title Text -->
     <TextView
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/selected_image_view"
         android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:text="제목"
@@ -48,41 +62,35 @@
         android:textSize="23sp"
         android:textColor="@android:color/black" />
 
-    <!-- Checkboxes -->
+    <!-- 청년 참관 가능 체크박스 (제목 오른쪽에 배치) -->
     <LinearLayout
         android:id="@+id/checkbox_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/selected_image_view"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
         android:layout_alignParentEnd="true"
-        android:orientation="horizontal">
+        android:layout_toEndOf="@id/title_text"
+        android:orientation="horizontal"
+        android:layout_marginStart="8dp">
 
         <!-- 청년 참관 가능 -->
-        <LinearLayout
+        <CheckBox
+            android:id="@+id/checkbox_want"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:buttonTint="@color/orange"
+            android:scaleX="1.5"
+            android:scaleY="1.5" />
 
-            <CheckBox
-                android:id="@+id/checkbox_want"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/orange"
-                android:scaleX="1.5"
-                android:scaleY="1.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/nanumsquare_neo_eb"
-                android:text="청년 참관 가능"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:text="청년 참관 가능"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:layout_marginStart="4dp" />
 
     </LinearLayout>
 
@@ -102,35 +110,12 @@
         android:textColor="@android:color/black"
         android:textSize="17sp" />
 
-    <!-- Image Upload Section -->
-    <Button
-        android:id="@+id/choose_image_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_edit_text"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        android:text="이미지 선택" />
-
-    <!-- Selected Image Preview -->
-    <ImageView
-        android:id="@+id/selected_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/choose_image_button"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray"
-        android:visibility="visible" />
-
     <!-- 구해요 체크 시 금액 설정 -->
     <TextView
         android:id="@+id/price_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/selected_image_view"
+        android:layout_below="@id/title_edit_text"
         android:layout_marginTop="30dp"
         android:layout_marginStart="16dp"
         android:text="금액 | ₩"

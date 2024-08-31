@@ -45,6 +45,7 @@ public class EducationContentView extends AppCompatActivity {
     private EducationPost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
     private ImageView contentImageView;  // 이미지 뷰를 저장할 변수
+    private ImageView profileImageView;
 
 
     // 로그인한 사용자의 ID를 가져오는 메서드
@@ -83,6 +84,7 @@ public class EducationContentView extends AppCompatActivity {
         feeTextView = findViewById(R.id.work_price);
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         contentImageView = findViewById(R.id.content_image);  // 이미지 뷰 초기화
+        profileImageView = findViewById(R.id.profile_image); // 프로필 이미지 뷰 초기화
 
 
         menuButton.setOnClickListener(this::showPopupMenu);  // 메뉴 버튼 클릭 시 팝업 메뉴 표시
@@ -212,18 +214,32 @@ public class EducationContentView extends AppCompatActivity {
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
+                // 프로필 이미지 로드
+                byte[] profileImageData = post.getUserProfileImage(); // 사용자의 프로필 이미지 데이터 가져오기
+                if (profileImageData != null && profileImageData.length > 0) {
+                    Glide.with(EducationContentView.this)
+                            .asBitmap()
+                            .load(profileImageData)
+                            .placeholder(R.drawable.default_profile_image) // 기본 이미지 설정
+                            .error(R.drawable.default_profile_image) // 오류 시 이미지 설정
+                            .into(profileImageView);
+                } else {
+                    profileImageView.setImageResource(R.drawable.default_profile_image); // 기본 이미지 설정
+                }
+
+                // 게시글 이미지 로드
                 byte[] imageData = post.getImageData();  // EducationPost 객체에서 이미지 데이터 가져오기
                 if (imageData != null && imageData.length > 0) {
                     Log.d("EducationContentView", "Image data size: " + imageData.length);
                     Glide.with(EducationContentView.this)
                             .asBitmap()  // 바이트 배열을 Bitmap으로 처리
                             .load(imageData)
-                            .placeholder(R.drawable.placeholder)  // 로딩 중에 표시할 이미지
-                            .error(R.drawable.error_image)  // 오류 시 표시할 이미지
+                            .placeholder(R.drawable.default_image)  // 로딩 중에 표시할 이미지
+                            .error(R.drawable.default_image)  // 오류 시 표시할 이미지
                             .into(contentImageView);  // 이미지뷰에 설정
                 } else {
                     Log.d("EducationContentView", "No image data found, using placeholder.");
-                    contentImageView.setImageResource(R.drawable.placeholder);  // 기본 이미지 설정
+                    contentImageView.setImageResource(R.drawable.default_image);  // 기본 이미지 설정
                 }
 
                 int loggedInUserId = getLoggedInUserId();
@@ -259,13 +275,12 @@ public class EducationContentView extends AppCompatActivity {
 
                 menuButton.setOnClickListener(v -> showPopupMenu(v));
 
-
             } else {
                 Toast.makeText(EducationContentView.this, "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();  // 오류 메시지 표시
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 
     private String formatTimeAgo(String createdAt) {

@@ -24,8 +24,10 @@ import com.example.hackathonproject.R;
 import com.example.hackathonproject.Lecture.LectureActivity;
 import com.example.hackathonproject.db.AuthManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -138,17 +140,27 @@ public class SettingsActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData(); // 선택한 이미지의 URI 가져오기
 
-            // 이미지를 내부 저장소에 저장
-            String imagePath = saveImageToInternalStorage(imageUri);
+            try {
+                // 이미지 URI에서 비트맵 가져오기
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
 
-            // DB에 이미지 경로를 저장 (비동기 처리)
-            int userId = sessionManager.getUserId();  // 사용자 ID 가져오기
-            new UpdateProfileImageTask(userId, imagePath).execute();  // AsyncTask 실행
+                // 비트맵을 바이트 배열로 변환
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] imageBytes = baos.toByteArray();
 
-            // 이미지 뷰에 이미지를 설정
-            profileImageView.setImageURI(imageUri);
+                // DB에 이미지 바이트 배열을 저장 (비동기 처리)
+                int userId = sessionManager.getUserId();  // 사용자 ID 가져오기
+                new UpdateProfileImageTask(userId, imageBytes).execute();  // AsyncTask 실행
+
+                // 이미지 뷰에 이미지를 설정
+                profileImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     private String saveImageToInternalStorage(Uri imageUri) {
         try {
@@ -180,17 +192,17 @@ public class SettingsActivity extends AppCompatActivity {
     // 비동기 작업을 수행하는 내부 클래스
     private class UpdateProfileImageTask extends AsyncTask<Void, Void, Boolean> {
         private int userId;
-        private String imagePath;
+        private byte[] imageBytes;
 
-        public UpdateProfileImageTask(int userId, String imagePath) {
+        public UpdateProfileImageTask(int userId, byte[] imageBytes) {
             this.userId = userId;
-            this.imagePath = imagePath;
+            this.imageBytes = imageBytes;
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                return authManager.updateProfileImage(userId, imagePath);
+                return authManager.updateProfileImage(userId, imageBytes); // imagePath가 아닌 imageBytes를 사용
             } catch (SQLException e) {
                 e.printStackTrace();
                 return false;
@@ -200,14 +212,14 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Log.d("SettingsActivity", "Profile image path updated successfully in DB");
+                Log.d("SettingsActivity", "Profile image updated successfully in DB");
             } else {
-                Log.e("SettingsActivity", "Failed to update profile image path in DB");
+                Log.e("SettingsActivity", "Failed to update profile image in DB");
             }
         }
     }
 
-    private class LoadProfileImageTask extends AsyncTask<Void, Void, String> {
+    private class LoadProfileImageTask extends AsyncTask<Void, Void, byte[]> {
         private int userId;
 
         public LoadProfileImageTask(int userId) {
@@ -215,10 +227,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void... voids) {
+        protected byte[] doInBackground(Void... voids) {
             try {
-                String imagePath = authManager.getProfileImagePath(userId);
-                return imagePath;
+                return authManager.getProfileImage(userId);
             } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -226,26 +237,17 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String imagePath) {
-            if (imagePath != null && !imagePath.isEmpty()) {
-                if (imagePath.equals("/path/to/default/image.jpg")) {
-                    // 기본 이미지 경로일 경우 리소스에서 이미지 로드
-                    profileImageView.setImageResource(R.drawable.default_profile_image);
-                } else {
-                    File imgFile = new File(imagePath);
-                    if (imgFile.exists()) {
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        profileImageView.setImageBitmap(myBitmap);
-                    } else {
-                        Log.e("SettingsActivity", "Failed to load image from " + imagePath);
-                    }
-                }
+        protected void onPostExecute(byte[] imageBytes) {
+            if (imageBytes != null && imageBytes.length > 0) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                profileImageView.setImageBitmap(bitmap);
             } else {
                 // 프로필 이미지가 설정되지 않았을 경우 기본 이미지 로드
                 profileImageView.setImageResource(R.drawable.default_profile_image);
             }
         }
     }
+
 
     // Task to load and display business or school name
     private class LoadBusinessOrSchoolNameTask extends AsyncTask<Void, Void, String> {
