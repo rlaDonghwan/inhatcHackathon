@@ -42,11 +42,10 @@ public class LectureDAO {
             return false;
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 강연 게시글을 가져오는 메서드
     public List<LecturePost> getAllLecturePosts() {
-        String sql = "SELECT Lecture.LectureID, Lecture.UserID, User.Name, Lecture.Title, Lecture.Content, Lecture.Location, Lecture.CreatedAt, Lecture.CompletedAt, Lecture.Fee, Lecture.Views, Lecture.isYouthAudienceAllowed, LectureImage.ImageData " +
+        String sql = "SELECT Lecture.LectureID, Lecture.UserID, User.Name, Lecture.Title, Lecture.Content, Lecture.Location, Lecture.CreatedAt, Lecture.Fee, Lecture.Views, Lecture.isYouthAudienceAllowed, LectureImage.ImageData " +
                 "FROM Lecture " +
                 "LEFT JOIN User ON Lecture.UserID = User.UserID " +  // User 테이블과 조인하여 작성자 이름 가져오기
                 "LEFT JOIN LectureImage ON Lecture.LectureID = LectureImage.LectureID"; // LectureImage 테이블과 조인하여 이미지 데이터 가져오기
@@ -65,14 +64,13 @@ public class LectureDAO {
                 String content = rs.getString("Content");
                 String location = rs.getString("Location");
                 String createdAt = rs.getString("CreatedAt");
-                String completedAt = rs.getString("CompletedAt");
                 double fee = rs.getDouble("Fee");
                 int views = rs.getInt("Views");
                 boolean isYouthAudienceAllowed = rs.getBoolean("isYouthAudienceAllowed");
                 byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
                 // LecturePost 객체 생성
-                LecturePost post = new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed, imageData);
+                LecturePost post = new LecturePost(lectureId, userId, userName, title, content, location, createdAt, null, fee, views, isYouthAudienceAllowed, imageData);
                 posts.add(post);
             }
         } catch (SQLException e) {
@@ -81,11 +79,10 @@ public class LectureDAO {
 
         return posts;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 특정 ID의 강연 게시글을 가져오는 메서드
     public LecturePost getLecturePostById(int lectureId) {
-        String sql = "SELECT l.LectureID, l.UserID, u.Name, l.Title, l.Content, l.Location, l.Fee, l.Views, l.CreatedAt, l.CompletedAt, l.IsYouthAudienceAllowed, li.ImageData " +
+        String sql = "SELECT l.LectureID, l.UserID, u.Name, l.Title, l.Content, l.Location, l.Fee, l.Views, l.CreatedAt, l.IsYouthAudienceAllowed, li.ImageData " +
                 "FROM Lecture l " +
                 "JOIN User u ON l.UserID = u.UserID " +
                 "LEFT JOIN LectureImage li ON l.LectureID = li.LectureID " +  // LectureImage 테이블과 조인하여 이미지 데이터를 가져옴
@@ -104,11 +101,10 @@ public class LectureDAO {
                     double fee = rs.getDouble("Fee");
                     int views = rs.getInt("Views");
                     String createdAt = rs.getString("CreatedAt");
-                    String completedAt = rs.getString("CompletedAt");
                     boolean isYouthAudienceAllowed = rs.getBoolean("IsYouthAudienceAllowed");
                     byte[] imageData = rs.getBytes("ImageData");  // 이미지 데이터 가져오기
 
-                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, completedAt, fee, views, isYouthAudienceAllowed, imageData);
+                    return new LecturePost(lectureId, userId, userName, title, content, location, createdAt, null, fee, views, isYouthAudienceAllowed, imageData);
                 }
             }
         } catch (SQLException e) {
@@ -116,8 +112,6 @@ public class LectureDAO {
         }
         return null;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
 
     // 강연 게시글의 조회수를 증가시키는 메서드
     public void incrementLecturePostViews(int lectureId) {
@@ -131,7 +125,6 @@ public class LectureDAO {
             Log.e(TAG, "강연 게시글 조회수 업데이트 실패", e);
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 삭제하는 메서드
     public boolean deleteLecturePost(int lectureId) {
@@ -147,7 +140,6 @@ public class LectureDAO {
             return false;
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글을 업데이트하는 메서드
     public boolean updateLecturePost(int lectureId, String title, String content, String location, double fee, int userId, boolean isYouthAudienceAllowed) {
@@ -170,7 +162,6 @@ public class LectureDAO {
             return false;
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 게시글과 이미지를 함께 삽입하는 메서드
     public boolean submitLectureWithImage(String title, String content, String location, double fee, int userId, ZonedDateTime kstTime, boolean isYouthAudienceAllowed, byte[] imageData) {

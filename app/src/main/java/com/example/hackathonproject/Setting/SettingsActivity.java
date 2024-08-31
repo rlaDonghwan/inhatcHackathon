@@ -47,7 +47,6 @@ public class SettingsActivity extends AppCompatActivity {
         // UI 요소 초기화
         profileImageView = findViewById(R.id.profile_image);
         TextView profileNameTextView = findViewById(R.id.question);
-        TextView volunteerHoursTextView = findViewById(R.id.title_Vtime);
         TextView balanceTextView = findViewById(R.id.title_time); // balance 값을 표시할 텍스트뷰
         ImageView authorizationIcon = findViewById(R.id.authorization_icon);
 
@@ -59,7 +58,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 프로필 이름과 봉사 시간, Balance를 설정
         profileNameTextView.setText(userName);
-        volunteerHoursTextView.setText(String.valueOf(volunteerHours));
         balanceTextView.setText(String.valueOf(balance)); // Balance 값을 설정
 
         // 사용자 기관 여부에 따라 인증 마크 가시성 설정
