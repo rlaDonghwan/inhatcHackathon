@@ -1,5 +1,6 @@
 package com.example.hackathonproject.Setting;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -26,7 +28,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     SessionManager sessionManager;
     private EditText nameEditText;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +105,24 @@ public class EditProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        deleteAccountButton.setOnClickListener(v -> deleteUserAccount());
+        deleteAccountButton.setOnClickListener(v -> showDeleteConfirmationDialog());
     }
 
+    // 계정 삭제 경고 다이얼로그 표시
+    private void showDeleteConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("계정 삭제")
+                .setMessage("계정을 삭제하면 모든 내용이 삭제됩니다. 계속하시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteUserAccount();
+                    }
+                })
+                .setNegativeButton("취소", null)
+                .show();
+    }
 
+    // 계정 삭제를 비동기적으로 처리
     private void deleteUserAccount() {
         new DeleteAccountTask().execute();
     }
@@ -131,6 +146,7 @@ public class EditProfileActivity extends AppCompatActivity {
         new UpdateNameTask().execute(newName);
     }
 
+    // 계정 삭제를 처리하는 비동기 작업 클래스
     private class DeleteAccountTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -141,7 +157,30 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             try {
+                // 교육 게시글 삭제
+                Log.d("DeleteAccountTask", "Attempting to delete user education posts");
+                boolean educationDeleted = authManager.deleteUserEducationPosts(userId);
+                Log.d("DeleteAccountTask", "Education posts deleted: " + educationDeleted);
+
+                // 강연 게시글 삭제
+                Log.d("DeleteAccountTask", "Attempting to delete user lecture posts");
+                boolean lectureDeleted = authManager.deleteUserLecturePosts(userId);
+                Log.d("DeleteAccountTask", "Lecture posts deleted: " + lectureDeleted);
+
+                // 채팅 내역 삭제
+                Log.d("DeleteAccountTask", "Attempting to delete user chats");
+                boolean chatsDeleted = authManager.deleteUserChats(userId);
+                Log.d("DeleteAccountTask", "Chats deleted: " + chatsDeleted);
+
+                // 채팅방 삭제
+                Log.d("DeleteAccountTask", "Attempting to delete user chat rooms");
+                boolean chatRoomsDeleted = authManager.deleteUserChatRooms(userId);
+                Log.d("DeleteAccountTask", "Chat rooms deleted: " + chatRoomsDeleted);
+
+                // Even if there were no posts, chats, or chat rooms, proceed with account deletion
+                Log.d("DeleteAccountTask", "Attempting to delete user account");
                 return authManager.deleteUserAccount(userId); // userId를 사용하여 계정 삭제
+
             } catch (SQLException e) {
                 e.printStackTrace();
                 return false;

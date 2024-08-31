@@ -1,11 +1,13 @@
 package com.example.hackathonproject.Chat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +56,22 @@ public class ChatListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_list);
 
         chatListView = findViewById(R.id.chat_list_view);  // ListView 초기화
+
+        // 필터 버튼 초기 선택 상태 설정
+        filterAllButton = findViewById(R.id.button_all);
+        filterAllButton.setSelected(true);  // "전체" 버튼을 기본 선택 상태로 설정
+        filterEducationButton = findViewById(R.id.button_education);
+        filterLectureButton = findViewById(R.id.button_lecture);
+
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 20);  // 기본값 20sp
+
+        // 필터 버튼에 폰트 크기 적용
+        filterAllButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        filterEducationButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        filterLectureButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+
 
         // SwipeRefreshLayout 초기화 및 새로고침 리스너 설정
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);

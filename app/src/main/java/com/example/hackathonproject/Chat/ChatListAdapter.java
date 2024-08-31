@@ -1,6 +1,8 @@
 package com.example.hackathonproject.Chat;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,10 @@ public class ChatListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
+        // SharedPreferences에서 폰트 크기 가져오기
+        SharedPreferences preferences = context.getSharedPreferences("fontSizePrefs", Context.MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
         // convertView가 null인 경우, 새로운 뷰를 생성하고 ViewHolder를 초기화
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_chat_list, parent, false);
@@ -55,6 +61,12 @@ public class ChatListAdapter extends BaseAdapter {
             holder.lastMessage = convertView.findViewById(R.id.lastMessage);  // 마지막 메시지 텍스트뷰
             holder.lastMessageTime = convertView.findViewById(R.id.lastMessageTime);  // 마지막 메시지 시간 텍스트뷰
             holder.newMessageIcon = convertView.findViewById(R.id.newMessageIcon);  // 새 메시지 아이콘
+
+            // 가져온 폰트 크기를 텍스트뷰에 적용
+            holder.otherUserName.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+            holder.lastMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+            holder.lastMessageTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+
             convertView.setTag(holder);  // ViewHolder를 태그로 설정
         } else {
             holder = (ViewHolder) convertView.getTag();  // convertView가 null이 아닌 경우, 기존의 ViewHolder 사용
@@ -79,15 +91,6 @@ public class ChatListAdapter extends BaseAdapter {
         } else {
             // 상대방이 작성한 메시지라면 내가 읽지 않은 경우에만 아이콘 표시
             holder.newMessageIcon.setVisibility(chat.isAuthorMessageRead() ? View.GONE : View.VISIBLE);
-        }
-
-        // 본인 이름에 마크를 표시하기 위해 로그인을 기반으로 조건을 수정함
-        if (chat.getAuthorID() == loggedInUserId) {
-            // 내가 보낸 메시지가 있고, 상대방이 아직 읽지 않은 경우 표시
-            holder.newMessageIcon.setVisibility(chat.isOtherUserMessageRead() ? View.VISIBLE : View.GONE);
-        } else {
-            // 상대방이 보낸 메시지가 있고, 내가 아직 읽지 않은 경우 표시
-            holder.newMessageIcon.setVisibility(chat.isAuthorMessageRead() ? View.VISIBLE : View.GONE);
         }
 
         return convertView;

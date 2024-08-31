@@ -15,10 +15,11 @@ public class EducationPost {
     private int userId;  // 작성자 ID
     private byte[] imageData; // 이미지 데이터를 위한 필드
     private boolean isInstitution;  // 기관 사용자 여부
+    private String role;  // Role 필드 추가 (기관, 학교, 청년 등)
     private byte[] userProfileImage;
 
     // 생성자
-    public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId, boolean isInstitution, byte[] imageData, byte[] userProfileImage) {
+    public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId, boolean isInstitution, byte[] imageData, String role, byte[] userProfileImage) {
         this.educationId = educationId;
         this.title = title;
         this.category = category;
@@ -32,9 +33,13 @@ public class EducationPost {
         this.userName = userName;
         this.userId = userId;
         this.isInstitution = isInstitution;
+        this.imageData = imageData; // 이미지 데이터 초기화
+        this.role = role; // role 초기화
         this.imageData = imageData;
         this.userProfileImage = userProfileImage; // 프로필 이미지 데이터 초기화
+        this.role = role; // role 초기화
     }
+
 
     public boolean isInstitution() {
         return isInstitution;
@@ -100,7 +105,24 @@ public class EducationPost {
         this.imageData = imageData;
     }
 
-    public byte[] getUserProfileImage() { return userProfileImage; }
+    // Role 관련 메서드
+    public String getRole() {
+        return role;
+    }
 
-    public void setUserProfileImage(byte[] userProfileImage) { this.userProfileImage = userProfileImage; }
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isInstitutionOrSchool() {
+        return "기관".equals(role) || "학교".equals(role);
+    }
+
+    public byte[] getUserProfileImage() {
+        return userProfileImage;
+    }
+
+    public void setUserProfileImage(byte[] userProfileImage) {
+        this.userProfileImage = userProfileImage;
+    }
 }
