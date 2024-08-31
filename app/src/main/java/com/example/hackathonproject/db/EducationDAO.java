@@ -89,7 +89,6 @@ public class EducationDAO {
                     int fee = rs.getInt("Fee");
                     int views = rs.getInt("Views");
                     String createdAt = rs.getString("CreatedAt");
-                    String completedAt = rs.getString("CompletedAt");
                     int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                     int userId = rs.getInt("UserID");
                     String userName = rs.getString("Name");
