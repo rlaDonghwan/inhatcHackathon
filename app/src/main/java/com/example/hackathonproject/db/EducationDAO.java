@@ -99,7 +99,7 @@ public class EducationDAO {
                     boolean isInstitution = "기관".equals(role);
 
                     // 새로운 생성자 사용, 프로필 이미지 데이터 포함
-                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, profileImageData);
+                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, role, profileImageData);
                 }
             }
         } catch (SQLException e) {
@@ -186,9 +186,7 @@ public class EducationDAO {
                 boolean isInstitution = "기관".equals(role) || "학교".equals(role); // 역할이 '기관' 또는 '학교'인 경우 true 설정
 
                 // 'EducationPost' 객체 생성: 수정된 생성자를 사용
-                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, userProfileImage, role));
-                // 'EducationPost' 객체 생성: 수정된 생성자를 사용, role 필드 포함
-                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, role));
+                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData, role,userProfileImage));
             }
         } catch (SQLException e) {
             Log.e(TAG, "게시글 불러오기 실패", e);

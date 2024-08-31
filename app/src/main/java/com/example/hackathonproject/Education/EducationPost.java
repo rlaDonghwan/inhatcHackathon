@@ -19,7 +19,7 @@ public class EducationPost {
     private byte[] userProfileImage;
 
     // 생성자
-    public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId, boolean isInstitution, byte[] imageData, String role,byte[] userProfileImage) {
+    public EducationPost(int educationId, String title, String category, String content, String location, int fee, int views, String createdAt, String completedAt, int volunteerHoursEarned, String userName, int userId, boolean isInstitution, byte[] imageData, String role, byte[] userProfileImage) {
         this.educationId = educationId;
         this.title = title;
         this.category = category;

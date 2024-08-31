@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 옵션 클릭 리스너 설정
         LinearLayout editProfileOption = findViewById(R.id.option_edit_profile);
-        LinearLayout aboutB1A3Option = findViewById(R.id.option_about_b1a3);
+        LinearLayout fontSizeOption = findViewById(R.id.option_about_b1a3);
         LinearLayout logoutOption = findViewById(R.id.logout_option);
 
         // 프로필 편집 옵션 클릭 리스너
@@ -121,7 +121,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // 글씨 크기 조정 옵션 클릭 리스너
-        fontSizeption.setOnClickListener(v -> {
+        fontSizeOption.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, SettingFontSizeActivity.class);
             startActivity(intent);
         });
