@@ -271,5 +271,52 @@ public class EducationDAO {
         return null; // 이미지가 없으면 null 반환
     }
 
+    public boolean updateEducationPostWithImage(int educationId, String title, String category, String content, String location, int fee, int userId, byte[] imageData) {
+        String updatePostSql = "UPDATE Education SET Title = ?, Category = ?, Content = ?, Location = ?, Fee = ? WHERE EducationID = ? AND UserID = ?";
+        String updateImageSql = "UPDATE EducationImage SET ImageData = ? WHERE EducationID = ?";
+
+        try (Connection conn = dbConnection.connect()) {
+            conn.setAutoCommit(false);  // 트랜잭션 시작
+
+            // 게시글 업데이트
+            try (PreparedStatement pstmt = conn.prepareStatement(updatePostSql)) {
+                pstmt.setString(1, title);
+                pstmt.setString(2, category);
+                pstmt.setString(3, content);
+                pstmt.setString(4, location);
+                pstmt.setInt(5, fee);
+                pstmt.setInt(6, educationId);
+                pstmt.setInt(7, userId);
+
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 이미지 업데이트
+            if (imageData != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(updateImageSql)) {
+                    pstmt.setBytes(1, imageData);
+                    pstmt.setInt(2, educationId);
+
+                    int imageRowsAffected = pstmt.executeUpdate();
+                    if (imageRowsAffected == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            conn.commit();  // 트랜잭션 커밋
+            return true;
+
+        } catch (SQLException e) {
+            Log.e(TAG, "게시글 및 이미지 업데이트 중 오류", e);
+            return false;
+        }
+    }
+
 
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.EducationDAO;
@@ -55,6 +56,8 @@ public class EducationWriteActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button);  // 뒤로 가기 버튼 초기화
         backButton.setOnClickListener(v -> onBackPressed());  // 뒤로 가기 버튼 클릭 시 뒤로 이동
 
+        ImageView imagePreview = findViewById(R.id.image_preview);
+
         titleEditText = findViewById(R.id.title_edit_text);  // 제목 입력 필드 초기화
         descriptionEditText = findViewById(R.id.content_edit_text);  // 내용 입력 필드 초기화
         submitButton = findViewById(R.id.btnSummit);  // 제출 버튼 초기화
@@ -75,6 +78,16 @@ public class EducationWriteActivity extends AppCompatActivity {
             String content = intent.getStringExtra("content");  // 내용 가져오기
             String category = intent.getStringExtra("category");  // 카테고리 가져오기
             int fee = intent.getIntExtra("fee", 0);  // 교육료 가져오기
+            byte[] imageData = intent.getByteArrayExtra("imageData");  // 이미지 데이터 가져오기
+
+            if (imageData != null) {
+                imageUri = Uri.parse("");  // URI로 설정할 수 없으므로, 다른 방법으로 이미지 표시
+                Glide.with(this)
+                        .load(imageData)
+                        .into(imagePreview);  // 이미지 미리보기 설정
+                imagePreview.setVisibility(View.VISIBLE);
+            }
+
 
             titleEditText.setText(title);  // 제목 설정
             descriptionEditText.setText(content);  // 내용 설정
@@ -167,19 +180,43 @@ public class EducationWriteActivity extends AppCompatActivity {
 
     // 기존 게시글을 수정하는 메서드
     private void updateEducationPost() {
-        String title = titleEditText.getText().toString().trim();  // 제목 가져오기
-        String description = descriptionEditText.getText().toString().trim();  // 내용 가져오기
-        String category = checkBoxBuy.isChecked() ? "구해요" : checkBoxSell.isChecked() ? "할게요" : "";  // 선택된 카테고리 가져오기
-        String feeStr = priceEditText.getText().toString().trim(); // 금액 가져오기
-        int fee = feeStr.isEmpty() ? 0 : Integer.parseInt(feeStr); // 금액이 비어 있으면 0으로 설정
+        String title = titleEditText.getText().toString().trim();
+        String description = descriptionEditText.getText().toString().trim();
+        String category = checkBoxBuy.isChecked() ? "구해요" : checkBoxSell.isChecked() ? "할게요" : "";
+        String feeStr = priceEditText.getText().toString().trim();
+        int fee = feeStr.isEmpty() ? 0 : Integer.parseInt(feeStr);
 
         if (title.isEmpty() || description.isEmpty() || category.isEmpty()) {
-            Toast.makeText(this, "제목, 내용, 카테고리를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();  // 필수 항목 누락 시 경고
+            Toast.makeText(this, "제목, 내용, 카테고리를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // 이미지 URI가 있으면, 바이트 배열로 변환
+        byte[] imageBytes = null;
+        if (imageUri != null) {
+            imageBytes = getImageBytes(imageUri);
+        }
+
         // 비동기 작업으로 게시글 수정
-        new UpdateEducationTask().execute(educationId, title, category, description, "서울", fee);  // 위치는 임의로 "서울"로 설정
+        new UpdateEducationTask().execute(educationId, title, category, description, "서울", fee, imageBytes);  // 위치는 임의로 "서울"로 설정
+    }
+
+    private byte[] getImageBytes(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            return byteBuffer.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -244,31 +281,27 @@ public class EducationWriteActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Object... params) {
-            int educationId = (int) params[0];  // 교육 게시글 ID 가져오기
-            String title = (String) params[1];  // 제목 가져오기
-            String category = (String) params[2];  // 카테고리 가져오기
-            String description = (String) params[3];  // 내용 가져오기
-            String location = (String) params[4];  // 위치 가져오기
-            int fee = (int) params[5]; // 금액 가져오기
-            int userId = sessionManager.getUserId(); // SessionManager를 통해 사용자 ID 가져오기
+            int educationId = (int) params[0];
+            String title = (String) params[1];
+            String category = (String) params[2];
+            String description = (String) params[3];
+            String location = (String) params[4];
+            int fee = (int) params[5];
+            byte[] imageData = (byte[]) params[6]; // 이미지 데이터 가져오기
+            int userId = sessionManager.getUserId();
 
-            try {
-                // 데이터를 데이터베이스에서 업데이트
-                return educationDAO.updateEducationPost(educationId, title, category, description, location, fee, userId);
-            } catch (Exception e) {
-                Log.e("UpdateEducationTask", "Error updating post", e);
-                return false;
-            }
+            // 데이터베이스 업데이트 호출
+            return educationDAO.updateEducationPostWithImage(educationId, title, category, description, location, fee, userId, imageData);
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Toast.makeText(EducationWriteActivity.this, "게시글이 성공적으로 수정되었습니다.", Toast.LENGTH_SHORT).show();  // 성공
-                setResult(RESULT_OK);  // 결과 설정
-                finish();  // 액티비티 종료
+                Toast.makeText(EducationWriteActivity.this, "게시글이 성공적으로 수정되었습니다.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
             } else {
-                Toast.makeText(EducationWriteActivity.this, "게시글 수정에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();  // 실패 메시지 표시
+                Toast.makeText(EducationWriteActivity.this, "게시글 수정에 실패하였습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.hackathonproject.Lecture;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.LectureDAO;
@@ -64,19 +67,29 @@ public class LectureWriteActivity extends AppCompatActivity {
 
         chooseImageButton.setOnClickListener(v -> openImageChooser());
 
-        // Intent로 전달된 데이터 처리 (수정 모드인지 확인)
+        // Intent로 전달된 데이터 처리
         Intent intent = getIntent();
         if (intent.hasExtra("lectureId")) {
             lectureId = intent.getIntExtra("lectureId", -1);
             String title = intent.getStringExtra("title");
             String content = intent.getStringExtra("content");
+            String location = intent.getStringExtra("location");
             int fee = intent.getIntExtra("fee", 0);
             boolean isYouthAudienceAllowed = intent.getBooleanExtra("isYouthAudienceAllowed", false);
+            byte[] imageData = intent.getByteArrayExtra("imageData");
 
             titleEditText.setText(title);
             descriptionEditText.setText(content);
             priceEditText.setText(String.valueOf(fee));
             checkBoxWant.setChecked(isYouthAudienceAllowed);
+
+            if (imageData != null) {
+                Glide.with(this)
+                        .load(imageData)
+                        .into(selectedImageView);  // 이미지 미리보기 설정
+                selectedImageView.setVisibility(View.VISIBLE);
+                imageBytes = imageData;  // 이미지 데이터를 변수에 저장하여 업데이트에 사용
+            }
 
             toolbarTitle.setText("강연 수정");
 
@@ -85,6 +98,7 @@ public class LectureWriteActivity extends AppCompatActivity {
             submitButton.setOnClickListener(v -> submitLecture());
             toolbarTitle.setText("강연자 구직");
         }
+
 
         submitButton.setOnClickListener(v -> {
             if (lectureId != -1) {
@@ -161,8 +175,35 @@ public class LectureWriteActivity extends AppCompatActivity {
             return;
         }
 
+        // 이미지 URI가 있으면, 바이트 배열로 변환
+        byte[] imageBytes = null;
+        if (imageUri != null) {
+            imageBytes = getImageBytes(imageUri);
+        }
+
+        // 비동기 작업으로 게시글 수정
         new UpdateLectureTask().execute(lectureId, title, content, "서울", fee, isYouthAudienceAllowed, imageBytes);
     }
+
+
+    private byte[] getImageBytes(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            return byteBuffer.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     // 비동기 작업으로 새 강연을 데이터베이스에 등록하는 클래스
     private class SubmitLectureTask extends AsyncTask<Object, Void, Boolean> {
@@ -202,7 +243,6 @@ public class LectureWriteActivity extends AppCompatActivity {
         }
     }
 
-    // 비동기 작업으로 기존 강연을 데이터베이스에서 수정하는 클래스
     private class UpdateLectureTask extends AsyncTask<Object, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Object... params) {
@@ -215,12 +255,8 @@ public class LectureWriteActivity extends AppCompatActivity {
             byte[] imageData = (byte[]) params[6];
             int userId = sessionManager.getUserId();
 
-            try {
-                return lectureDAO.updateLecturePost(lectureId, title, content, location, fee, userId, isYouthAudienceAllowed);
-            } catch (Exception e) {
-                Log.e("UpdateLectureTask", "Error updating lecture", e);
-                return false;
-            }
+            // 데이터베이스 업데이트 호출
+            return lectureDAO.updateLectureWithImage(lectureId, title, content, location, fee, userId, isYouthAudienceAllowed, imageData);
         }
 
         @Override
@@ -234,4 +270,5 @@ public class LectureWriteActivity extends AppCompatActivity {
             }
         }
     }
+
 }
