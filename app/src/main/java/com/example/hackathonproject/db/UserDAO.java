@@ -29,6 +29,7 @@ public class UserDAO {
         }
         return false;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자를 등록하는 메서드
     public void registerUser(String name, String password, String phoneNum, int age, String role, String companyName, String schoolName) throws SQLException {
@@ -71,7 +72,6 @@ public class UserDAO {
         }
         return -1;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 사용자 이름을 가져오는 메서드
     public String getUserNameById(int userId) throws SQLException {

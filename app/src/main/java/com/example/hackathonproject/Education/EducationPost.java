@@ -37,7 +37,9 @@ public class EducationPost {
         this.role = role; // role 초기화
         this.imageData = imageData;
         this.userProfileImage = userProfileImage; // 프로필 이미지 데이터 초기화
+        this.role = role; // role 초기화
     }
+
 
     public boolean isInstitution() {
         return isInstitution;
@@ -116,7 +118,11 @@ public class EducationPost {
         return "기관".equals(role) || "학교".equals(role);
     }
 
-    public byte[] getUserProfileImage() { return userProfileImage; }
+    public byte[] getUserProfileImage() {
+        return userProfileImage;
+    }
 
-    public void setUserProfileImage(byte[] userProfileImage) { this.userProfileImage = userProfileImage; }
+    public void setUserProfileImage(byte[] userProfileImage) {
+        this.userProfileImage = userProfileImage;
+    }
 }

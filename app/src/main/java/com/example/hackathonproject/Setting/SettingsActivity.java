@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         // 로컬 기본 폰트 크기 설정
         int LocalFontSize = 35;
         int LocalFontSize2 = 19;
-        int LocalFontSize3= 22;
+        int LocalFontSize3 = 22;
 
         profileNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);
         balanceTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize2);
@@ -224,6 +224,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         return null;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업을 수행하는 내부 클래스
     private class UpdateProfileImageTask extends AsyncTask<Void, Void, Boolean> {
