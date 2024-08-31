@@ -35,31 +35,31 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        // 뒤로 가기 버튼 설정
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
 
-        authManager = new AuthManager();  // AuthManager 초기화
+        // AuthManager 초기화
+        authManager = new AuthManager();
 
+        // UI 요소 초기화
         etName = findViewById(R.id.full_name_input);
         etPassword = findViewById(R.id.password_input);
         etPhoneNum = findViewById(R.id.phone_number_input);
         etBirthYear = findViewById(R.id.birthYear_input);
         etMonth = findViewById(R.id.month_input);
         etDay = findViewById(R.id.day_input);
-
         cbIsOrganization = findViewById(R.id.company_checkbox);
         cbIsSchool = findViewById(R.id.school_checkbox);
-
         CompanyCheckboxText = findViewById(R.id.company_checkbox_text);
         SchoolCheckboxText = findViewById(R.id.school_checkbox_text);
-
         btnRegister = findViewById(R.id.sign_up_button);
 
-        // SharedPreferences에서 폰트 크기 불러오기
+        // 폰트 크기 설정 (SharedPreferences 사용)
         SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
 
-        // 불러온 폰트 크기를 UI 요소에 적용
+        // 폰트 크기 적용
         etName.setTextSize(savedFontSize);
         etPassword.setTextSize(savedFontSize);
         etPhoneNum.setTextSize(savedFontSize);
@@ -72,14 +72,27 @@ public class SignUpActivity extends AppCompatActivity {
         CompanyCheckboxText.setTextSize(savedFontSize);
         SchoolCheckboxText.setTextSize(savedFontSize);
 
-        // 전화번호 입력 필드에 최대 13자리 제한 및 형식화 적용
+        // 전화번호 입력 형식 설정 및 최대 길이 제한
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         etPhoneNum.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
-        // 생년월일 입력 필드의 자동 이동 설정
+        // 생년월일 입력 필드 자동 이동 설정
         setupFieldAutoMove();
 
-        // 회원가입 버튼 클릭 시 동작 정의
+        // 체크박스 상태 변경 리스너 설정 (한쪽만 선택 가능하도록)
+        cbIsOrganization.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                cbIsSchool.setChecked(false);  // 학교 체크박스 비활성화
+            }
+        });
+
+        cbIsSchool.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                cbIsOrganization.setChecked(false);  // 기업 체크박스 비활성화
+            }
+        });
+
+        // 회원가입 버튼 클릭 이벤트
         btnRegister.setOnClickListener(v -> {
             String name = etName.getText().toString();
             String password = etPassword.getText().toString();
@@ -94,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity {
             if (name.isEmpty() || password.isEmpty() || phoneNum.isEmpty() || birthYear.isEmpty() || month.isEmpty() || day.isEmpty()) {
                 Toast.makeText(SignUpActivity.this, "모든 필드를 입력하세요", Toast.LENGTH_SHORT).show();
             } else {
-                // 한 자리 입력의 경우 앞에 0을 추가
+                // 한 자리 입력의 경우 앞에 0 추가
                 month = month.length() == 1 ? "0" + month : month;
                 day = day.length() == 1 ? "0" + day : day;
 
@@ -115,6 +128,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    // 생년월일 필드 자동 이동 설정 메서드
     private void setupFieldAutoMove() {
         etBirthYear.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         etMonth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
@@ -166,6 +180,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    // 회원가입 작업을 백그라운드에서 처리하는 AsyncTask 클래스
     private class RegisterUserTask extends AsyncTask<Object, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Object... params) {
