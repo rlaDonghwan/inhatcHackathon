@@ -52,7 +52,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 세션에서 사용자 정보 가져오기
         String userName = sessionManager.getUserName();
-        int volunteerHours = sessionManager.getVolunteerHours();
         int balance = sessionManager.getBalance(); // Balance 값을 가져옴
         int userId = sessionManager.getUserId();
 

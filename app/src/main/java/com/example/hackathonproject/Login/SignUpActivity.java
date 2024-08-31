@@ -45,9 +45,10 @@ public class SignUpActivity extends AppCompatActivity {
         etBirthYear = findViewById(R.id.birthYear_input);
         etMonth = findViewById(R.id.month_input);
         etDay = findViewById(R.id.day_input);
-        cbIsOrganization = findViewById(R.id.checkbox);
+        cbIsOrganization = findViewById(R.id.company_checkbox);
+        checkboxText = findViewById(R.id.company_checkbox_text);
+
         btnRegister = findViewById(R.id.sign_up_button);
-        checkboxText = findViewById(R.id.checkbox_text);
 
         //---------------------------------------------------------------------------------------------
         // SharedPreferences에서 폰트 크기 불러오기
