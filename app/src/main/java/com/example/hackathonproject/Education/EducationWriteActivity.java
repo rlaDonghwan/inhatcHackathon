@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.EducationDAO;
@@ -60,7 +61,9 @@ public class EducationWriteActivity extends AppCompatActivity {
     private int educationId = -1; // 수정 시 사용할 교육 게시글 ID
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
+    private ImageView imagePreview;
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,7 @@ public class EducationWriteActivity extends AppCompatActivity {
         checkBoxBuy = findViewById(R.id.checkbox_buy);
         checkBoxSell = findViewById(R.id.checkbox_sell);
         priceEditText = findViewById(R.id.price_edit_text);
+        imagePreview = findViewById(R.id.image_preview);
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
 
         checkBoxBuy.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -110,10 +114,19 @@ public class EducationWriteActivity extends AppCompatActivity {
             String content = intent.getStringExtra("content");
             String category = intent.getStringExtra("category");
             int fee = intent.getIntExtra("fee", 0);
+            byte[] imageData = intent.getByteArrayExtra("imageData");
 
             titleEditText.setText(title);
             descriptionEditText.setText(content);
             priceEditText.setText(String.valueOf(fee));
+
+            if (imageData != null) {
+                imageUri = Uri.parse("");  // URI로 설정할 수 없으므로, 다른 방법으로 이미지 표시
+                Glide.with(this)
+                        .load(imageData)
+                        .into(imagePreview);  // 이미지 미리보기 설정
+                imagePreview.setVisibility(View.VISIBLE);
+            }
 
             if ("구해요".equals(category)) {
                 checkBoxBuy.setChecked(true);
@@ -131,6 +144,7 @@ public class EducationWriteActivity extends AppCompatActivity {
         Button imageButton = findViewById(R.id.image_button);
         imageButton.setOnClickListener(v -> openImagePicker());
 
+        // 기존 submitButton 클릭 리스너에서 추가적인 이미지 처리 로직을 넣어줍니다.
         submitButton.setOnClickListener(v -> {
             if (educationId != -1) {
                 updateEducationPost();
@@ -140,6 +154,7 @@ public class EducationWriteActivity extends AppCompatActivity {
         });
     }
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     private void getLastKnownLocation() {
         fusedLocationClient.getLastLocation()
                 .addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -226,27 +241,30 @@ public class EducationWriteActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
-            ImageView imagePreview = findViewById(R.id.image_preview);
             imagePreview.setVisibility(View.VISIBLE);
             imagePreview.setImageURI(imageUri);
         }
     }
 
+    // 새 교육 게시글을 등록하는 메서드
     private void submitEducation() {
-        String title = titleEditText.getText().toString().trim();
-        String description = descriptionEditText.getText().toString().trim();
-        String category = checkBoxBuy.isChecked() ? "구해요" : checkBoxSell.isChecked() ? "할게요" : "";
-        String feeStr = priceEditText.getText().toString().trim();
-        int fee = feeStr.isEmpty() ? 0 : Integer.parseInt(feeStr);
+        String title = titleEditText.getText().toString().trim();  // 제목 가져오기
+        String description = descriptionEditText.getText().toString().trim();  // 내용 가져오기
+        String category = checkBoxBuy.isChecked() ? "구해요" : checkBoxSell.isChecked() ? "할게요" : "";  // 선택된 카테고리 가져오기
+        String feeStr = priceEditText.getText().toString().trim(); // 금액 가져오기
+        int fee = feeStr.isEmpty() ? 0 : Integer.parseInt(feeStr); // 금액이 비어 있으면 0으로 설정
 
         if (title.isEmpty() || description.isEmpty() || category.isEmpty()) {
-            Toast.makeText(this, "제목, 내용, 카테고리를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "제목, 내용, 카테고리를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();  // 필수 항목 누락 시 경고
             return;
         }
 
-        new SubmitEducationTask().execute(title, category, description, currentLocation, fee, imageUri);
+        // 비동기 작업으로 게시글 등록
+        new SubmitEducationTask().execute(title, category, description, currentLocation, fee, imageUri); // 위치는 임의로 "서울"로 설정
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    // 기존 게시글을 수정하는 메서드
     private void updateEducationPost() {
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
@@ -259,8 +277,34 @@ public class EducationWriteActivity extends AppCompatActivity {
             return;
         }
 
-        new UpdateEducationTask().execute(educationId, title, category, description, currentLocation, fee);
+        // 이미지 URI가 있으면, 바이트 배열로 변환
+        byte[] imageBytes = null;
+        if (imageUri != null) {
+            imageBytes = getImageBytes(imageUri);
+        }
+
+        // 비동기 작업으로 게시글 수정
+        new UpdateEducationTask().execute(educationId, title, category, description, currentLocation, fee, imageBytes);
     }
+
+    private byte[] getImageBytes(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            return byteBuffer.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class SubmitEducationTask extends AsyncTask<Object, Void, Boolean> {
 
@@ -311,6 +355,7 @@ public class EducationWriteActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class UpdateEducationTask extends AsyncTask<Object, Void, Boolean> {
 
@@ -322,10 +367,11 @@ public class EducationWriteActivity extends AppCompatActivity {
             String description = (String) params[3];
             String location = (String) params[4];
             int fee = (int) params[5];
+            byte[] imageData = (byte[]) params[6]; // 이미지 데이터 가져오기
             int userId = sessionManager.getUserId();
 
             try {
-                return educationDAO.updateEducationPost(educationId, title, category, description, location, fee, userId);
+                return educationDAO.updateEducationPostWithImage(educationId, title, category, description, location, fee, userId, imageData);
             } catch (Exception e) {
                 Log.e("UpdateEducationTask", "Error updating post", e);
                 return false;

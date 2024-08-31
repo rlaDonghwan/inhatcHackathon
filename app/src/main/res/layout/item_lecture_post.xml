@@ -23,7 +23,8 @@
             <ImageView
                 android:id="@+id/content_image"
                 android:layout_width="110dp"
-                android:layout_height="110dp" />
+                android:layout_height="110dp"
+                android:scaleType="centerCrop" />
 
             <!-- Left Group: Title and Author -->
             <LinearLayout

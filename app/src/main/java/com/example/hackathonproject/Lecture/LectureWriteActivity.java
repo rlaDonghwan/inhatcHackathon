@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.LectureDAO;
@@ -102,29 +103,30 @@ public class LectureWriteActivity extends AppCompatActivity {
             lectureId = intent.getIntExtra("lectureId", -1);
             String title = intent.getStringExtra("title");
             String content = intent.getStringExtra("content");
+            String location = intent.getStringExtra("location");
             int fee = intent.getIntExtra("fee", 0);
             boolean isYouthAudienceAllowed = intent.getBooleanExtra("isYouthAudienceAllowed", false);
+            byte[] imageData = intent.getByteArrayExtra("imageData");
 
             titleEditText.setText(title);
             descriptionEditText.setText(content);
             priceEditText.setText(String.valueOf(fee));
             checkBoxWant.setChecked(isYouthAudienceAllowed);
 
-            toolbarTitle.setText("강연 수정");
+            if (imageData != null) {
+                Glide.with(this)
+                        .load(imageData)
+                        .into(selectedImageView);  // 이미지 미리보기 설정
+                selectedImageView.setVisibility(View.VISIBLE);
+                imageBytes = imageData;  // 이미지 데이터를 변수에 저장하여 업데이트에 사용
+            }
 
+            toolbarTitle.setText("강연 수정");
             submitButton.setOnClickListener(v -> updateLecture());
         } else {
-            submitButton.setOnClickListener(v -> submitLecture());
             toolbarTitle.setText("강연자 구직");
+            submitButton.setOnClickListener(v -> submitLecture());
         }
-
-        submitButton.setOnClickListener(v -> {
-            if (lectureId != -1) {
-                updateLecture();
-            } else {
-                submitLecture();
-            }
-        });
     }
 
     private void getLastKnownLocation() {
@@ -321,12 +323,8 @@ public class LectureWriteActivity extends AppCompatActivity {
             byte[] imageData = (byte[]) params[6];
             int userId = sessionManager.getUserId();
 
-            try {
-                return lectureDAO.updateLecturePost(lectureId, title, content, location, fee, userId, isYouthAudienceAllowed);
-            } catch (Exception e) {
-                Log.e("UpdateLectureTask", "Error updating lecture", e);
-                return false;
-            }
+            // 데이터베이스 업데이트 호출
+            return lectureDAO.updateLectureWithImage(lectureId, title, content, location, fee, userId, isYouthAudienceAllowed, imageData);
         }
 
         @Override

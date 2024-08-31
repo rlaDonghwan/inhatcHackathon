@@ -311,6 +311,8 @@ public class EducationContentView extends AppCompatActivity {
                         intent.putExtra("content", currentPost.getContent());  // 내용 전달
                         intent.putExtra("location", currentPost.getLocation());  // 위치 전달
                         intent.putExtra("category", currentPost.getCategory());  // 카테고리 전달
+                        intent.putExtra("fee", currentPost.getFee());  // 교육료 전달
+                        intent.putExtra("imageData", currentPost.getImageData());  // 이미지 데이터 전달
                         startActivity(intent);  // WriteActivity 시작
                     }
                     return true;

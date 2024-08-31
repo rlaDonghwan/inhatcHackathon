@@ -41,6 +41,7 @@ public class EducationDAO {
             return false; // 삽입 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 교육 게시글을 업데이트하는 메서드
     public boolean updateEducationPost(int educationId, String title, String category, String content, String location, int fee, int userId) {
@@ -63,6 +64,7 @@ public class EducationDAO {
             return false; // 업데이트 실패 시 false 반환
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public EducationPost getEducationPostById(int educationId) {
         String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, " +
@@ -87,6 +89,7 @@ public class EducationDAO {
                     int fee = rs.getInt("Fee");
                     int views = rs.getInt("Views");
                     String createdAt = rs.getString("CreatedAt");
+                    String completedAt = rs.getString("CompletedAt");
                     int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                     int userId = rs.getInt("UserID");
                     String userName = rs.getString("Name");
@@ -188,6 +191,7 @@ public class EducationDAO {
         }
         return postList;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public boolean submitEducationWithImage(String title, String category, String description, String location, int fee, int userId, ZonedDateTime kstTime, byte[] imageData) {
         String insertPostSql = "INSERT INTO Education (UserID, Title, Category, Content, Location, Fee, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -245,6 +249,7 @@ public class EducationDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public byte[] getEducationImage(int educationId) {
         String sql = "SELECT ImageData FROM EducationImage WHERE EducationID = ?";
@@ -261,4 +266,53 @@ public class EducationDAO {
         }
         return null; // 이미지가 없으면 null 반환
     }
+
+    public boolean updateEducationPostWithImage(int educationId, String title, String category, String content, String location, int fee, int userId, byte[] imageData) {
+        String updatePostSql = "UPDATE Education SET Title = ?, Category = ?, Content = ?, Location = ?, Fee = ? WHERE EducationID = ? AND UserID = ?";
+        String updateImageSql = "UPDATE EducationImage SET ImageData = ? WHERE EducationID = ?";
+
+        try (Connection conn = dbConnection.connect()) {
+            conn.setAutoCommit(false);  // 트랜잭션 시작
+
+            // 게시글 업데이트
+            try (PreparedStatement pstmt = conn.prepareStatement(updatePostSql)) {
+                pstmt.setString(1, title);
+                pstmt.setString(2, category);
+                pstmt.setString(3, content);
+                pstmt.setString(4, location);
+                pstmt.setInt(5, fee);
+                pstmt.setInt(6, educationId);
+                pstmt.setInt(7, userId);
+
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 이미지 업데이트
+            if (imageData != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(updateImageSql)) {
+                    pstmt.setBytes(1, imageData);
+                    pstmt.setInt(2, educationId);
+
+                    int imageRowsAffected = pstmt.executeUpdate();
+                    if (imageRowsAffected == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            conn.commit();  // 트랜잭션 커밋
+            return true;
+
+        } catch (SQLException e) {
+            Log.e(TAG, "게시글 및 이미지 업데이트 중 오류", e);
+            return false;
+        }
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
 }

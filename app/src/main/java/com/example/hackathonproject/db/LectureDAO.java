@@ -220,4 +220,52 @@ public class LectureDAO {
             return false;
         }
     }
+
+    public boolean updateLectureWithImage(int lectureId, String title, String content, String location, double fee, int userId, boolean isYouthAudienceAllowed, byte[] imageData) {
+        String updateLectureSql = "UPDATE Lecture SET Title = ?, Content = ?, Location = ?, Fee = ?, IsYouthAudienceAllowed = ? WHERE LectureID = ? AND UserID = ?";
+        String updateImageSql = "UPDATE LectureImage SET ImageData = ? WHERE LectureID = ?";
+
+        try (Connection conn = dbConnection.connect()) {
+            conn.setAutoCommit(false);  // 트랜잭션 시작
+
+            // 강연 게시글 업데이트
+            try (PreparedStatement pstmt = conn.prepareStatement(updateLectureSql)) {
+                pstmt.setString(1, title);
+                pstmt.setString(2, content);
+                pstmt.setString(3, location);
+                pstmt.setDouble(4, fee);
+                pstmt.setBoolean(5, isYouthAudienceAllowed);
+                pstmt.setInt(6, lectureId);
+                pstmt.setInt(7, userId);
+
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 이미지 업데이트
+            if (imageData != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(updateImageSql)) {
+                    pstmt.setBytes(1, imageData);
+                    pstmt.setInt(2, lectureId);
+
+                    int imageRowsAffected = pstmt.executeUpdate();
+                    if (imageRowsAffected == 0) {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            conn.commit();  // 트랜잭션 커밋
+            return true;
+
+        } catch (SQLException e) {
+            Log.e(TAG, "강연 게시글 및 이미지 업데이트 중 오류", e);
+            return false;
+        }
+    }
+
 }

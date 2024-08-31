@@ -221,6 +221,7 @@ public class LectureContentView extends AppCompatActivity {
                         intent.putExtra("fee", currentPost.getFee());  // 금액 전달
                         intent.putExtra("location", currentPost.getLocation());
                         intent.putExtra("isYouthAudienceAllowed", currentPost.isYouthAudienceAllowed()); // 청년 참관 가능 상태 전달
+                        intent.putExtra("imageData", currentPost.getImageData()); // 이미지 데이터 전달
                         startActivity(intent);
                     });
 
@@ -294,9 +295,11 @@ public class LectureContentView extends AppCompatActivity {
                         intent.putExtra("lectureId", currentPost.getLectureId());  // 강연 ID 전달
                         intent.putExtra("title", currentPost.getTitle());  // 제목 전달
                         intent.putExtra("content", currentPost.getContent());  // 내용 전달
+                        intent.putExtra("location", currentPost.getLocation());  // 위치 전달
                         intent.putExtra("fee", currentPost.getFee());  // 강연료 전달
-                        intent.putExtra("isYouthAudienceAllowed", currentPost.isYouthAudienceAllowed()); // 청년 참관 가능 상태 전달
-                        startActivity(intent);  // LectureWriteActivity 시작
+                        intent.putExtra("isYouthAudienceAllowed", currentPost.isYouthAudienceAllowed());  // 청년 참관 가능 여부 전달
+                        intent.putExtra("imageData", currentPost.getImageData());  // 이미지 데이터 전달
+                        startActivity(intent);  // WriteActivity 시작
                     }
                     return true;
                 case 1:
