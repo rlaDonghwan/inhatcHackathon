@@ -84,9 +84,9 @@ public class SignInPasswordActivity extends AppCompatActivity {
     private class LoginUserTask extends AsyncTask<String, Void, Boolean> {
         private String userName;
         private int userId;
-        private int volunteerHours;
         private int balance; // Balance 변수 추가
         private boolean isOrganization;  // 기관 여부 추가
+        private String userRole;  // Role 변수 추가
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -97,9 +97,9 @@ public class SignInPasswordActivity extends AppCompatActivity {
                 userId = authManager.loginUserAndGetId(phoneNumber, password);
                 if (userId != -1) {
                     userName = authManager.getUserNameById(userId);
-                    volunteerHours = authManager.getVolunteerHoursById(userId);
                     balance = authManager.getBalanceById(userId); // Balance 값을 가져옴
                     isOrganization = authManager.isUserOrganization(userId);  // 기관 여부 가져오기
+                    userRole = authManager.getUserRoleByUserId(userId);  // Role 가져오기
                     return true;
                 } else {
                     return false;
@@ -113,8 +113,8 @@ public class SignInPasswordActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                // 로그인 성공 시 사용자 이름, ID, 누적 봉사 시간, Balance, 기관 여부를 SessionManager에 저장
-                sessionManager.createSession(userName, userId, volunteerHours, balance, isOrganization);
+                // 로그인 성공 시 사용자 이름, ID, Balance, 기관 여부, 역할을 SessionManager에 저장
+                sessionManager.createSession(userName, userId, balance, isOrganization, userRole);
 
                 Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
                 startActivity(intent);

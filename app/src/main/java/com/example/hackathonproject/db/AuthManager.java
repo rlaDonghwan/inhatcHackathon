@@ -43,12 +43,6 @@ public class AuthManager {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 사용자 ID로 누적 봉사 시간을 가져오는 메서드
-    public int getVolunteerHoursById(int userId) throws SQLException {
-        return userDAO.getVolunteerHoursById(userId); // UserDAO를 통해 누적 봉사 시간 조회
-    }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
     // 사용자가 존재하는지 확인
     public boolean isUserExist(String phoneNum) throws SQLException {
         return userDAO.isUserExist(phoneNum); // 전화번호로 사용자 존재 여부 확인
@@ -118,6 +112,19 @@ public class AuthManager {
     // 전화번호로 사용자의 이름을 조회하는 메서드
     public String getUserNameByPhone(String phoneNum) throws SQLException {
         return userDAO.getUserNameByPhone(phoneNum);
+    }
+
+    // 사용자 ID로 회사명 또는 학교명을 조회하는 메서드
+    public String getBusinessNameByUserId(int userId) throws SQLException {
+        return userDAO.getBusinessNameByUserId(userId);
+    }
+
+    public String getSchoolNameByUserId(int userId) throws SQLException {
+        return userDAO.getSchoolNameByUserId(userId);
+    }
+
+    public String getUserRoleByUserId(int userId) throws SQLException {
+        return userDAO.getUserRoleByUserId(userId);
     }
 
 }
