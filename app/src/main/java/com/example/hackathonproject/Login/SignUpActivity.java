@@ -27,8 +27,8 @@ public class SignUpActivity extends AppCompatActivity {
     private CheckBox cbIsOrganization, cbIsSchool;
     private AuthManager authManager;
     private Button btnRegister;
-    private TextView CompanyCheckboxText;
-    private TextView SchoolCheckboxText;
+    private TextView companyCheckboxText;
+    private TextView schoolCheckboxText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +49,10 @@ public class SignUpActivity extends AppCompatActivity {
         etBirthYear = findViewById(R.id.birthYear_input);
         etMonth = findViewById(R.id.month_input);
         etDay = findViewById(R.id.day_input);
-        cbIsOrganization = findViewById(R.id.company_checkbox);
-        cbIsSchool = findViewById(R.id.school_checkbox);
-        CompanyCheckboxText = findViewById(R.id.company_checkbox_text);
-        SchoolCheckboxText = findViewById(R.id.school_checkbox_text);
+        cbIsOrganization = findViewById(R.id.checkbox);
+        cbIsSchool = findViewById(R.id.checkbox_school);
+        companyCheckboxText = findViewById(R.id.checkbox_text);
+        schoolCheckboxText = findViewById(R.id.checkbox_school_text);
         btnRegister = findViewById(R.id.sign_up_button);
 
         // 폰트 크기 설정 (SharedPreferences 사용)
@@ -66,11 +66,9 @@ public class SignUpActivity extends AppCompatActivity {
         etBirthYear.setTextSize(savedFontSize);
         etMonth.setTextSize(savedFontSize);
         etDay.setTextSize(savedFontSize);
-        cbIsOrganization.setTextSize(savedFontSize);
-        cbIsSchool.setTextSize(savedFontSize);
+        companyCheckboxText.setTextSize(savedFontSize);
+        schoolCheckboxText.setTextSize(savedFontSize);
         btnRegister.setTextSize(savedFontSize);
-        CompanyCheckboxText.setTextSize(savedFontSize);
-        SchoolCheckboxText.setTextSize(savedFontSize);
 
         // 전화번호 입력 형식 설정 및 최대 길이 제한
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
