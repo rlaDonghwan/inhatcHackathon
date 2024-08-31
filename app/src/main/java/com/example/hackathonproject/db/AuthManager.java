@@ -1,9 +1,7 @@
 package com.example.hackathonproject.db;
 
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -20,20 +18,18 @@ public class AuthManager {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자를 등록하는 메서드
-    public boolean registerUser(String name, String password, String phoneNum, String birthDate, boolean isOrganization) throws SQLException {
-        if (userDAO.isUserExist(phoneNum)) { // 이미 등록된 사용자인지 확인
-            throw new SQLException("User already exists with phone number: " + phoneNum); // 이미 존재하면 예외 발생
+    public boolean registerUser(String name, String password, String phoneNum, String birthDate, boolean isOrganization, String companyName, String schoolName) throws SQLException {
+        if (userDAO.isUserExist(phoneNum)) {
+            throw new SQLException("User already exists with phone number: " + phoneNum);
         }
 
-        int age = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) { // SDK 버전이 O 이상인지 확인
-            age = calculateAge(birthDate); // 생년월일을 통해 나이 계산
-        }
-        String role = isOrganization ? "기관" : determineRole(age); // 기관인지 개인인지에 따라 역할 결정
+        int age = calculateAge(birthDate);
+        String role = isOrganization ? "기관" : determineRole(age);
 
-        userDAO.registerUser(name, password, phoneNum, age, role); // 사용자 등록
+        userDAO.registerUser(name, password, phoneNum, age, role, companyName, schoolName);
         return true;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자를 로그인하고 사용자 ID 반환
     public int loginUserAndGetId(String phoneNum, String password) throws SQLException {
@@ -44,12 +40,6 @@ public class AuthManager {
     // 사용자 ID로 사용자 이름 조회
     public String getUserNameById(int userId) throws SQLException {
         return userDAO.getUserNameById(userId); // ID로 이름 조회
-    }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
-    // 사용자 ID로 누적 봉사 시간을 가져오는 메서드
-    public int getVolunteerHoursById(int userId) throws SQLException {
-        return userDAO.getVolunteerHoursById(userId); // UserDAO를 통해 누적 봉사 시간 조회
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -119,5 +109,22 @@ public class AuthManager {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    // 전화번호로 사용자의 이름을 조회하는 메서드
+    public String getUserNameByPhone(String phoneNum) throws SQLException {
+        return userDAO.getUserNameByPhone(phoneNum);
+    }
+
+    // 사용자 ID로 회사명 또는 학교명을 조회하는 메서드
+    public String getBusinessNameByUserId(int userId) throws SQLException {
+        return userDAO.getBusinessNameByUserId(userId);
+    }
+
+    public String getSchoolNameByUserId(int userId) throws SQLException {
+        return userDAO.getSchoolNameByUserId(userId);
+    }
+
+    public String getUserRoleByUserId(int userId) throws SQLException {
+        return userDAO.getUserRoleByUserId(userId);
+    }
 
 }

@@ -74,7 +74,7 @@
                     android:id="@+id/postFee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="강연료: 500,000원"
+                    android:text="교육비: 500,000원"
                     android:textSize="14sp"
                     android:textColor="@color/gray"
                     android:layout_marginTop="8dp"

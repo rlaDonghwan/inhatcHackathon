@@ -55,7 +55,7 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
 
         // 소수점 없는 강연료 표시를 위해 DecimalFormat 사용
         DecimalFormat df = new DecimalFormat("#,###");
-        holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");
+        holder.postFee.setText("교육비: " + df.format(post.getFee()) + "원");
 
         // 디버그용 로그 추가
         Log.d("EducationAdapter", "Post Title: " + post.getTitle() + " | Is Institution: " + post.isInstitution());
@@ -65,7 +65,7 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
         } else {
             holder.certificationMark.setVisibility(View.GONE);
         }
-        holder.postFee.setText("강연료: " + df.format(post.getFee()) + "원");
+        holder.postFee.setText("교육비: " + df.format(post.getFee()) + "원");
 
         // 이미지 로드
         byte[] imageBytes = post.getImageData();

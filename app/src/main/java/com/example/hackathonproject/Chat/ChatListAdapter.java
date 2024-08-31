@@ -74,11 +74,20 @@ public class ChatListAdapter extends BaseAdapter {
 
         // 메시지의 읽음 상태에 따라 새 메시지 아이콘 표시 여부 설정
         if (chat.getAuthorID() == loggedInUserId) {
-            // 내가 보낸 메시지라면 상대방이 읽지 않은 경우에만 아이콘 표시
+            // 내가 작성한 메시지라면 상대방이 읽지 않은 경우에만 아이콘 표시
             holder.newMessageIcon.setVisibility(chat.isOtherUserMessageRead() ? View.GONE : View.VISIBLE);
         } else {
-            // 상대방이 보낸 메시지라면 내가 읽지 않은 경우에만 아이콘 표시
+            // 상대방이 작성한 메시지라면 내가 읽지 않은 경우에만 아이콘 표시
             holder.newMessageIcon.setVisibility(chat.isAuthorMessageRead() ? View.GONE : View.VISIBLE);
+        }
+
+        // 본인 이름에 마크를 표시하기 위해 로그인을 기반으로 조건을 수정함
+        if (chat.getAuthorID() == loggedInUserId) {
+            // 내가 보낸 메시지가 있고, 상대방이 아직 읽지 않은 경우 표시
+            holder.newMessageIcon.setVisibility(chat.isOtherUserMessageRead() ? View.VISIBLE : View.GONE);
+        } else {
+            // 상대방이 보낸 메시지가 있고, 내가 아직 읽지 않은 경우 표시
+            holder.newMessageIcon.setVisibility(chat.isAuthorMessageRead() ? View.VISIBLE : View.GONE);
         }
 
         return convertView;

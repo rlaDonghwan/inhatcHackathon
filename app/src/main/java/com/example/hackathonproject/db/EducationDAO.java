@@ -68,7 +68,7 @@ public class EducationDAO {
 
     public EducationPost getEducationPostById(int educationId) {
         String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, " +
-                "e.CompletedAt, e.VolunteerHoursEarned, e.UserID, u.Name, u.Role, i.ImageData " +
+                "e.VolunteerHoursEarned, e.UserID, u.Name, u.Role, i.ImageData " +
                 "FROM Education e " +
                 "JOIN User u ON e.UserID = u.UserID " +
                 "LEFT JOIN EducationImage i ON e.EducationID = i.EducationID " +
@@ -99,7 +99,7 @@ public class EducationDAO {
                     boolean isInstitution = "기관".equals(role);
 
                     // 새로운 생성자 사용
-                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId, isInstitution, imageData);
+                    return new EducationPost(id, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData);
                 }
             }
         } catch (SQLException e) {
@@ -107,7 +107,6 @@ public class EducationDAO {
         }
         return null; // 게시글이 없을 경우 null 반환
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 게시글 조회수를 증가시키는 메서드
     public void incrementPostViews(int educationId) {
@@ -120,7 +119,6 @@ public class EducationDAO {
             Log.e(TAG, "게시글 조회수 업데이트 실패", e); // 오류 로그 출력
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 교육 게시글을 삭제하는 메서드
     public boolean deleteEducationPost(int educationId) {
@@ -135,7 +133,6 @@ public class EducationDAO {
             return false; // 삭제 실패 시 false 반환
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 사용자 이름을 가져오는 메서드
     private String getUserNameById(int userId) {
@@ -153,13 +150,12 @@ public class EducationDAO {
         }
         return null; // 사용자 이름이 없으면 null 반환
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 모든 교육 게시글을 가져오는 메서드
     public List<EducationPost> getAllEducationPosts() {
         List<EducationPost> postList = new ArrayList<>();
         // 교육 게시글과 관련된 사용자 정보 및 이미지 데이터를 가져오는 SQL 쿼리
-        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.CompletedAt, e.VolunteerHoursEarned, " +
+        String sql = "SELECT e.EducationID, e.Title, e.Category, e.Content, e.Location, e.Fee, e.Views, e.CreatedAt, e.VolunteerHoursEarned, " +
                 "u.Name, u.Role, e.UserID, i.ImageData " +
                 "FROM Education e " +
                 "JOIN User u ON e.UserID = u.UserID " +
@@ -179,7 +175,6 @@ public class EducationDAO {
                 int fee = rs.getInt("Fee");
                 int views = rs.getInt("Views");
                 String createdAt = rs.getString("CreatedAt");
-                String completedAt = rs.getString("CompletedAt");
                 int volunteerHoursEarned = rs.getInt("VolunteerHoursEarned");
                 String userName = rs.getString("Name");
                 String role = rs.getString("Role");
@@ -189,7 +184,7 @@ public class EducationDAO {
                 boolean isInstitution = "기관".equals(role); // 역할이 '기관'인 경우 true 설정
 
                 // 'EducationPost' 객체 생성: 수정된 생성자를 사용
-                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, completedAt, volunteerHoursEarned, userName, userId, isInstitution, imageData));
+                postList.add(new EducationPost(educationId, title, category, content, location, fee, views, createdAt, null, volunteerHoursEarned, userName, userId, isInstitution, imageData));
             }
         } catch (SQLException e) {
             Log.e(TAG, "게시글 불러오기 실패", e);
@@ -254,6 +249,7 @@ public class EducationDAO {
             return false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     public byte[] getEducationImage(int educationId) {
         String sql = "SELECT ImageData FROM EducationImage WHERE EducationID = ?";
@@ -317,6 +313,6 @@ public class EducationDAO {
             return false;
         }
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 }

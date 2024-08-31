@@ -284,7 +284,6 @@ public class LectureContentView extends AppCompatActivity {
         // 팝업 메뉴에 항목 추가
         popup.getMenu().add(0, 0, 0, "강연 수정");  // 수정 메뉴 추가
         popup.getMenu().add(0, 1, 1, "삭제").setTitleCondensed("삭제");  // 삭제 메뉴 추가
-        popup.getMenu().add(0, 2, 2, "게시글 완료");  // 완료 메뉴 추가
 
         // 팝업 메뉴 항목 클릭 시 처리
         popup.setOnMenuItemClickListener(item -> {
@@ -307,10 +306,6 @@ public class LectureContentView extends AppCompatActivity {
                     // 삭제 확인 다이얼로그 표시
                     confirmDeleteLecture();
                     return true;
-                case 2:
-                    // 완료 확인 다이얼로그 표시
-                    confirmCompleteLecture();
-                    return true;
                 default:
                     return false;
             }
@@ -324,19 +319,6 @@ public class LectureContentView extends AppCompatActivity {
         new AlertDialog.Builder(this).setTitle("강연 삭제")  // 다이얼로그 제목 설정
                 .setMessage("정말로 이 게시글을 삭제하시겠습니까?")  // 다이얼로그 메시지 설정
                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {  // 삭제 버튼 설정
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteLecture();  // 강연 삭제 메서드 호출
-                    }
-                }).setNegativeButton("취소", null)  // 취소 버튼 설정
-                .show();  // 다이얼로그 표시
-    }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
-    // 게시글 완료를 확인하는 메서드
-    private void confirmCompleteLecture() {
-        new AlertDialog.Builder(this).setTitle("게시글 완료")  // 다이얼로그 제목 설정
-                .setMessage("정말로 이 게시글을 완료하시겠습니까? 완료된 게시글은 삭제됩니다.")  // 다이얼로그 메시지 설정
-                .setPositiveButton("완료", new DialogInterface.OnClickListener() {  // 완료 버튼 설정
                     public void onClick(DialogInterface dialog, int which) {
                         deleteLecture();  // 강연 삭제 메서드 호출
                     }

@@ -1,8 +1,11 @@
 package com.example.hackathonproject.Lecture;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,21 +19,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.LectureDAO;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Locale;
 
 public class LectureWriteActivity extends AppCompatActivity {
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    private FusedLocationProviderClient fusedLocationClient;
+    private String currentLocation = "서울"; // 기본 위치는 서울로 설정
+
     private EditText titleEditText;
     private EditText descriptionEditText;
     private EditText priceEditText;
@@ -67,7 +87,17 @@ public class LectureWriteActivity extends AppCompatActivity {
 
         chooseImageButton.setOnClickListener(v -> openImageChooser());
 
-        // Intent로 전달된 데이터 처리
+        // 위치 권한 요청 및 위치 정보 가져오기
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            getLastKnownLocation();
+        }
+
+        // Intent로 전달된 데이터 처리 (수정 모드인지 확인)
         Intent intent = getIntent();
         if (intent.hasExtra("lectureId")) {
             lectureId = intent.getIntExtra("lectureId", -1);
@@ -92,21 +122,85 @@ public class LectureWriteActivity extends AppCompatActivity {
             }
 
             toolbarTitle.setText("강연 수정");
-
             submitButton.setOnClickListener(v -> updateLecture());
         } else {
-            submitButton.setOnClickListener(v -> submitLecture());
             toolbarTitle.setText("강연자 구직");
+            submitButton.setOnClickListener(v -> submitLecture());
+        }
+    }
+
+    private void getLastKnownLocation() {
+        fusedLocationClient.getLastLocation()
+                .addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            Location location = task.getResult();
+                            currentLocation = getAddressFromLocation(location); // 좌표를 주소로 변환하여 저장
+                        } else {
+                            // 위치를 가져올 수 없을 경우 IP 주소 기반 위치로 대체
+                            new GetLocationFromIPTask().execute();
+                        }
+                    }
+                });
+    }
+
+    // 좌표를 주소로 변환하는 메서드
+    private String getAddressFromLocation(Location location) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                return addresses.get(0).getAddressLine(0);
+            } else {
+                return "주소를 찾을 수 없습니다.";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "주소를 찾을 수 없습니다.";
+        }
+    }
+
+    // IP 주소를 통해 위치를 가져오는 비동기 작업
+    private class GetLocationFromIPTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String location = "서울";
+            try {
+                URL url = new URL("https://ipinfo.io/json");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+
+                InputStream inputStream = urlConnection.getInputStream();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                int read;
+                byte[] buffer = new byte[1024];
+                while ((read = inputStream.read(buffer)) != -1) {
+                    byteArrayOutputStream.write(buffer, 0, read);
+                }
+                String jsonResponse = byteArrayOutputStream.toString();
+
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+                String loc = jsonObject.getString("loc");
+                String[] latLng = loc.split(",");
+                double latitude = Double.parseDouble(latLng[0]);
+                double longitude = Double.parseDouble(latLng[1]);
+
+                return getAddressFromLocation(new Location("IP") {{
+                    setLatitude(latitude);
+                    setLongitude(longitude);
+                }});
+            } catch (Exception e) {
+                Log.e("IP Location Error", "Error getting location from IP", e);
+            }
+            return location;
         }
 
-
-        submitButton.setOnClickListener(v -> {
-            if (lectureId != -1) {
-                updateLecture();
-            } else {
-                submitLecture();
-            }
-        });
+        @Override
+        protected void onPostExecute(String location) {
+            currentLocation = location;
+        }
     }
 
     private void openImageChooser() {
@@ -159,7 +253,7 @@ public class LectureWriteActivity extends AppCompatActivity {
             return;
         }
 
-        new SubmitLectureTask().execute(title, content, "서울", fee, isYouthAudienceAllowed, imageBytes);
+        new SubmitLectureTask().execute(title, content, currentLocation, fee, isYouthAudienceAllowed, imageBytes);
     }
 
     // 기존 강연을 수정하는 메서드
@@ -175,35 +269,8 @@ public class LectureWriteActivity extends AppCompatActivity {
             return;
         }
 
-        // 이미지 URI가 있으면, 바이트 배열로 변환
-        byte[] imageBytes = null;
-        if (imageUri != null) {
-            imageBytes = getImageBytes(imageUri);
-        }
-
-        // 비동기 작업으로 게시글 수정
-        new UpdateLectureTask().execute(lectureId, title, content, "서울", fee, isYouthAudienceAllowed, imageBytes);
+        new UpdateLectureTask().execute(lectureId, title, content, currentLocation, fee, isYouthAudienceAllowed, imageBytes);
     }
-
-
-    private byte[] getImageBytes(Uri uri) {
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-            int bufferSize = 1024;
-            byte[] buffer = new byte[bufferSize];
-
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteBuffer.write(buffer, 0, len);
-            }
-            return byteBuffer.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 
     // 비동기 작업으로 새 강연을 데이터베이스에 등록하는 클래스
     private class SubmitLectureTask extends AsyncTask<Object, Void, Boolean> {
@@ -243,6 +310,7 @@ public class LectureWriteActivity extends AppCompatActivity {
         }
     }
 
+    // 비동기 작업으로 기존 강연을 데이터베이스에서 수정하는 클래스
     private class UpdateLectureTask extends AsyncTask<Object, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Object... params) {
@@ -270,5 +338,4 @@ public class LectureWriteActivity extends AppCompatActivity {
             }
         }
     }
-
 }

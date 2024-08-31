@@ -34,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     private AuthManager authManager;
     private static final int PICK_IMAGE = 1;
     private ImageView profileImageView;
+    private TextView businessOrSchoolTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +48,18 @@ public class SettingsActivity extends AppCompatActivity {
         // UI 요소 초기화
         profileImageView = findViewById(R.id.profile_image);
         TextView profileNameTextView = findViewById(R.id.question);
-        TextView volunteerHoursTextView = findViewById(R.id.title_Vtime);
         TextView balanceTextView = findViewById(R.id.title_time); // balance 값을 표시할 텍스트뷰
+        businessOrSchoolTextView = findViewById(R.id.business_or_school); // TextView for business/school name
         ImageView authorizationIcon = findViewById(R.id.authorization_icon);
 
         // 세션에서 사용자 정보 가져오기
         String userName = sessionManager.getUserName();
-        int volunteerHours = sessionManager.getVolunteerHours();
         int balance = sessionManager.getBalance(); // Balance 값을 가져옴
         int userId = sessionManager.getUserId();
+        String role = sessionManager.getUserRole(); // 역할 가져오기
 
         // 프로필 이름과 봉사 시간, Balance를 설정
         profileNameTextView.setText(userName);
-        volunteerHoursTextView.setText(String.valueOf(volunteerHours));
         balanceTextView.setText(String.valueOf(balance)); // Balance 값을 설정
 
         // 사용자 기관 여부에 따라 인증 마크 가시성 설정
@@ -69,8 +69,8 @@ public class SettingsActivity extends AppCompatActivity {
             authorizationIcon.setVisibility(View.GONE);
         }
 
-        // 프로필 이미지를 비동기로 로드
-        new LoadProfileImageTask(userId).execute();
+        // Load and display the business or school name
+        new LoadBusinessOrSchoolNameTask(userId, role).execute();
 
         // 프로필 이미지를 비동기로 로드
         new LoadProfileImageTask(userId).execute();
@@ -78,7 +78,6 @@ public class SettingsActivity extends AppCompatActivity {
         // 옵션 클릭 리스너 설정
         LinearLayout editProfileOption = findViewById(R.id.option_edit_profile);
         LinearLayout aboutB1A3Option = findViewById(R.id.option_about_b1a3);
-        LinearLayout qnaOption = findViewById(R.id.option_qna);
         LinearLayout logoutOption = findViewById(R.id.logout_option);
 
         editProfileOption.setOnClickListener(v -> {
@@ -88,11 +87,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         aboutB1A3Option.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, SettingFontSizeActivity.class);
-            startActivity(intent);
-        });
-
-        qnaOption.setOnClickListener(v -> {
-            Intent intent = new Intent(SettingsActivity.this, QnaActivity.class);
             startActivity(intent);
         });
 
@@ -136,7 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
             startActivityForResult(intent, PICK_IMAGE);
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -254,8 +247,40 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    // Task to load and display business or school name
+    private class LoadBusinessOrSchoolNameTask extends AsyncTask<Void, Void, String> {
+        private int userId;
+        private String role;
 
+        public LoadBusinessOrSchoolNameTask(int userId, String role) {
+            this.userId = userId;
+            this.role = role;
+        }
 
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                if (role.equals("기관")) {
+                    return authManager.getBusinessNameByUserId(userId);
+                } else if (role.equals("학교")) {
+                    return authManager.getSchoolNameByUserId(userId);
+                }
+                return null;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 
+        @Override
+        protected void onPostExecute(String name) {
+            if (name != null && !name.isEmpty()) {
+                businessOrSchoolTextView.setText(name);
+                businessOrSchoolTextView.setVisibility(View.VISIBLE);
+            } else {
+                businessOrSchoolTextView.setVisibility(View.GONE);
+            }
+        }
+    }
 
 }

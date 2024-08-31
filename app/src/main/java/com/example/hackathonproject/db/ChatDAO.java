@@ -81,46 +81,46 @@ public class ChatDAO {
     public void getOrCreateChatRoom(int loggedInUserId, int otherUserId, Integer educationId, Integer lectureId, ChatRoomCallback callback) {
         new Thread(() -> {
             try {
-                Log.d(TAG, "----------------Received educationId: " + educationId + ", lectureId: " + lectureId);
-
-                // 작은 ID 값을 항상 AuthorID로 설정, 큰 ID 값을 OtherUserID로 설정
-                int authorId = Math.min(loggedInUserId, otherUserId);
-                int finalOtherUserId = Math.max(loggedInUserId, otherUserId);
+                Log.d(TAG, "Received educationId: " + educationId + ", lectureId: " + lectureId);
 
                 connection.setAutoCommit(false);
 
-                // EducationID 또는 LectureID가 제공된 경우 유효성 검사
-                if (educationId != null && !isEducationIdValid(educationId)) {
-                    connection.rollback(); // 오류 발생 시 트랜잭션 롤백
-                    Log.e(TAG, "EducationID가 유효하지 않음, 트랜잭션 롤백");
-                    callback.onError(new SQLException("유효하지 않은 EducationID: " + educationId));
-                    return;
+                int authorId = -1;
+
+                // EducationID 또는 LectureID를 기반으로 AuthorID 가져오기
+                if (educationId != null) {
+                    authorId = getUserIdByEducationId(educationId);
+                    if (authorId == -1) {
+                        connection.rollback(); // 오류 발생 시 트랜잭션 롤백
+                        callback.onError(new SQLException("유효하지 않은 EducationID: " + educationId));
+                        return;
+                    }
+                } else if (lectureId != null) {
+                    authorId = getUserIdByLectureId(lectureId);
+                    if (authorId == -1) {
+                        connection.rollback(); // 오류 발생 시 트랜잭션 롤백
+                        callback.onError(new SQLException("유효하지 않은 LectureID: " + lectureId));
+                        return;
+                    }
                 }
 
-                if (lectureId != null && !isLectureIdValid(lectureId)) {
-                    connection.rollback(); // 오류 발생 시 트랜잭션 롤백
-                    Log.e(TAG, "LectureID가 유효하지 않음, 트랜잭션 롤백");
-                    callback.onError(new SQLException("유효하지 않은 LectureID: " + lectureId));
-                    return;
-                }
+                int finalOtherUserId = loggedInUserId;
 
                 String query = "SELECT ChatID FROM Chat WHERE " +
-                        "((AuthorID = ? AND OtherUserID = ?) OR (AuthorID = ? AND OtherUserID = ?)) " +
+                        "AuthorID = ? AND OtherUserID = ? " +
                         "AND (EducationID = ? OR EducationID IS NULL) AND (LectureID = ? OR LectureID IS NULL)";
                 try (PreparedStatement statement = connection.prepareStatement(query)) {
                     statement.setInt(1, authorId);
                     statement.setInt(2, finalOtherUserId);
-                    statement.setInt(3, finalOtherUserId);
-                    statement.setInt(4, authorId);
                     if (educationId != null) {
-                        statement.setInt(5, educationId);
+                        statement.setInt(3, educationId);
                     } else {
-                        statement.setNull(5, java.sql.Types.INTEGER);
+                        statement.setNull(3, java.sql.Types.INTEGER);
                     }
                     if (lectureId != null) {
-                        statement.setInt(6, lectureId);
+                        statement.setInt(4, lectureId);
                     } else {
-                        statement.setNull(6, java.sql.Types.INTEGER);
+                        statement.setNull(4, java.sql.Types.INTEGER);
                     }
 
                     try (ResultSet resultSet = statement.executeQuery()) {
@@ -189,6 +189,40 @@ public class ChatDAO {
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
+    // EducationID로 AuthorID를 가져오는 메서드
+    private int getUserIdByEducationId(int educationId) {
+        String query = "SELECT UserID FROM Education WHERE EducationID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, educationId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("UserID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    // LectureID로 AuthorID를 가져오는 메서드
+    private int getUserIdByLectureId(int lectureId) {
+        String query = "SELECT UserID FROM Lecture WHERE LectureID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, lectureId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("UserID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
     // EducationID의 유효성을 검사하는 메서드
     private boolean isEducationIdValid(Integer educationId) {
         if (educationId == null) {
@@ -228,6 +262,50 @@ public class ChatDAO {
         return false;
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    public Chat getChatById(int chatId) throws SQLException {
+        String query = "SELECT * FROM Chat WHERE ChatID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, chatId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Chat 객체를 생성하고 필요한 필드를 설정합니다.
+                    int authorId = resultSet.getInt("AuthorID");
+                    int otherUserId = resultSet.getInt("OtherUserID");
+                    String lastMessage = resultSet.getString("LastMessage");
+                    String lastMessageTime = resultSet.getString("LastMessageTime");
+                    boolean isAuthorMessageRead = resultSet.getBoolean("IsAuthorMessageRead");
+                    boolean isOtherUserMessageRead = resultSet.getBoolean("IsOtherUserMessageRead");
+
+                    // Chat 객체 생성 후 반환
+                    Chat chat = new Chat(chatId, authorId, otherUserId, lastMessage, lastMessageTime, null, null, isAuthorMessageRead, isOtherUserMessageRead);
+                    return chat;
+                } else {
+                    Log.e(TAG, "Chat not found for chatId: " + chatId);
+                    return null;
+                }
+            }
+        }
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    // 채팅방 삭제 메서드
+    public boolean deleteChatRoom(int chatId) throws SQLException {
+        try (PreparedStatement deleteMessagesStmt = connection.prepareStatement("DELETE FROM ChatMessage WHERE ChatID = ?");
+             PreparedStatement deleteChatStmt = connection.prepareStatement("DELETE FROM Chat WHERE ChatID = ?")) {
+
+            // 채팅방의 모든 메시지 삭제
+            deleteMessagesStmt.setInt(1, chatId);
+            deleteMessagesStmt.executeUpdate();
+
+            // 채팅방 삭제
+            deleteChatStmt.setInt(1, chatId);
+            int rowsAffected = deleteChatStmt.executeUpdate();
+
+            return rowsAffected > 0;
+        }
+    }
 
     // ChatRoomCallback 인터페이스 정의
     public interface ChatRoomCallback {

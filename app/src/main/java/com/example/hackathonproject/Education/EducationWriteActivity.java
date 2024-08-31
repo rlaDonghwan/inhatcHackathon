@@ -1,6 +1,11 @@
 package com.example.hackathonproject.Education;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,36 +18,50 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.hackathonproject.Login.SessionManager;
 import com.example.hackathonproject.R;
 import com.example.hackathonproject.db.EducationDAO;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Locale;
 
 public class EducationWriteActivity extends AppCompatActivity {
 
-    private EditText titleEditText;  // 제목을 입력하는 EditText
-    private EditText descriptionEditText;  // 내용을 입력하는 EditText
-    private EditText priceEditText;  // 금액을 입력하는 EditText
-    private Button submitButton;  // 제출 버튼
-    private CheckBox checkBoxBuy;  // '구해요' 카테고리 선택 CheckBox
-    private CheckBox checkBoxSell;  // '할게요' 카테고리 선택 CheckBox
-    private EducationDAO educationDAO;  // 데이터베이스 접근 객체
-    private SessionManager sessionManager;  // 사용자 세션 관리 객체
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    private FusedLocationProviderClient fusedLocationClient;
+    private String currentLocation = "서울"; // 기본 위치는 서울로 설정
+
+    private EditText titleEditText;
+    private EditText descriptionEditText;
+    private EditText priceEditText;
+    private Button submitButton;
+    private CheckBox checkBoxBuy;
+    private CheckBox checkBoxSell;
+    private EducationDAO educationDAO;
+    private SessionManager sessionManager;
     private int educationId = -1; // 수정 시 사용할 교육 게시글 ID
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
-
-
+    private ImageView imagePreview;
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -53,32 +72,53 @@ public class EducationWriteActivity extends AppCompatActivity {
         educationDAO = new EducationDAO(); // DAO 객체 초기화
         sessionManager = new SessionManager(this); // SessionManager 객체 초기화
 
-        ImageButton backButton = findViewById(R.id.back_button);  // 뒤로 가기 버튼 초기화
-        backButton.setOnClickListener(v -> onBackPressed());  // 뒤로 가기 버튼 클릭 시 뒤로 이동
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> onBackPressed());
 
-        ImageView imagePreview = findViewById(R.id.image_preview);
+        titleEditText = findViewById(R.id.title_edit_text);
+        descriptionEditText = findViewById(R.id.content_edit_text);
+        submitButton = findViewById(R.id.btnSummit);
+        checkBoxBuy = findViewById(R.id.checkbox_buy);
+        checkBoxSell = findViewById(R.id.checkbox_sell);
+        priceEditText = findViewById(R.id.price_edit_text);
+        imagePreview = findViewById(R.id.image_preview);
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
 
-        titleEditText = findViewById(R.id.title_edit_text);  // 제목 입력 필드 초기화
-        descriptionEditText = findViewById(R.id.content_edit_text);  // 내용 입력 필드 초기화
-        submitButton = findViewById(R.id.btnSummit);  // 제출 버튼 초기화
-        checkBoxBuy = findViewById(R.id.checkbox_buy);  // '구해요' 체크박스 초기화
-        checkBoxSell = findViewById(R.id.checkbox_sell);  // '할게요' 체크박스 초기화
-        priceEditText = findViewById(R.id.price_edit_text);  // 교육료 입력 필드 초기화
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);  // 툴바 제목 TextView 초기화
+        checkBoxBuy.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkBoxSell.setChecked(false);
+            }
+        });
 
-        checkBoxBuy = findViewById(R.id.checkbox_buy);  // '구해요' 체크박스 초기화
-        checkBoxSell = findViewById(R.id.checkbox_sell);  // '할게요' 체크박스 초기화
+        checkBoxSell.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                checkBoxBuy.setChecked(false);
+            }
+        });
 
+        // 위치 권한 요청
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // 위치 정보 가져오기
+            getLastKnownLocation();
+        }
 
-        // Intent로 전달된 데이터 처리 (수정 모드인지 확인)
         Intent intent = getIntent();
         if (intent.hasExtra("educationId")) {
-            educationId = intent.getIntExtra("educationId", -1);  // 교육 게시글 ID 가져오기
-            String title = intent.getStringExtra("title");  // 제목 가져오기
-            String content = intent.getStringExtra("content");  // 내용 가져오기
-            String category = intent.getStringExtra("category");  // 카테고리 가져오기
-            int fee = intent.getIntExtra("fee", 0);  // 교육료 가져오기
-            byte[] imageData = intent.getByteArrayExtra("imageData");  // 이미지 데이터 가져오기
+            educationId = intent.getIntExtra("educationId", -1);
+            String title = intent.getStringExtra("title");
+            String content = intent.getStringExtra("content");
+            String category = intent.getStringExtra("category");
+            int fee = intent.getIntExtra("fee", 0);
+            byte[] imageData = intent.getByteArrayExtra("imageData");
+
+            titleEditText.setText(title);
+            descriptionEditText.setText(content);
+            priceEditText.setText(String.valueOf(fee));
 
             if (imageData != null) {
                 imageUri = Uri.parse("");  // URI로 설정할 수 없으므로, 다른 방법으로 이미지 표시
@@ -88,42 +128,17 @@ public class EducationWriteActivity extends AppCompatActivity {
                 imagePreview.setVisibility(View.VISIBLE);
             }
 
-
-            titleEditText.setText(title);  // 제목 설정
-            descriptionEditText.setText(content);  // 내용 설정
-            priceEditText.setText(String.valueOf(fee));  // 교육료 설정
-
-            // '구해요' 체크박스 선택 시 '할게요' 체크박스 해제
-            checkBoxBuy.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    checkBoxSell.setChecked(false);
-                }
-            });
-
-            // '할게요' 체크박스 선택 시 '구해요' 체크박스 해제
-            checkBoxSell.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    checkBoxBuy.setChecked(false);
-                }
-            });
-
-
-            // 수정 모드이므로 툴바 제목을 "교육 수정"으로 변경
-            toolbarTitle.setText("교육 수정");
-
-
             if ("구해요".equals(category)) {
-                checkBoxBuy.setChecked(true);  // '구해요' 카테고리 선택
+                checkBoxBuy.setChecked(true);
             } else if ("할게요".equals(category)) {
-                checkBoxSell.setChecked(true);  // '할게요' 카테고리 선택
+                checkBoxSell.setChecked(true);
             }
 
-            // 수정 모드로 동작
-            submitButton.setOnClickListener(v -> updateEducationPost());  // 수정 버튼 클릭 시 처리
+            toolbarTitle.setText("교육 수정");
+            submitButton.setOnClickListener(v -> updateEducationPost());
         } else {
-            // 새 글 작성 모드로 동작
-            submitButton.setOnClickListener(v -> submitEducation());  // 제출 버튼 클릭 시 처리
             toolbarTitle.setText("교육 신청");
+            submitButton.setOnClickListener(v -> submitEducation());
         }
 
         Button imageButton = findViewById(R.id.image_button);
@@ -140,6 +155,79 @@ public class EducationWriteActivity extends AppCompatActivity {
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
+    private void getLastKnownLocation() {
+        fusedLocationClient.getLastLocation()
+                .addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            Location location = task.getResult();
+                            currentLocation = getAddressFromLocation(location); // 좌표를 주소로 변환하여 저장
+                        } else {
+                            // 위치를 가져올 수 없을 경우 IP 주소 기반 위치로 대체
+                            new GetLocationFromIPTask().execute();
+                        }
+                    }
+                });
+    }
+
+    // 좌표를 주소로 변환하는 메서드
+    private String getAddressFromLocation(Location location) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                return addresses.get(0).getAddressLine(0);
+            } else {
+                return "주소를 찾을 수 없습니다.";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "주소를 찾을 수 없습니다.";
+        }
+    }
+
+    // IP 주소를 통해 위치를 가져오는 비동기 작업
+    private class GetLocationFromIPTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String location = "서울";
+            try {
+                URL url = new URL("https://ipinfo.io/json");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+
+                InputStream inputStream = urlConnection.getInputStream();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                int read;
+                byte[] buffer = new byte[1024];
+                while ((read = inputStream.read(buffer)) != -1) {
+                    byteArrayOutputStream.write(buffer, 0, read);
+                }
+                String jsonResponse = byteArrayOutputStream.toString();
+
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+                String loc = jsonObject.getString("loc");
+                String[] latLng = loc.split(",");
+                double latitude = Double.parseDouble(latLng[0]);
+                double longitude = Double.parseDouble(latLng[1]);
+
+                return getAddressFromLocation(new Location("IP") {{
+                    setLatitude(latitude);
+                    setLongitude(longitude);
+                }});
+            } catch (Exception e) {
+                Log.e("IP Location Error", "Error getting location from IP", e);
+            }
+            return location;
+        }
+
+        @Override
+        protected void onPostExecute(String location) {
+            currentLocation = location;
+        }
+    }
 
     private void openImagePicker() {
         Intent intent = new Intent();
@@ -153,12 +241,10 @@ public class EducationWriteActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
-            ImageView imagePreview = findViewById(R.id.image_preview);
             imagePreview.setVisibility(View.VISIBLE);
             imagePreview.setImageURI(imageUri);
         }
     }
-
 
     // 새 교육 게시글을 등록하는 메서드
     private void submitEducation() {
@@ -174,7 +260,7 @@ public class EducationWriteActivity extends AppCompatActivity {
         }
 
         // 비동기 작업으로 게시글 등록
-        new SubmitEducationTask().execute(title, category, description, "서울", fee, imageUri); // 위치는 임의로 "서울"로 설정
+        new SubmitEducationTask().execute(title, category, description, currentLocation, fee, imageUri); // 위치는 임의로 "서울"로 설정
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -198,7 +284,7 @@ public class EducationWriteActivity extends AppCompatActivity {
         }
 
         // 비동기 작업으로 게시글 수정
-        new UpdateEducationTask().execute(educationId, title, category, description, "서울", fee, imageBytes);  // 위치는 임의로 "서울"로 설정
+        new UpdateEducationTask().execute(educationId, title, category, description, currentLocation, fee, imageBytes);
     }
 
     private byte[] getImageBytes(Uri uri) {
@@ -237,7 +323,6 @@ public class EducationWriteActivity extends AppCompatActivity {
                 imageBytes = getImageBytes(imageUri);
             }
 
-            // EducationDAO의 메서드를 호출하여 게시글과 이미지를 함께 처리
             return educationDAO.submitEducationWithImage(title, category, description, location, fee, userId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")), imageBytes);
         }
 
@@ -270,13 +355,8 @@ public class EducationWriteActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // 비동기 작업으로 기존 게시글을 데이터베이스에서 수정하는 클래스
     private class UpdateEducationTask extends AsyncTask<Object, Void, Boolean> {
 
         @Override
@@ -290,8 +370,12 @@ public class EducationWriteActivity extends AppCompatActivity {
             byte[] imageData = (byte[]) params[6]; // 이미지 데이터 가져오기
             int userId = sessionManager.getUserId();
 
-            // 데이터베이스 업데이트 호출
-            return educationDAO.updateEducationPostWithImage(educationId, title, category, description, location, fee, userId, imageData);
+            try {
+                return educationDAO.updateEducationPostWithImage(educationId, title, category, description, location, fee, userId, imageData);
+            } catch (Exception e) {
+                Log.e("UpdateEducationTask", "Error updating post", e);
+                return false;
+            }
         }
 
         @Override
@@ -305,5 +389,4 @@ public class EducationWriteActivity extends AppCompatActivity {
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
