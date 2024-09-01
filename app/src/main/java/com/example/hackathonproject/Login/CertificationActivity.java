@@ -3,11 +3,14 @@ package com.example.hackathonproject.Login;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +35,8 @@ public class CertificationActivity extends AppCompatActivity {
     private EditText companyNameInput;
     private Button schoolCertifyButton;
     private Button companyCertifyButton;
+    private TextView schoolSearchLabel;
+    private TextView companySearchLabel;
     private ArrayList<String> companyList;
     private ArrayList<String> schoolList;
 
@@ -50,6 +55,8 @@ public class CertificationActivity extends AppCompatActivity {
         companyNameInput = findViewById(R.id.company_name_input);
         schoolCertifyButton = findViewById(R.id.school_certify_button);
         companyCertifyButton = findViewById(R.id.company_certify_button);
+        schoolSearchLabel = findViewById(R.id.school_search_label);
+        companySearchLabel = findViewById(R.id.company_search_label);
 
         companyList = new ArrayList<>();
         schoolList = new ArrayList<>();
@@ -68,6 +75,9 @@ public class CertificationActivity extends AppCompatActivity {
 
         // 필드 활성화/비활성화 설정
         setupFieldActivation(isSchool, isOrganization);
+
+        // 폰트 크기 설정
+        applyFontSize();
 
         // 검색 버튼 추가 및 클릭 리스너 설정
         ImageButton schoolSearchButton = findViewById(R.id.school_search_button);
@@ -128,6 +138,19 @@ public class CertificationActivity extends AppCompatActivity {
 
         // 사용자 존재 여부 확인 및 학교 또는 기관 인증 작업 실행
         new VerifyTask().execute(type, institutionName, name, password, phoneNum, birthDate, schoolName, companyName);
+    }
+
+    // 폰트 크기 적용 메서드
+    private void applyFontSize() {
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25sp
+
+        schoolNameInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        companyNameInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        schoolCertifyButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        companyCertifyButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        schoolSearchLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
+        companySearchLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);
     }
 
     private class VerifyTask extends AsyncTask<Object, Void, Boolean> {

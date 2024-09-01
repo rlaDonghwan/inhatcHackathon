@@ -79,13 +79,13 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
         // SharedPreferences에서 폰트 크기 불러오기
         SharedPreferences preferences = holder.itemView.getContext().getSharedPreferences("fontSizePrefs", Context.MODE_PRIVATE);
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
-
+        int LocalFontSize = 17;
         // 텍스트 크기 적용
         holder.postTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize -5);  // 제목은 조금 더 크게
         holder.postCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);
-        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11); // 세부사항은 더 작게
+        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize); // 세부사항은 더 작게
         holder.postViews.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
-        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
+        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------

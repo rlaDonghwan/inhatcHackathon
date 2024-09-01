@@ -33,7 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
     private CheckBox cbIsOrganization, cbIsSchool;
     private AuthManager authManager;
     private Button btnRegister, btnSendCode, btnVerifyCode;
-    private TextView companyCheckboxText, schoolCheckboxText;
+    private TextView nameLabel, phoneLabel, passwordLabel, dobLabel, companyCheckboxText, schoolCheckboxText, termsText, titleText;
     private String generatedCode;
     private boolean isVerified = false;
 
@@ -59,27 +59,25 @@ public class SignUpActivity extends AppCompatActivity {
         etPassNumber = findViewById(R.id.pass_number);
         cbIsOrganization = findViewById(R.id.checkbox);
         cbIsSchool = findViewById(R.id.checkbox_school);
+        nameLabel = findViewById(R.id.name_label);
+        phoneLabel = findViewById(R.id.phone_label);
+        passwordLabel = findViewById(R.id.password_label);
+        dobLabel = findViewById(R.id.dob_label);
         companyCheckboxText = findViewById(R.id.checkbox_text);
         schoolCheckboxText = findViewById(R.id.checkbox_school_text);
+        termsText = findViewById(R.id.terms_text);
         btnRegister = findViewById(R.id.sign_up_button);
         btnSendCode = findViewById(R.id.sendCodeButton);
         btnVerifyCode = findViewById(R.id.passNumButton);
+        titleText = findViewById(R.id.title_text);
 
         // 폰트 크기 설정 (SharedPreferences 사용)
         SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+        int titleFontSize = preferences.getInt("titleFontSize", 40);  // 제목 글씨 크기 기본값 35
 
         // 폰트 크기 적용
-        etName.setTextSize(savedFontSize);
-        etPassword.setTextSize(savedFontSize);
-        etPhoneNum.setTextSize(savedFontSize);
-        etBirthYear.setTextSize(savedFontSize);
-        etMonth.setTextSize(savedFontSize);
-        etDay.setTextSize(savedFontSize);
-        etPassNumber.setTextSize(savedFontSize);
-        companyCheckboxText.setTextSize(savedFontSize);
-        schoolCheckboxText.setTextSize(savedFontSize);
-        btnRegister.setTextSize(savedFontSize);
+        applyFontSize(savedFontSize, titleFontSize);
 
         // 전화번호 입력 형식 설정 및 최대 길이 제한
         etPhoneNum.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
@@ -173,6 +171,27 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // 폰트 크기 적용 메서드
+    private void applyFontSize(int fontSize, int titleFontSize) {
+        int localFontSize = 26;  // 기본 텍스트 크기
+        etName.setTextSize(fontSize);
+        etPassword.setTextSize(fontSize);
+        etPhoneNum.setTextSize(fontSize);
+        etBirthYear.setTextSize(fontSize);
+        etMonth.setTextSize(fontSize);
+        etDay.setTextSize(fontSize);
+        etPassNumber.setTextSize(fontSize);
+        nameLabel.setTextSize(fontSize);
+        phoneLabel.setTextSize(fontSize);
+        passwordLabel.setTextSize(fontSize);
+        dobLabel.setTextSize(fontSize);
+        companyCheckboxText.setTextSize(localFontSize);
+        schoolCheckboxText.setTextSize(localFontSize);
+        termsText.setTextSize(fontSize);
+        btnRegister.setTextSize(fontSize);
+        titleText.setTextSize(titleFontSize);  // titleText의 폰트 크기 설정
     }
 
     // 생년월일 필드 자동 이동 설정 메서드
