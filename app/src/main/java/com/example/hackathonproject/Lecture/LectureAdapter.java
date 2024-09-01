@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,12 +76,13 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         // SharedPreferences에서 폰트 크기 불러오기
         SharedPreferences preferences = holder.itemView.getContext().getSharedPreferences("fontSizePrefs", Context.MODE_PRIVATE);
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
-
+        int LocalFontSize = 17;
         // 텍스트 크기 적용
         holder.postTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize -5);  // 제목은 조금 더 크게
-        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11); // 세부사항은 더 작게
+        holder.postCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);
+        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize); // 세부사항은 더 작게
         holder.postViews.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
-        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
+        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -140,7 +142,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
 
     // ViewHolder 클래스: 각 아이템 뷰를 재활용하여 성능을 높임
     public class LectureViewHolder extends RecyclerView.ViewHolder {
-        public TextView postTitle, postDetails, postViews, postFee; // 뷰 요소들
+        public TextView postTitle, postDetails, postViews, postFee, postCategory; // 뷰 요소들
         public ImageView contentImage;
 
         public LectureViewHolder(View itemView) {
@@ -151,6 +153,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             postViews = itemView.findViewById(R.id.postViews);
             postFee = itemView.findViewById(R.id.postFee);
             contentImage = itemView.findViewById(R.id.content_image);
+            postCategory = itemView.findViewById(R.id.post_category);
 
             // 아이템 뷰 클릭 시 리스너 호출
             itemView.setOnClickListener(v -> {

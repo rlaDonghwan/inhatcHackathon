@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -41,7 +42,7 @@ import java.time.temporal.ChronoUnit;
 
 public class EducationContentView extends AppCompatActivity {
     private int educationId;  // 게시글 ID를 저장할 변수
-    private TextView contentTextView, titleTextView, teacherNameTextView, dateTextView, feeTextView,locationTextView; // UI 요소들
+    private TextView contentTextView, titleTextView, teacherNameTextView, dateTextView, feeTextView, locationTextView, workName; // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
     private EducationDAO educationDAO;  // 데이터베이스 접근 객체
     private EducationPost currentPost;  // 현재 게시글 객체 (수정 시 사용)
@@ -87,7 +88,20 @@ public class EducationContentView extends AppCompatActivity {
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         contentImageView = findViewById(R.id.content_image);  // 이미지 뷰 초기화
         profileImageView = findViewById(R.id.profile_image); // 프로필 이미지 뷰 초기화
+        workName = findViewById(R.id.work_name);  // `workName` 텍스트뷰 초기화 추가
 
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);
+        int LocalFontSize = 17;
+
+        // 텍스트뷰의 폰트 크기 적용
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize + 5);  // 제목은 크게
+        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);  // 내용
+        teacherNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 3);  // 작성자 이름은 작게
+        dateTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);  // 작성일자 더 작게
+        feeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);  // 교육비
+        workName.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);  // `workName`에 폰트 크기 적용
+        locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);  // 위치
 
         menuButton.setOnClickListener(this::showPopupMenu);  // 메뉴 버튼 클릭 시 팝업 메뉴 표시
 
@@ -279,7 +293,7 @@ public class EducationContentView extends AppCompatActivity {
             }
         }
     }
-        //-----------------------------------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 
     private String formatTimeAgo(String createdAt) {

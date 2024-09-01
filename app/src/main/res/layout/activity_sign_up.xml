@@ -61,6 +61,7 @@
 
                 <!-- Name Field -->
                 <TextView
+                    android:id="@+id/name_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanumsquare_neo_eb"
@@ -71,7 +72,7 @@
                 <EditText
                     android:id="@+id/full_name_input"
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
                     android:fontFamily="@font/nanumsquare_neo_eb"
                     android:hint="이름"
@@ -83,6 +84,7 @@
 
                 <!-- Phone Number Field -->
                 <TextView
+                    android:id="@+id/phone_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
@@ -96,11 +98,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Password Field -->
+                    <!-- Phone Number Input -->
                     <EditText
                         android:id="@+id/phone_number_input"
                         android:layout_width="300dp"
-                        android:layout_height="55dp"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="010-1234-5678"
@@ -129,11 +131,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- Password Field -->
+                    <!-- Verification Code Input -->
                     <EditText
                         android:id="@+id/pass_number"
                         android:layout_width="300dp"
-                        android:layout_height="55dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/nanumsquare_neo_eb"
@@ -158,6 +160,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/password_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
@@ -169,7 +172,7 @@
                 <EditText
                     android:id="@+id/password_input"
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
                     android:fontFamily="@font/nanumsquare_neo_eb"
                     android:hint="비밀번호"
@@ -179,6 +182,7 @@
 
                 <!-- Date of Birth Fields -->
                 <TextView
+                    android:id="@+id/dob_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
@@ -195,7 +199,7 @@
                     <EditText
                         android:id="@+id/birthYear_input"
                         android:layout_width="wrap_content"
-                        android:layout_height="55dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/nanumsquare_neo_eb"
@@ -208,7 +212,7 @@
                     <EditText
                         android:id="@+id/month_input"
                         android:layout_width="wrap_content"
-                        android:layout_height="55dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/nanumsquare_neo_eb"
@@ -221,7 +225,7 @@
                     <EditText
                         android:id="@+id/day_input"
                         android:layout_width="wrap_content"
-                        android:layout_height="55dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/nanumsquare_neo_eb"
@@ -288,7 +292,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/nanumsquare_neo_eb"
                             android:paddingBottom="4dp"
-                            android:text="학교 담장자"
+                            android:text="학교 담당자"
                             android:textSize="20sp" />
 
                     </LinearLayout>

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -39,7 +40,7 @@ import java.time.temporal.ChronoUnit;
 
 public class LectureContentView extends AppCompatActivity {
     private int lectureId;  // 강연 ID를 저장할 변수
-    private TextView contentTextView, titleTextView, lecturerNameTextView, dateTextView, feeTextView, locationTextView;  // UI 요소들
+    private TextView contentTextView, titleTextView, lecturerNameTextView, dateTextView, feeTextView, locationTextView, workName;  // UI 요소들
     private ImageButton menuButton;  // 메뉴 버튼
     private ImageView contentImageView;  // 추가된 이미지뷰 참조
     private LectureDAO lectureDAO;  // 데이터베이스 접근 객체
@@ -52,9 +53,7 @@ public class LectureContentView extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
         return pref.getInt("UserID", -1); // 로그인하지 않은 경우 -1 반환
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +84,21 @@ public class LectureContentView extends AppCompatActivity {
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
         contentImageView = findViewById(R.id.content_image);  // 이미지뷰 참조
         profileImageView = findViewById(R.id.profile_image);
+        workName = findViewById(R.id.work_name);  // 강연명 텍스트뷰
+
+        // SharedPreferences에서 폰트 크기 설정 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);
+        int LocalFontSize = 17;
+
+        // 텍스트뷰의 폰트 크기 적용
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize + 5);  // 제목은 크게
+        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);  // 내용
+        lecturerNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 3);  // 강연자 이름
+        dateTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);  // 작성일자 더 작게
+        feeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);  // 강연료
+        workName.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize);  // 강연명
+        locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);  // 위치
 
         // 메뉴 버튼 클릭 시 팝업 메뉴 표시
         menuButton.setOnClickListener(this::showPopupMenu);
@@ -151,25 +165,16 @@ public class LectureContentView extends AppCompatActivity {
             });
         });
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 새로고침 메서드
     private void refreshContent() {
         loadLectureContent();  // 강연 내용 로드
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 내용을 로드하는 메서드
     private void loadLectureContent() {
         new LoadLectureTask().execute(lectureId); // 비동기 작업으로 데이터베이스에서 강연 내용 불러오기
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업으로 강연 내용을 로드하는 클래스
     @SuppressLint("StaticFieldLeak")
@@ -262,7 +267,6 @@ public class LectureContentView extends AppCompatActivity {
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 시간을 "몇 분 전" 등의 형식으로 변환하는 메서드
     private String formatTimeAgo(String createdAt) {
@@ -290,8 +294,6 @@ public class LectureContentView extends AppCompatActivity {
             return days + "일 전";
         }
     }
-
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
@@ -327,7 +329,6 @@ public class LectureContentView extends AppCompatActivity {
         });
         popup.show();  // 팝업 메뉴 표시
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제를 확인하는 메서드
     private void confirmDeleteLecture() {
@@ -340,7 +341,6 @@ public class LectureContentView extends AppCompatActivity {
                 }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제 메서드
     @SuppressLint("StaticFieldLeak")
@@ -362,7 +362,6 @@ public class LectureContentView extends AppCompatActivity {
             }
         }.execute();  // 비동기 작업 실행
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 상단 바의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -370,7 +369,6 @@ public class LectureContentView extends AppCompatActivity {
         navigateBackToLectureActivity();
         return true;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 디바이스의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -378,7 +376,6 @@ public class LectureContentView extends AppCompatActivity {
         super.onBackPressed();
         navigateBackToLectureActivity();
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // LectureActivity로 돌아가는 메서드
     private void navigateBackToLectureActivity() {
@@ -387,5 +384,4 @@ public class LectureContentView extends AppCompatActivity {
         startActivity(intent);  // LectureActivity 시작
         finish();  // 현재 액티비티 종료
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
