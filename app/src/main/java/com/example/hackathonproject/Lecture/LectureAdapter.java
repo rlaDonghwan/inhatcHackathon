@@ -70,7 +70,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             Bitmap bitmap = BitmapFactory.decodeByteArray(post.getImageData(), 0, post.getImageData().length);
             holder.contentImage.setImageBitmap(bitmap);
         } else {
-            holder.contentImage.setImageResource(R.drawable.placeholder);  // 이미지가 없는 경우 기본 이미지 설정
+            holder.contentImage.setImageResource(R.drawable.placeholder2);  // 이미지가 없는 경우 placeholder2.png 설정
         }
 
         // SharedPreferences에서 폰트 크기 불러오기
@@ -84,6 +84,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         holder.postViews.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
         holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
 
