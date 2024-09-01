@@ -248,20 +248,25 @@ public class EducationWriteActivity extends AppCompatActivity {
 
     // 새 교육 게시글을 등록하는 메서드
     private void submitEducation() {
-        String title = titleEditText.getText().toString().trim();  // 제목 가져오기
-        String description = descriptionEditText.getText().toString().trim();  // 내용 가져오기
-        String category = checkBoxBuy.isChecked() ? "구해요" : checkBoxSell.isChecked() ? "할게요" : "";  // 선택된 카테고리 가져오기
-        String feeStr = priceEditText.getText().toString().trim(); // 금액 가져오기
-        int fee = feeStr.isEmpty() ? 0 : Integer.parseInt(feeStr); // 금액이 비어 있으면 0으로 설정
+        String title = titleEditText.getText().toString().trim();
+        String description = descriptionEditText.getText().toString().trim();
+        String category = checkBoxBuy.isChecked() ? "구해요" : checkBoxSell.isChecked() ? "할게요" : "";
+        String feeStr = priceEditText.getText().toString().trim();
+        int fee = feeStr.isEmpty() ? 0 : Integer.parseInt(feeStr);
 
         if (title.isEmpty() || description.isEmpty() || category.isEmpty()) {
-            Toast.makeText(this, "제목, 내용, 카테고리를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();  // 필수 항목 누락 시 경고
+            Toast.makeText(this, "제목, 내용, 카테고리를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 비동기 작업으로 게시글 등록
-        new SubmitEducationTask().execute(title, category, description, currentLocation, fee, imageUri); // 위치는 임의로 "서울"로 설정
+        byte[] imageBytes = null;
+        if (imageUri != null) {
+            imageBytes = getImageBytes(imageUri);
+        }
+
+        new SubmitEducationTask().execute(title, category, description, currentLocation, fee, imageBytes);
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 기존 게시글을 수정하는 메서드
@@ -285,6 +290,26 @@ public class EducationWriteActivity extends AppCompatActivity {
 
         // 비동기 작업으로 게시글 수정
         new UpdateEducationTask().execute(educationId, title, category, description, currentLocation, fee, imageBytes);
+    }
+
+    private byte[] getPlaceholderImageBytes() {
+        try {
+            // placeholder2.png를 URI로 변환하고, 이를 바이트 배열로 변환
+            Uri placeholderUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.placeholder2);
+            InputStream inputStream = getContentResolver().openInputStream(placeholderUri);
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            return byteBuffer.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private byte[] getImageBytes(Uri uri) {
@@ -316,15 +341,11 @@ public class EducationWriteActivity extends AppCompatActivity {
             String location = (String) params[3];
             int fee = (int) params[4];
             int userId = sessionManager.getUserId();
-            Uri imageUri = params.length > 5 ? (Uri) params[5] : null;
-
-            byte[] imageBytes = null;
-            if (imageUri != null) {
-                imageBytes = getImageBytes(imageUri);
-            }
+            byte[] imageBytes = (byte[]) params[5]; // 이 부분을 Uri에서 byte[]로 변경
 
             return educationDAO.submitEducationWithImage(title, category, description, location, fee, userId, ZonedDateTime.now(ZoneId.of("Asia/Seoul")), imageBytes);
         }
+
 
         @Override
         protected void onPostExecute(Boolean success) {
