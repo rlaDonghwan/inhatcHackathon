@@ -165,16 +165,25 @@ public class LectureContentView extends AppCompatActivity {
             });
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 새로고침 메서드
     private void refreshContent() {
         loadLectureContent();  // 강연 내용 로드
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 내용을 로드하는 메서드
     private void loadLectureContent() {
         new LoadLectureTask().execute(lectureId); // 비동기 작업으로 데이터베이스에서 강연 내용 불러오기
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업으로 강연 내용을 로드하는 클래스
     @SuppressLint("StaticFieldLeak")
@@ -267,6 +276,7 @@ public class LectureContentView extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 시간을 "몇 분 전" 등의 형식으로 변환하는 메서드
     private String formatTimeAgo(String createdAt) {
@@ -294,6 +304,8 @@ public class LectureContentView extends AppCompatActivity {
             return days + "일 전";
         }
     }
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
@@ -329,6 +341,7 @@ public class LectureContentView extends AppCompatActivity {
         });
         popup.show();  // 팝업 메뉴 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제를 확인하는 메서드
     private void confirmDeleteLecture() {
@@ -341,6 +354,7 @@ public class LectureContentView extends AppCompatActivity {
                 }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제 메서드
     @SuppressLint("StaticFieldLeak")
@@ -362,6 +376,7 @@ public class LectureContentView extends AppCompatActivity {
             }
         }.execute();  // 비동기 작업 실행
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 상단 바의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -369,6 +384,7 @@ public class LectureContentView extends AppCompatActivity {
         navigateBackToLectureActivity();
         return true;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 디바이스의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -376,6 +392,7 @@ public class LectureContentView extends AppCompatActivity {
         super.onBackPressed();
         navigateBackToLectureActivity();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // LectureActivity로 돌아가는 메서드
     private void navigateBackToLectureActivity() {
@@ -384,4 +401,5 @@ public class LectureContentView extends AppCompatActivity {
         startActivity(intent);  // LectureActivity 시작
         finish();  // 현재 액티비티 종료
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }
