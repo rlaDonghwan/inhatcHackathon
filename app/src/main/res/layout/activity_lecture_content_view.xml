@@ -84,6 +84,7 @@
 
             <!-- 둥근 원형 프로필 이미지 -->
             <ImageView
+                android:id="@+id/profile_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginEnd="10dp"

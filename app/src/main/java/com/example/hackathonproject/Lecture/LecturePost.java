@@ -13,12 +13,15 @@ public class LecturePost {
     private int views; // 조회수
     private boolean isYouthAudienceAllowed; // 청년 참관 가능 여부
     private byte[] imageData;  // 이미지 데이터를 저장할 필드
+    private byte[] profileImageData;  // 프로필 이미지 데이터를 저장할 필드
 
     // 생성자
-    public LecturePost(int lectureId, int userId, String userName, String title, String content, String location, String createdAt, String completedAt, double fee, int views, boolean isYouthAudienceAllowed, byte[] imageData) {
+    public LecturePost(int lectureId, int userId, String userName, String title, String content, String location,
+                       String createdAt, String completedAt, double fee, int views,
+                       boolean isYouthAudienceAllowed, byte[] imageData, byte[] profileImageData) {
         this.lectureId = lectureId;
         this.userId = userId;
-        this.userName = userName; // 작성자 이름
+        this.userName = userName;
         this.title = title;
         this.content = content;
         this.location = location;
@@ -28,7 +31,9 @@ public class LecturePost {
         this.views = views;
         this.isYouthAudienceAllowed = isYouthAudienceAllowed;
         this.imageData = imageData;
+        this.profileImageData = profileImageData;
     }
+
 
     // getter 메서드들
     public int getLectureId() { return lectureId; }
@@ -43,6 +48,7 @@ public class LecturePost {
     public int getViews() { return views; }
     public boolean isYouthAudienceAllowed() { return isYouthAudienceAllowed; }
     public byte[] getImageData() { return imageData; }
+    public byte[] getProfileImageData() { return profileImageData; }
 
     // setter 메서드들
     public void setLectureId(int lectureId) { this.lectureId = lectureId; }
@@ -57,4 +63,5 @@ public class LecturePost {
     public void setViews(int views) { this.views = views; }
     public void setYouthAudienceAllowed(boolean youthAudienceAllowed) { this.isYouthAudienceAllowed = youthAudienceAllowed; }
     public void setImageData(byte[] imageData) { this.imageData = imageData; }
+    public void setProfileImageData(byte[] profileImageData) { this.profileImageData = profileImageData; }
 }

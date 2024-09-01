@@ -45,6 +45,7 @@ public class LectureContentView extends AppCompatActivity {
     private LectureDAO lectureDAO;  // 데이터베이스 접근 객체
     private LecturePost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
+    private ImageView profileImageView;  // 프로필 이미지를 표시할 ImageView
 
     // 로그인한 사용자의 ID를 가져오는 메서드
     private int getLoggedInUserId() {
@@ -83,6 +84,7 @@ public class LectureContentView extends AppCompatActivity {
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
         contentImageView = findViewById(R.id.content_image);  // 이미지뷰 참조
+        profileImageView = findViewById(R.id.profile_image);
 
         // 메뉴 버튼 클릭 시 팝업 메뉴 표시
         menuButton.setOnClickListener(this::showPopupMenu);
@@ -178,6 +180,10 @@ public class LectureContentView extends AppCompatActivity {
             LecturePost post = lectureDAO.getLecturePostById(lectureId);  // 강연 ID로 강연 가져오기
             if (post != null) {
                 lectureDAO.incrementLecturePostViews(lectureId); // 조회수 증가
+
+                // 강연 작성자의 프로필 이미지 가져오기
+                byte[] profileImageData = lectureDAO.getUserProfileImage(post.getUserId());
+                post.setProfileImageData(profileImageData);  // LecturePost에 프로필 이미지 데이터를 설정
             }
             return post;
         }
@@ -199,13 +205,22 @@ public class LectureContentView extends AppCompatActivity {
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
-                // 이미지 설정
+                // 콘텐츠 이미지 설정
                 byte[] imageData = post.getImageData();
                 if (imageData != null && imageData.length > 0) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
                     contentImageView.setImageBitmap(bitmap);  // 이미지 설정
                 } else {
                     contentImageView.setVisibility(View.GONE);  // 이미지가 없을 경우 ImageView 숨기기
+                }
+
+                // 프로필 이미지 설정
+                byte[] profileImageData = post.getProfileImageData();
+                if (profileImageData != null && profileImageData.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageData, 0, profileImageData.length);
+                    profileImageView.setImageBitmap(bitmap);  // 프로필 이미지 설정
+                } else {
+                    profileImageView.setImageResource(R.drawable.default_profile_image);  // 기본 이미지 설정
                 }
 
                 int loggedInUserId = getLoggedInUserId();
