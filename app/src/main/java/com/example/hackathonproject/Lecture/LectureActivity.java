@@ -31,7 +31,7 @@ public class LectureActivity extends AppCompatActivity {
     private LectureManager lectureManager;
     private SessionManager sessionManager;
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
