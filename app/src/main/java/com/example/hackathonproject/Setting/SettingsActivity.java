@@ -49,25 +49,18 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 세션 매니저 초기화
         sessionManager = new SessionManager(this);
-
-        // 여기에서 세션 매니저 초기화
-        setContentView(R.layout.activity_setting);
-
-        // SwipeRefreshLayout 초기화
-        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
-
-        // 새로고침 리스너 설정
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            // 데이터 새로고침 로직 추가
-            refreshData();
-        });
-
-        // 화면이 처음 로드될 때 데이터 로드
-        refreshData();
-
-        // 세션 매니저 초기화
-        sessionManager = new SessionManager(this);
         authManager = new AuthManager();
+
+        // 세션에서 사용자 정보 가져오기
+        int userId = sessionManager.getUserId(); // userId를 상단에서 초기화
+        String userName = sessionManager.getUserName();
+        int balance = sessionManager.getBalance(); // Balance 값을 가져옴
+        String role = sessionManager.getUserRole(); // 역할 가져오기
+
+        // 프로필 이미지를 비동기로 로드
+        if (authManager != null) {
+            new LoadProfileImageTask(userId).execute();
+        }
 
         // UI 요소 초기화
         profileImageView = findViewById(R.id.profile_image);
@@ -105,12 +98,6 @@ public class SettingsActivity extends AppCompatActivity {
         fontSizeTextView.setTextSize(savedFontSize);
         logoutTextView.setTextSize(savedFontSize);
         // ---------------------------------------------------------------------------------------------
-
-        // 세션에서 사용자 정보 가져오기
-        String userName = sessionManager.getUserName();
-        int balance = sessionManager.getBalance(); // Balance 값을 가져옴
-        int userId = sessionManager.getUserId();
-        String role = sessionManager.getUserRole(); // 역할 가져오기
 
         // 프로필 이름과 Balance를 설정
         profileNameTextView.setText(userName);
@@ -357,6 +344,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+    //———————————————————————————————————————————————————————————————————————
 
 }
