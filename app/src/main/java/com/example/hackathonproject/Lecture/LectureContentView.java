@@ -46,6 +46,7 @@ public class LectureContentView extends AppCompatActivity {
     private LectureDAO lectureDAO;  // 데이터베이스 접근 객체
     private LecturePost currentPost;  // 현재 게시글 객체 (수정 시 사용)
     private SwipeRefreshLayout swipeRefreshLayout;  // 새로고침 레이아웃
+    private ImageView profileImageView;  // 프로필 이미지를 표시할 ImageView
 
     // 로그인한 사용자의 ID를 가져오는 메서드
     private int getLoggedInUserId() {
@@ -82,6 +83,7 @@ public class LectureContentView extends AppCompatActivity {
         locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
         menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
         contentImageView = findViewById(R.id.content_image);  // 이미지뷰 참조
+        profileImageView = findViewById(R.id.profile_image);
         workName = findViewById(R.id.work_name);  // 강연명 텍스트뷰
 
         // SharedPreferences에서 폰트 크기 설정 불러오기
@@ -163,16 +165,25 @@ public class LectureContentView extends AppCompatActivity {
             });
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 새로고침 메서드
     private void refreshContent() {
         loadLectureContent();  // 강연 내용 로드
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 내용을 로드하는 메서드
     private void loadLectureContent() {
         new LoadLectureTask().execute(lectureId); // 비동기 작업으로 데이터베이스에서 강연 내용 불러오기
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 비동기 작업으로 강연 내용을 로드하는 클래스
     @SuppressLint("StaticFieldLeak")
@@ -183,6 +194,10 @@ public class LectureContentView extends AppCompatActivity {
             LecturePost post = lectureDAO.getLecturePostById(lectureId);  // 강연 ID로 강연 가져오기
             if (post != null) {
                 lectureDAO.incrementLecturePostViews(lectureId); // 조회수 증가
+
+                // 강연 작성자의 프로필 이미지 가져오기
+                byte[] profileImageData = lectureDAO.getUserProfileImage(post.getUserId());
+                post.setProfileImageData(profileImageData);  // LecturePost에 프로필 이미지 데이터를 설정
             }
             return post;
         }
@@ -204,13 +219,22 @@ public class LectureContentView extends AppCompatActivity {
 
                 locationTextView.setText("위치: " + post.getLocation());  // 위치 설정
 
-                // 이미지 설정
+                // 콘텐츠 이미지 설정
                 byte[] imageData = post.getImageData();
                 if (imageData != null && imageData.length > 0) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
                     contentImageView.setImageBitmap(bitmap);  // 이미지 설정
                 } else {
                     contentImageView.setVisibility(View.GONE);  // 이미지가 없을 경우 ImageView 숨기기
+                }
+
+                // 프로필 이미지 설정
+                byte[] profileImageData = post.getProfileImageData();
+                if (profileImageData != null && profileImageData.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageData, 0, profileImageData.length);
+                    profileImageView.setImageBitmap(bitmap);  // 프로필 이미지 설정
+                } else {
+                    profileImageView.setImageResource(R.drawable.default_profile_image);  // 기본 이미지 설정
                 }
 
                 int loggedInUserId = getLoggedInUserId();
@@ -252,6 +276,7 @@ public class LectureContentView extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 시간을 "몇 분 전" 등의 형식으로 변환하는 메서드
     private String formatTimeAgo(String createdAt) {
@@ -279,6 +304,8 @@ public class LectureContentView extends AppCompatActivity {
             return days + "일 전";
         }
     }
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 팝업 메뉴를 보여주는 메서드
     private void showPopupMenu(View view) {
@@ -314,6 +341,7 @@ public class LectureContentView extends AppCompatActivity {
         });
         popup.show();  // 팝업 메뉴 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제를 확인하는 메서드
     private void confirmDeleteLecture() {
@@ -326,6 +354,7 @@ public class LectureContentView extends AppCompatActivity {
                 }).setNegativeButton("취소", null)  // 취소 버튼 설정
                 .show();  // 다이얼로그 표시
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 강연 삭제 메서드
     @SuppressLint("StaticFieldLeak")
@@ -347,6 +376,7 @@ public class LectureContentView extends AppCompatActivity {
             }
         }.execute();  // 비동기 작업 실행
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 상단 바의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -354,6 +384,7 @@ public class LectureContentView extends AppCompatActivity {
         navigateBackToLectureActivity();
         return true;
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 디바이스의 뒤로가기 버튼을 클릭 시 호출
     @Override
@@ -361,6 +392,7 @@ public class LectureContentView extends AppCompatActivity {
         super.onBackPressed();
         navigateBackToLectureActivity();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // LectureActivity로 돌아가는 메서드
     private void navigateBackToLectureActivity() {
@@ -369,4 +401,5 @@ public class LectureContentView extends AppCompatActivity {
         startActivity(intent);  // LectureActivity 시작
         finish();  // 현재 액티비티 종료
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

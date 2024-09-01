@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -245,15 +247,12 @@ public class EducationContentView extends AppCompatActivity {
                 byte[] imageData = post.getImageData();  // EducationPost 객체에서 이미지 데이터 가져오기
                 if (imageData != null && imageData.length > 0) {
                     Log.d("EducationContentView", "Image data size: " + imageData.length);
-                    Glide.with(EducationContentView.this)
-                            .asBitmap()  // 바이트 배열을 Bitmap으로 처리
-                            .load(imageData)
-                            .placeholder(R.drawable.default_image)  // 로딩 중에 표시할 이미지
-                            .error(R.drawable.default_image)  // 오류 시 표시할 이미지
-                            .into(contentImageView);  // 이미지뷰에 설정
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                    contentImageView.setImageBitmap(bitmap);  // 이미지 설정
+                    contentImageView.setVisibility(View.VISIBLE);  // 이미지뷰를 보이게 설정
                 } else {
-                    Log.d("EducationContentView", "No image data found, using placeholder.");
-                    contentImageView.setImageResource(R.drawable.default_image);  // 기본 이미지 설정
+                    Log.d("EducationContentView", "No image data found, hiding image view.");
+                    contentImageView.setVisibility(View.GONE);  // 이미지가 없을 경우 이미지뷰를 숨김
                 }
 
                 int loggedInUserId = getLoggedInUserId();
