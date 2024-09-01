@@ -25,7 +25,6 @@
             android:textStyle="bold"
             app:iconTint="@android:color/white"
             android:contentDescription="@string/back_button" />
-
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
@@ -38,6 +37,7 @@
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- Image Tap -->
     <!-- Image Preview (툴바 아래, 제목 위에 배치) -->
     <ImageView
         android:id="@+id/image_preview"
@@ -47,9 +47,9 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/default_image"
-        android:background="@android:color/darker_gray"
+        android:scaleType="centerInside"
+        android:src="@drawable/placeholder"
+        android:background="@android:color/white"
         android:visibility="visible" />
 
     <!-- Title Text -->
