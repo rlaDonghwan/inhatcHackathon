@@ -35,6 +35,7 @@
             android:textSize="35sp" />
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- Image Tap -->
     <!-- Image Preview (툴바 아래, 제목 위에 배치) -->
     <ImageView
         android:id="@+id/selected_image_view"
