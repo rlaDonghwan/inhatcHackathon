@@ -67,26 +67,30 @@ public class EducationAdapter extends RecyclerView.Adapter<EducationAdapter.Educ
         }
 
         byte[] imageBytes = post.getImageData();
-        if (imageBytes != null) {
+        if (imageBytes != null && imageBytes.length > 0) {
+            // 이미지가 있는 경우 해당 이미지를 표시
             Glide.with(holder.itemView.getContext())
                     .load(imageBytes)
-                    .placeholder(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)  // 로딩 중에는 placeholder를 표시
                     .into(holder.contentImage);
         } else {
-            holder.contentImage.setImageResource(R.drawable.placeholder);
+            // 이미지가 없는 경우 placeholder2.png를 표시
+            holder.contentImage.setImageResource(R.drawable.placeholder2);
         }
 
         // SharedPreferences에서 폰트 크기 불러오기
         SharedPreferences preferences = holder.itemView.getContext().getSharedPreferences("fontSizePrefs", Context.MODE_PRIVATE);
         int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
-        int LocalFontSize = 17;
+        int localFontSize = 17;
+
         // 텍스트 크기 적용
-        holder.postTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize -5);  // 제목은 조금 더 크게
+        holder.postTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);  // 제목은 조금 더 크게
         holder.postCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 5);
-        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize); // 세부사항은 더 작게
+        holder.postDetails.setTextSize(TypedValue.COMPLEX_UNIT_SP, localFontSize); // 세부사항은 더 작게
         holder.postViews.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedFontSize - 11);
-        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, LocalFontSize);
+        holder.postFee.setTextSize(TypedValue.COMPLEX_UNIT_SP, localFontSize);
     }
+
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView welcomeTextView;  // 환영 메시지를 표시하는 텍스트뷰
     private SessionManager sessionManager;  // 세션 관리 객체
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
