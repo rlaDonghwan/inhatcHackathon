@@ -58,7 +58,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
         // 불러온 폰트 크기를 UI 요소에 적용
         passwordInput.setTextSize(savedFontSize);
         confirmButton.setTextSize(savedFontSize);
-        forgotPasswordText.setTextSize(savedFontSize);
+        forgotPasswordText.setTextSize(savedFontSize-2);
         //---------------------------------------------------------------------------------------------
 
         Intent intent = getIntent();

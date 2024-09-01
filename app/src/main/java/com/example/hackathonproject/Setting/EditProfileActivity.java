@@ -96,7 +96,7 @@ public class EditProfileActivity extends AppCompatActivity {
         loadUserName();
 
         // 저장 버튼 설정 및 사용자의 이름 업데이트
-        saveButton.setOnClickListener(v -> saveUserName());
+        saveButton.setOnClickListener(v -> confirmAndSaveUserName());
 
         // 비밀번호 변경 버튼 설정
         changePasswordButton.setOnClickListener(v -> {
@@ -110,16 +110,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
     // 계정 삭제 경고 다이얼로그 표시
     private void showDeleteConfirmationDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("계정 삭제")
-                .setMessage("계정을 삭제하면 모든 내용이 삭제됩니다. 계속하시겠습니까?")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteUserAccount();
-                    }
-                })
-                .setNegativeButton("취소", null)
-                .show();
+        new AlertDialog.Builder(this).setTitle("계정 삭제").setMessage("계정을 삭제하면 모든 내용이 삭제됩니다. 계속하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                deleteUserAccount();
+            }
+        }).setNegativeButton("취소", null).show();
     }
 
     // 계정 삭제를 비동기적으로 처리
@@ -127,14 +122,21 @@ public class EditProfileActivity extends AppCompatActivity {
         new DeleteAccountTask().execute();
     }
 
-    // SharedPreferences 또는 데이터베이스에서 현재 사용자의 이름을 불러옴
     private void loadUserName() {
-        String currentName = sharedPreferences.getString("user_name", ""); // 기본값은 빈 문자열
+        // Try retrieving the name from SessionManager first
+        String currentName = sessionManager.getUserName();
+
+        if (currentName == null || currentName.isEmpty()) {
+            // If SessionManager doesn't have the name, fallback to SharedPreferences
+            currentName = sharedPreferences.getString("user_name", ""); // 기본값은 빈 문자열
+        }
+
+        Log.d("EditProfileActivity", "Loaded user name: " + currentName);
         nameEditText.setText(currentName);
     }
 
-    // 변경된 사용자 이름 저장
-    private void saveUserName() {
+    // 변경된 사용자 이름 저장 전에 경고 메시지 표시
+    private void confirmAndSaveUserName() {
         String newName = nameEditText.getText().toString().trim();
 
         if (newName.isEmpty()) {
@@ -142,8 +144,13 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // 비동기 작업으로 이름 변경 처리
-        new UpdateNameTask().execute(newName);
+        // 경고 다이얼로그 표시
+        new AlertDialog.Builder(this).setTitle("이름 변경").setMessage("이름을 변경하시면 자동으로 로그아웃됩니다. 계속하시겠습니까?").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // 이름 변경 수행
+                new UpdateNameTask().execute(newName);
+            }
+        }).setNegativeButton("취소", null).show();
     }
 
     // 계정 삭제를 처리하는 비동기 작업 클래스
@@ -228,12 +235,21 @@ public class EditProfileActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                Toast.makeText(EditProfileActivity.this, "이름이 성공적으로 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "이름이 성공적으로 업데이트되었습니다. 로그아웃됩니다.", Toast.LENGTH_SHORT).show();
+
+                // 세션 파기 및 로그아웃 처리
+                sessionManager.logout(); // 로그아웃 처리
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("user_name", nameEditText.getText().toString().trim());
+                editor.clear(); // SharedPreferences 초기화
                 editor.apply();
+
+                // 전화번호 입력 화면으로 이동
+                Intent intent = new Intent(EditProfileActivity.this, StartActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             } else {
-                Toast.makeText(EditProfileActivity.this, "이름 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "이름 업데이트에 실패했습니다.", Toast.LENGTH_SHORT);
             }
         }
     }

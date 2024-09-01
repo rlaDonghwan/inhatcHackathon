@@ -210,17 +210,18 @@
             android:orientation="horizontal">
 
 
+            <!-- 금액 or 봉사시간 -->
             <TextView
+                android:id="@+id/work_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:text="강연료 |  "
                 android:fontFamily="@font/nanumsquare_neo_eb"
+                android:text="강연료 |  "
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textStyle="bold" />
 
-            <!-- 금액 or 봉사시간 -->
             <TextView
                 android:id="@+id/work_price"
                 android:layout_width="wrap_content"

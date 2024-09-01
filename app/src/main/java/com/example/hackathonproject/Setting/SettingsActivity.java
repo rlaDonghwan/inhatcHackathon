@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hackathonproject.Chat.ChatListActivity;
 import com.example.hackathonproject.Education.EducationActivity;
@@ -39,11 +40,30 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     private ImageView profileImageView;
     private TextView businessOrSchoolTextView;
+    private SwipeRefreshLayout swipeRefreshLayout; // 새로고침을 위한 SwipeRefreshLayout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+        // 세션 매니저 초기화
+        sessionManager = new SessionManager(this);
+
+        // 여기에서 세션 매니저 초기화
+        setContentView(R.layout.activity_setting);
+
+        // SwipeRefreshLayout 초기화
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+
+        // 새로고침 리스너 설정
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // 데이터 새로고침 로직 추가
+            refreshData();
+        });
+
+        // 화면이 처음 로드될 때 데이터 로드
+        refreshData();
 
         // 세션 매니저 초기화
         sessionManager = new SessionManager(this);
@@ -166,6 +186,20 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, PICK_IMAGE);
         });
+    }
+
+    // 데이터 새로고침을 처리하는 메서드
+    private void refreshData() {
+        // 회사 또는 학교 이름을 비동기적으로 로드하여 표시
+        int userId = sessionManager.getUserId();
+        String role = sessionManager.getUserRole();
+        new LoadBusinessOrSchoolNameTask(userId, role).execute();
+
+        // 프로필 이미지를 비동기로 로드
+        new LoadProfileImageTask(userId).execute();
+
+        // 모든 데이터 로딩이 끝났으면 새로고침 완료 상태로 변경
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
