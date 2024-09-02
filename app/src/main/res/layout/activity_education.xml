@@ -13,7 +13,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
@@ -25,7 +25,7 @@
             android:gravity="center"
             android:text="@string/eduTitle"
             android:textColor="#FFFFFF"
-            android:textSize="35sp" />
+            android:textSize="50sp" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- SwipeRefreshLayout 추가 -->
@@ -51,7 +51,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="80dp"
-        android:backgroundTint="@color/skyBlue"
+        android:backgroundTint="@color/orange"
         android:contentDescription="@string/buttonDescription"
         android:elevation="4dp"
         android:src="@drawable/plus"
@@ -81,14 +81,14 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/study"
-                app:tint="@color/skyBlue"/>
+                app:tint="@color/orange"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="교육 받기"
                 android:fontFamily="@font/kangwon_tntnche"
-                android:textColor="@color/skyBlue"
+                android:textColor="@color/orange"
                 android:textSize="12sp"
                 android:layout_marginTop="5dp" />
         </LinearLayout>

@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/primaryBackground">
 
     <!-- AppBar -->
@@ -9,32 +9,33 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:background="@color/orange"
+        android:elevation="4dp"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="4dp">
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <ImageButton
             android:id="@+id/back_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="start"
-            android:scaleType="centerInside"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/back_button"
             android:fontFamily="@font/kangwon_tntnche"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_back"
             android:textStyle="bold"
-            app:iconTint="@android:color/white"
-            android:contentDescription="@string/back_button" />
+            app:iconTint="@android:color/white" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Main Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/sign_up_button"
         android:layout_below="@id/toolbar"
-        android:padding="24dp">
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,90 +47,150 @@
                 android:id="@+id/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/kangwon_tntnche"
                 android:text="회원가입"
-                android:textSize="40sp"
-                android:fontFamily="@font/kangwon_tntnche" />
+                android:textSize="35sp" />
 
             <!-- Form -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="20dp">
+                android:paddingTop="10dp">
 
                 <!-- Name Field -->
                 <TextView
+                    android:id="@+id/name_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:paddingBottom="4dp"
                     android:text="이름"
-                    android:textSize="23sp"
-                    android:fontFamily="@font/im_hyemin_bold"
-                    android:paddingBottom="4dp" />
+                    android:textSize="23sp" />
 
                 <EditText
                     android:id="@+id/full_name_input"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/im_hyemin_regular"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:hint="이름"
-                    android:padding="12dp"
-                    android:textSize="17sp"
+                    android:imeOptions="actionDone"
                     android:inputType="textPersonName"
-                    android:imeOptions="actionDone" />
+                    android:padding="12dp"
+                    android:textSize="17sp" />
 
 
                 <!-- Phone Number Field -->
                 <TextView
+                    android:id="@+id/phone_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:paddingBottom="4dp"
                     android:text="전화번호"
-                    android:textSize="23sp"
-                    android:fontFamily="@font/im_hyemin_bold"
-                    android:paddingTop="18dp"
-                    android:paddingBottom="4dp" />
+                    android:textSize="23sp" />
 
-                <!-- Password Field -->
-                <EditText
-                    android:id="@+id/phone_number_input"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edit_text_background"
-                    android:fontFamily="@font/im_hyemin_regular"
-                    android:hint="010-1234-5678"
-                    android:inputType="phone"
-                    android:padding="12dp"
-                    android:textSize="17sp" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Phone Number Input -->
+                    <EditText
+                        android:id="@+id/phone_number_input"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
+                        android:hint="010-1234-5678"
+                        android:inputType="phone"
+                        android:padding="12dp"
+                        android:textSize="17sp" />
+
+                    <Button
+                        android:id="@+id/sendCodeButton"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:backgroundTint="@color/orange"
+                        android:fontFamily="@font/kangwon_tntnche"
+                        android:fontWeight="600"
+                        android:gravity="center"
+                        android:text="인증"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Verification Code Input -->
+                    <EditText
+                        android:id="@+id/pass_number"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/edit_text_background"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
+                        android:hint="인증번호 입력"
+                        android:padding="12dp"
+                        android:textSize="17sp" />
+
+                    <Button
+                        android:id="@+id/passNumButton"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:backgroundTint="@color/orange"
+                        android:fontFamily="@font/kangwon_tntnche"
+                        android:fontWeight="600"
+                        android:gravity="center"
+                        android:text="확인"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/password_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:paddingBottom="4dp"
                     android:text="비밀번호"
-                    android:fontFamily="@font/im_hyemin_bold"
-                    android:textSize="23sp"
-                    android:paddingTop="18dp"
-                    android:paddingBottom="4dp" />
+                    android:textSize="23sp" />
 
                 <EditText
                     android:id="@+id/password_input"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_background"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
                     android:hint="비밀번호"
-                    android:fontFamily="@font/im_hyemin_regular"
                     android:inputType="textPassword"
                     android:padding="12dp"
                     android:textSize="17sp" />
 
                 <!-- Date of Birth Fields -->
                 <TextView
+                    android:id="@+id/dob_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/nanumsquare_neo_eb"
+                    android:paddingBottom="4dp"
                     android:text="생년월일"
-                    android:textSize="23sp"
-                    android:fontFamily="@font/im_hyemin_bold"
-                    android:paddingTop="18dp"
-                    android:paddingBottom="4dp" />
+                    android:textSize="23sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -137,11 +198,11 @@
 
                     <EditText
                         android:id="@+id/birthYear_input"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/im_hyemin_regular"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="출생년도"
                         android:inputType="number"
                         android:padding="12dp"
@@ -150,11 +211,11 @@
 
                     <EditText
                         android:id="@+id/month_input"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/im_hyemin_regular"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="월"
                         android:inputType="number"
                         android:padding="12dp"
@@ -163,11 +224,11 @@
 
                     <EditText
                         android:id="@+id/day_input"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/edit_text_background"
-                        android:fontFamily="@font/im_hyemin_regular"
+                        android:fontFamily="@font/nanumsquare_neo_eb"
                         android:hint="일"
                         android:inputType="number"
                         android:padding="12dp"
@@ -180,51 +241,89 @@
                     android:id="@+id/checkbox_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="18dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp">
 
-                    <CheckBox
-                        android:id="@+id/checkbox"
-                        android:layout_width="wrap_content"
+
+                    <!-- id 변경 바람 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:buttonTint="@color/skyBlue"
-                        android:checked="false"
-                        android:background="?attr/selectableItemBackgroundBorderless" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="기관 담당자입니까?"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/im_hyemin_bold"
-                        android:paddingBottom="4dp" />
+                        android:layout_marginTop="25dp"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:buttonTint="@color/orange"
+                            android:checked="false"
+                            android:scaleX="1.5"
+                            android:scaleY="1.5" />
+
+                        <TextView
+                            android:id="@+id/checkbox_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nanumsquare_neo_eb"
+                            android:paddingBottom="4dp"
+                            android:text="기관 담당자"
+                            android:textSize="20sp" />
+
+                        <CheckBox
+                            android:id="@+id/checkbox_school"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="50dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:buttonTint="@color/orange"
+                            android:checked="false"
+                            android:scaleX="1.5"
+                            android:scaleY="1.5" />
+
+
+                        <TextView
+                            android:id="@+id/checkbox_school_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nanumsquare_neo_eb"
+                            android:paddingBottom="4dp"
+                            android:text="학교 담당자"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Sign Up Button -->
-                <Button
-                    android:id="@+id/sign_up_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:backgroundTint="@color/skyBlue"
-                    android:text="가입하기"
-                    android:textSize="30sp"
-                    android:fontFamily="@font/kangwon_tntnche"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="20dp" />
-
-                <!-- Terms and Conditions -->
+                <!-- 이거 꼭 필요한지?? -->
                 <TextView
                     android:id="@+id/terms_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="20dp"
                     android:fontFamily="@font/kangwon_tntnche"
                     android:gravity="center"
-                    android:textSize="12sp" />
+                    android:textSize="15sp" />
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <!-- 가입하기 버튼 고정 -->
+    <Button
+        android:id="@+id/sign_up_button"
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="@color/orange"
+        android:fontFamily="@font/kangwon_tntnche"
+        android:text="가입하기"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 </RelativeLayout>

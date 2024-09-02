@@ -34,19 +34,22 @@
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize="50sp"
                 android:gravity="center"
-                android:textColor="@color/skyBlue"/>
+                android:textColor="@color/orange"/>
 
-            <!-- Image Placeholder -->
+            <!-- Image Placeholder android:backgroundTint="@color/orange"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_corner" -->
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="20dp"
                 android:src="@drawable/hand_shake"
-                app:tint="@color/dark_blue"
-                android:backgroundTint="@color/skyBlue"
+                app:tint="@color/dark_orange"
+                android:background="@drawable/gradient_background"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
-                android:background="@drawable/rounded_corner"/>
+                />
 
             <!-- Start Button -->
             <Button
@@ -57,7 +60,7 @@
                 android:text="시작하기"
                 android:fontFamily="@font/kangwon_tntnche"
                 android:textSize="30sp"
-                android:backgroundTint="@color/skyBlue"/>
+                android:backgroundTint="@color/orange"/>
         </LinearLayout>
 
         <!-- Footer Text -->

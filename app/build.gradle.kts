@@ -50,4 +50,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation (libs.recyclerview)
     implementation (libs.swiperefreshlayout)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
 }

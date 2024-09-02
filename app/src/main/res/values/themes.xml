@@ -15,6 +15,11 @@
         <item name="android:textViewStyle">@style/CustomTextView</item>
         <!-- 기본 체크박스 스타일 -->
         <item name="android:checkboxStyle">@style/CustomCheckBox</item>
+
+        <!-- 상태바 색상 설정 -->
+        <item name="android:statusBarColor">@color/dark_orange</item>
+        <!-- 상태바 아이콘 색상 설정 (true: 검정색 아이콘, false: 흰색 아이콘) -->
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <!-- 버튼에 대한 커스텀 스타일 -->
@@ -45,4 +50,7 @@
         <item name="android:focusable">false</item>
         <item name="android:foreground">@null</item>
     </style>
+
+
+
 </resources>

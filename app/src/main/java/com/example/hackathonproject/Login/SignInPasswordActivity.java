@@ -1,6 +1,7 @@
 package com.example.hackathonproject.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,19 +15,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.hackathonproject.R;
+import com.example.hackathonproject.Setting.ForgotPasswordActivity;
 import com.example.hackathonproject.db.AuthManager;
 
 import java.sql.SQLException;
 
 public class SignInPasswordActivity extends AppCompatActivity {
     private EditText passwordInput;
-    private Button confirmButton;
-    private TextView forgotPasswordText;
     private String phoneNumber;
 
     private AuthManager authManager;
     private SessionManager sessionManager;
 
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +47,19 @@ public class SignInPasswordActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         passwordInput = findViewById(R.id.password_input);
-        confirmButton = findViewById(R.id.confirm_button);
-        forgotPasswordText = findViewById(R.id.forgot_password_text);
+        Button confirmButton = findViewById(R.id.confirm_button);
+        TextView forgotPasswordText = findViewById(R.id.forgot_password_text);
+
+        //---------------------------------------------------------------------------------------------
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        passwordInput.setTextSize(savedFontSize);
+        confirmButton.setTextSize(savedFontSize);
+        forgotPasswordText.setTextSize(savedFontSize-2);
+        //---------------------------------------------------------------------------------------------
 
         Intent intent = getIntent();
         phoneNumber = intent.getStringExtra("phoneNumber");
@@ -67,10 +79,14 @@ public class SignInPasswordActivity extends AppCompatActivity {
             startActivity(forgotPasswordIntent);
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class LoginUserTask extends AsyncTask<String, Void, Boolean> {
         private String userName;
-        private int userId;  // 사용자 ID 추가
+        private int userId;
+        private int balance; // Balance 변수 추가
+        private boolean isOrganization;  // 기관 여부 추가
+        private String userRole;  // Role 변수 추가
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -78,9 +94,12 @@ public class SignInPasswordActivity extends AppCompatActivity {
             String password = params[1];
 
             try {
-                userId = authManager.loginUserAndGetId(phoneNumber, password);  // 사용자 ID 가져오기
+                userId = authManager.loginUserAndGetId(phoneNumber, password);
                 if (userId != -1) {
-                    userName = authManager.getUserNameById(userId);  // 사용자 이름 가져오기
+                    userName = authManager.getUserNameById(userId);
+                    balance = authManager.getBalanceById(userId); // Balance 값을 가져옴
+                    isOrganization = authManager.isUserOrganization(userId);  // 기관 여부 가져오기
+                    userRole = authManager.getUserRoleByUserId(userId);  // Role 가져오기
                     return true;
                 } else {
                     return false;
@@ -94,8 +113,8 @@ public class SignInPasswordActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                // 로그인 성공 시 사용자 이름과 ID를 SessionManager에 저장
-                sessionManager.createSession(userName, userId);
+                // 로그인 성공 시 사용자 이름, ID, Balance, 기관 여부, 역할을 SessionManager에 저장
+                sessionManager.createSession(userName, userId, balance, isOrganization, userRole);
 
                 Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -105,4 +124,5 @@ public class SignInPasswordActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

@@ -1,12 +1,14 @@
 package com.example.hackathonproject.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +20,31 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
     private EditText phoneInput;
     private Button confirmButton;
     private Button createAccountButton;
-
+    private TextView firstTimeText;
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_phone_number);
+
+        // UI 요소 초기화
+        phoneInput = findViewById(R.id.phone_input);
+        confirmButton = findViewById(R.id.confirm_button);
+        createAccountButton = findViewById(R.id.create_account_button);
+        firstTimeText = findViewById(R.id.first_time_text);
+
+        //---------------------------------------------------------------------------------------------
+        // SharedPreferences에서 폰트 크기 불러오기
+        SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
+        int savedFontSize = preferences.getInt("fontSize", 25);  // 기본값 25
+
+        // 불러온 폰트 크기를 UI 요소에 적용
+        phoneInput.setTextSize(savedFontSize);
+        confirmButton.setTextSize(savedFontSize);
+        firstTimeText.setTextSize(savedFontSize);
+        createAccountButton.setTextSize(savedFontSize);
+        //---------------------------------------------------------------------------------------------
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -34,9 +56,6 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
 
-        phoneInput = findViewById(R.id.phone_input);
-        confirmButton = findViewById(R.id.confirm_button);
-        createAccountButton = findViewById(R.id.create_account_button);
         phoneInput.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         confirmButton.setOnClickListener(v -> {
@@ -55,6 +74,16 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void onBackPressed() {
+        // 백 버튼을 눌렀을 때 FontSizeActivity로 돌아가도록 처리
+        Intent intent = new Intent(SignInPhoneNumActivity.this, FontSizeActivity.class);
+        startActivity(intent);
+        finish();  // 현재 액티비티 종료
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     private class PhoneNumberFormattingTextWatcher implements TextWatcher {
 
@@ -100,4 +129,5 @@ public class SignInPhoneNumActivity extends AppCompatActivity {
             }
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

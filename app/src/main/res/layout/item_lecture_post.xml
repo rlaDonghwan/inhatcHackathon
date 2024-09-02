@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:id="@+id/main_content"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
+
+            <!-- 이미지 -->
+            <ImageView
+                android:id="@+id/content_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:scaleType="centerCrop" />
+
+            <!-- Left Group: Title and Author -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- 글 카테고리 -->
+                    <TextView
+                        android:id="@+id/post_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanum_squareneo_otf_hv"
+                        android:text="[구해요]"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/postTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:fontFamily="@font/nanum_squareneo_otf_eb"
+                        android:text="글 제목 길게길게길게길게"
+                        android:textColor="#000000"
+                        android:textSize="23sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/postDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="서울 - 분전 - 참관 가능"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp" />
+
+                <!-- Fee: 강연료 추가 -->
+                <TextView
+                    android:id="@+id/postFee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="강연료: 500,000원"
+                    android:textSize="14sp"
+                    android:textColor="@color/gray"
+                    android:layout_marginTop="8dp"
+                    android:gravity="end"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Right Group: Location, Views, and Fee -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="end">
+
+            <!-- 인증 마크 -->
+            <ImageView
+                android:id="@+id/certification_mark"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/authorization" />
+
+
+            <TextView
+                android:id="@+id/postViews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/main_content"
+                android:text="조회수: 123"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:gravity="end"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

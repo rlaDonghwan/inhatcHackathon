@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="채팅"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="50sp" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Filter buttons -->
@@ -40,41 +40,44 @@
         <!-- 전체 Button -->
         <TextView
             android:id="@+id/button_all"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background_selected"
             android:gravity="center"
             android:padding="10dp"
             android:text="전체"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
         <!-- 판매 Button -->
         <TextView
-            android:id="@+id/button_sell"
-            android:layout_width="0dp"
+            android:id="@+id/button_education"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background"
             android:gravity="center"
             android:padding="10dp"
-            android:text="판매"
-            android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:text="교육"
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
         <!-- 구매 Button -->
         <TextView
-            android:id="@+id/button_buy"
-            android:layout_width="0dp"
+            android:id="@+id/button_lecture"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/round_button_background"
             android:gravity="center"
             android:padding="10dp"
-            android:text="구매"
-            android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:text="강연"
+            android:fontFamily="@font/nanumsquare_neo_eb"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -174,7 +177,7 @@
                 android:layout_height="33dp"
                 android:src="@drawable/chat"
                 android:layout_marginTop="3dp"
-                app:tint="@color/skyBlue" />
+                app:tint="@color/orange" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -182,7 +185,7 @@
                 android:fontFamily="@font/kangwon_tntnche"
                 android:text="채팅"
                 android:layout_marginTop="3dp"
-                android:textColor="@color/skyBlue"
+                android:textColor="@color/orange"
                 android:textSize="12sp" />
         </LinearLayout>
 

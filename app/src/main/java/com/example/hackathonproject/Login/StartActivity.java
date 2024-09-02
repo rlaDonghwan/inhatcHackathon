@@ -29,13 +29,15 @@ public class StartActivity extends AppCompatActivity {
             setContentView(R.layout.activity_start);
             btnStart = findViewById(R.id.btnStart);
 
-            Toast.makeText(this, "로그인 화면이 표시되었습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "시작 화면이 표시되었습니다.", Toast.LENGTH_SHORT).show();
 
+            // 시작 버튼 클릭 시 FontSizeActivity로 이동
             btnStart.setOnClickListener(v -> {
-                // 로그인 화면(SignInPhoneNumActivity)으로 이동
-                Intent intent = new Intent(StartActivity.this, SignInPhoneNumActivity.class);
+                Intent intent = new Intent(StartActivity.this, FontSizeActivity.class);
                 startActivity(intent);
+                finish();  // StartActivity를 종료하여 뒤로 돌아가지 않도록 함
             });
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
 }

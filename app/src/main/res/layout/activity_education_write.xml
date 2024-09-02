@@ -1,0 +1,223 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryBackground">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_arrow_back"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:textStyle="bold"
+            app:iconTint="@android:color/white"
+            android:contentDescription="@string/back_button" />
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kangwon_tntnche"
+            android:gravity="center"
+            android:text="교육 신청"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Image Tap -->
+    <!-- Image Preview (툴바 아래, 제목 위에 배치) -->
+    <ImageView
+        android:id="@+id/image_preview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/placeholder"
+        android:background="@android:color/white"
+        android:visibility="visible" />
+
+    <!-- Title Text -->
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_preview"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:text="제목"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:textSize="23sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Checkboxes -->
+    <LinearLayout
+        android:id="@+id/checkbox_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_text"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:orientation="horizontal">
+
+        <!-- 강연자 구해요 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkbox_buy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/orange"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumsquare_neo_bd"
+                android:text="구해요"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- 교육 할게요 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkbox_sell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/orange"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumsquare_neo_bd"
+                android:text="할게요"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Title EditText -->
+    <EditText
+        android:id="@+id/title_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@id/checkbox_group"
+        android:layout_marginTop="13dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="제목을 작성해 주세요. (10자 이내)"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+    <!-- 구해요 체크 시 금액 설정 -->
+    <TextView
+        android:id="@+id/price_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_edit_text"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="16dp"
+        android:text="금액 | ₩"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:textSize="23sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Price EditText -->
+    <EditText
+        android:id="@+id/price_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@id/price_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="금액을 입력해주세요"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+    <!-- Content Text -->
+    <TextView
+        android:id="@+id/content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/price_edit_text"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:text="내용"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:textSize="23sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Content EditText -->
+    <EditText
+        android:id="@+id/content_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/content_text"
+        android:layout_above="@id/btnSummit"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/edit_text_background"
+        android:fontFamily="@font/nanumsquare_neo_eb"
+        android:gravity="top"
+        android:hint="내용을 100줄 이내로 작성해 주세요."
+        android:inputType="textMultiLine"
+        android:padding="10dp"
+        android:scrollbars="vertical"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btnSummit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="@string/submit_button"
+        android:fontFamily="@font/kangwon_tntnche"
+        android:textSize="25sp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/orange"
+        android:gravity="center"
+        android:padding="10dp"
+        android:backgroundTintMode="src_in"/>
+</RelativeLayout>

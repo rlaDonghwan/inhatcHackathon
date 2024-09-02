@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -38,21 +40,24 @@
         <activity android:name=".Login.SignInPhoneNumActivity" />
         <activity android:name=".Login.SignInPasswordActivity" />
         <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".Login.ForgotPasswordActivity" />
+        <activity android:name=".Setting.ForgotPasswordActivity" />
         <activity android:name=".Login.ChangePasswordActivity" />
         <activity android:name=".Login.MainActivity" />
+        <activity android:name=".Login.CertificationActivity" />
+        <activity android:name=".Login.FontSizeActivity" />
         <activity android:name=".Education.EducationActivity" />
-        <activity android:name=".Education.WriteActivity"/>
+        <activity android:name=".Education.EducationWriteActivity"/>
         <activity android:name=".Education.EducationContentView"/>
-        <activity android:name=".Seminar.SeminarActivity"/>
+        <activity android:name=".Lecture.LectureActivity"/>
         <activity android:name=".Setting.SettingsActivity"/>
         <activity android:name=".Setting.AboutB1A3Activity"/>
         <activity android:name=".Setting.EditProfileActivity"/>
+        <activity android:name=".Setting.SettingFontSizeActivity"/>
         <activity android:name=".Setting.QnaActivity"/>
         <activity android:name=".Setting.SettingPasswordActivity"/>
         <activity android:name=".Chat.ChatListActivity"/>
-        <activity android:name=".Seminar.SeminarWriteActivity" />
-        <activity android:name=".Seminar.SeminarContentView"/>
+        <activity android:name=".Lecture.LectureWriteActivity" />
+        <activity android:name=".Lecture.LectureContentView"/>
         <activity android:name=".Chat.ChatActivity"/>
 
 

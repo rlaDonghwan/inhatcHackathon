@@ -2,6 +2,7 @@ package com.example.hackathonproject.Login;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.widget.Button;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView welcomeTextView;  // 환영 메시지를 표시하는 텍스트뷰
     private SessionManager sessionManager;  // 세션 관리 객체
 
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,11 @@ public class MainActivity extends AppCompatActivity {
         welcomeTextView = findViewById(R.id.welcome_text);
         welcomeTextView.setText(userName + "님");
 
-        // 로그아웃 텍스트뷰 초기화 및 밑줄 설정
+        // 저장된 폰트 크기를 환영 메시지와 로그아웃 텍스트뷰에 적용
         logoutTextView = findViewById(R.id.logout_text);
+
+
+        // 로그아웃 텍스트뷰 초기화 및 밑줄 설정
         logoutTextView.setPaintFlags(logoutTextView.getPaintFlags() | TextPaint.UNDERLINE_TEXT_FLAG);
         logoutTextView.setOnClickListener(v -> {
             sessionManager.logout();  // 세션 초기화 (로그아웃)

@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingTop="10dp">
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="OOO님"
-            android:textColor="@color/skyBlue"
+            android:textColor="@color/orange"
             android:textSize="90sp"
             android:fontFamily="@font/kangwon_tntnche"
             android:paddingTop="70dp"/>
@@ -56,11 +56,11 @@
         <Button
             android:id="@+id/button_start"
             android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:text="시작하기"
-            android:backgroundTint="@color/skyBlue"
+            android:backgroundTint="@color/orange"
             android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:textSize="35sp"
             android:fontFamily="@font/kangwon_tntnche"
             android:layout_marginBottom="80dp"/>
     </LinearLayout>

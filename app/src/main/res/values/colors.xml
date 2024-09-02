@@ -3,8 +3,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 <!--    <color name="skyBlue">#50B1FF</color>-->
-    <color name="skyBlue">#74B6F9</color>
-    <color name="dark_blue">#165069</color>
+<!--    <color name="skyBlue">#74B6F9</color>-->
+<!--    <color name="skyBlue">#f5490a</color>-->
+<!--    <color name="skyBlue2">#5A9AE4</color>-->
+
+    <color name="light_orange">#FFA500</color>
+    <color name="orange">#F15A2A</color>
+    <color name="dark_orange">#571D09</color>
 
     <color name="lightGray">#D3D3D3</color>
     <color name="primaryBackground">#F2F4F6</color>
@@ -20,5 +25,7 @@
     <color name="filter_pressed_color">#6DA0D8</color> <!-- skyBlue보다 어두운 색상, 버튼을 눌렀을 때 -->
     <color name="filter_disabled_color">#D3D3D3</color> <!-- 비활성화 상태일 때의 회색 -->
     <color name="filter_default_color">#87CEEB</color> <!-- 기본 상태에서의 skyBlue 색상 -->
+
+
 
 </resources>

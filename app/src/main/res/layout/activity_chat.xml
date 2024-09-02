@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/skyBlue"
+        android:background="@color/orange"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:elevation="4dp">
@@ -36,7 +36,19 @@
             android:fontFamily="@font/kangwon_tntnche"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="35sp" />
+
+        <ImageButton
+            android:id="@+id/chat_menu_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="메뉴"
+            app:iconTint="@android:color/white"
+            tools:ignore="UsingOnClickInXml" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- RecyclerView for chat messages -->
@@ -76,7 +88,7 @@
             android:background="?attr/selectableItemBackground"
             android:contentDescription="Send"
             android:src="@drawable/ic_send"
-            app:tint="@color/skyBlue" />
+            app:tint="@color/orange" />
     </LinearLayout>
 
 </RelativeLayout>
