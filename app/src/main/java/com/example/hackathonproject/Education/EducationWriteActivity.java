@@ -177,13 +177,24 @@ public class EducationWriteActivity extends AppCompatActivity {
         try {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null && !addresses.isEmpty()) {
-                return addresses.get(0).getAddressLine(0);
+                Address address = addresses.get(0);
+                // 주소에서 구 단위만 추출
+                String subLocality = address.getSubLocality(); // '학익동' 같은 동 단위
+                String locality = address.getLocality(); // '미추홀구' 같은 구 단위
+
+                if (locality != null) {
+                    return locality;
+                } else if (subLocality != null) {
+                    return subLocality;
+                } else {
+                    return "인천"; // locality와 subLocality 모두 null일 경우 기본값
+                }
             } else {
-                return "주소를 찾을 수 없습니다.";
+                return "인천"; // 주소를 찾을 수 없을 경우 기본값
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return "주소를 찾을 수 없습니다.";
+            return "인천"; // 예외가 발생했을 경우 기본값
         }
     }
 

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class UserDAO {
     private static final String TAG = "UserDAO";
-    private final DatabaseConnection dbConnection = new DatabaseConnection();
+    private final DatabaseConnection dbConnection = DatabaseConnection.getInstance(); // Use Singleton instance
 
     // 사용자가 존재하는지 확인하는 메서드
     public boolean isUserExist(String phoneNum) throws SQLException {
@@ -29,7 +29,6 @@ public class UserDAO {
         }
         return false;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자를 등록하는 메서드
     public void registerUser(String name, String password, String phoneNum, int age, String role, String companyName, String schoolName) throws SQLException {
@@ -160,7 +159,7 @@ public class UserDAO {
         String sql = "UPDATE User SET ProfileImagePath = ? WHERE UserID = ?";
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setBytes(1, imageBytes); // 이미지를 BLOB으로 저장
+            pstmt.setBytes(1, imageBytes);
             pstmt.setInt(2, userId);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
@@ -169,8 +168,6 @@ public class UserDAO {
             throw e;
         }
     }
-
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 프로필 이미지 경로 가져오기 메서드
     public byte[] getProfileImagePath(int userId) throws SQLException {
@@ -182,17 +179,15 @@ public class UserDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getBytes("ProfileImagePath"); // BLOB 데이터를 byte[]로 반환
+                    return rs.getBytes("ProfileImagePath");
                 }
             }
         } catch (SQLException e) {
             Log.e(TAG, "Failed to load profile image", e);
             throw e;
         }
-        return null; // 이미지가 없으면 null 반환
+        return null;
     }
-
-    //-----------------------------------------------------------------------------------------------------------------------------------------------
 
     // 사용자 ID로 기관 여부를 확인하는 메서드
     public boolean isUserOrganization(int userId) throws SQLException {
@@ -301,14 +296,13 @@ public class UserDAO {
             pstmt.setInt(1, userId);
             pstmt.setInt(2, userId);
             int rowsDeleted = pstmt.executeUpdate();
-            return rowsDeleted > 0; // Return true if any rows were deleted
+            return rowsDeleted > 0;
         } catch (SQLException e) {
             Log.e(TAG, "Failed to delete user chat rooms", e);
             throw e;
         }
     }
 
-    // UserDAO 클래스에 getSchoolNameByUserId 메서드 추가
     public String getSchoolNameByUserId(int userId) throws SQLException {
         String sql = "SELECT SchoolName FROM User WHERE UserID = ?";
         try (Connection conn = dbConnection.connect();
@@ -326,7 +320,6 @@ public class UserDAO {
         return null;
     }
 
-    // Add this method to the UserDAO class
     public String getUserRoleByUserId(int userId) throws SQLException {
         String sql = "SELECT Role FROM User WHERE UserID = ?";
         try (Connection conn = dbConnection.connect();
@@ -341,7 +334,7 @@ public class UserDAO {
             Log.e(TAG, "Failed to get user role by ID", e);
             throw e;
         }
-        return null; // Return null if no matching record is found
+        return null;
     }
 
     public boolean deleteUserEducationPosts(int userId) throws SQLException {
@@ -350,7 +343,7 @@ public class UserDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             int rowsDeleted = pstmt.executeUpdate();
-            return rowsDeleted > 0; // Return true if any rows were deleted
+            return rowsDeleted > 0;
         } catch (SQLException e) {
             Log.e(TAG, "Failed to delete user education posts", e);
             throw e;
@@ -363,7 +356,7 @@ public class UserDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             int rowsDeleted = pstmt.executeUpdate();
-            return rowsDeleted > 0; // Return true if any rows were deleted
+            return rowsDeleted > 0;
         } catch (SQLException e) {
             Log.e(TAG, "Failed to delete user lecture posts", e);
             throw e;

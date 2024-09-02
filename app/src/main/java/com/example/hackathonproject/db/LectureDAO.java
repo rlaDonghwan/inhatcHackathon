@@ -14,7 +14,7 @@ import java.util.List;
 
 public class LectureDAO {
     private static final String TAG = "LectureDAO";
-    private DatabaseConnection dbConnection = new DatabaseConnection();
+    private DatabaseConnection dbConnection = DatabaseConnection.getInstance(); // Singleton 인스턴스를 가져옴
 
     // 강연 게시글을 삽입하는 메서드
     public boolean insertLecturePost(int userId, String title, String content, String location, double fee, ZonedDateTime kstTime, boolean isYouthAudienceAllowed) {
@@ -81,7 +81,6 @@ public class LectureDAO {
         return posts;
     }
 
-
     // 특정 ID의 강연 게시글을 가져오는 메서드
     public LecturePost getLecturePostById(int lectureId) {
         String sql = "SELECT l.LectureID, l.UserID, u.Name, l.Title, l.Content, l.Location, l.Fee, l.Views, l.CreatedAt, l.IsYouthAudienceAllowed, li.ImageData, u.ProfileImagePath " +
@@ -115,7 +114,6 @@ public class LectureDAO {
         }
         return null;
     }
-
 
     // 강연 게시글의 조회수를 증가시키는 메서드
     public void incrementLecturePostViews(int lectureId) {
