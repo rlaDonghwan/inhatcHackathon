@@ -66,7 +66,7 @@ public class ChatMessageDAO {
         String query = "INSERT INTO ChatMessage (ChatID, SenderUserID, MessageText, SentTime) VALUES (?, ?, ?, ?)";
         String updateReadStatusQuery;
 
-        try (Connection conn = this.connection != null && !this.connection.isClosed() ? this.connection : DatabaseConnection.getInstance().connect();
+        try (Connection conn = this.connection != null && !this.connection.isClosed() ? this.connection : new DatabaseConnection().connect();
              PreparedStatement statement = conn.prepareStatement(query);
              PreparedStatement getChatDetailsStmt = conn.prepareStatement("SELECT AuthorID FROM Chat WHERE ChatID = ?");
              PreparedStatement updateReadStatusStatement = conn.prepareStatement("")) {

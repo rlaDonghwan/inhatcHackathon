@@ -15,9 +15,7 @@ import java.util.List;
 
 public class EducationDAO {
     private static final String TAG = "EducationDAO"; // 로그 태그
-    // DatabaseConnection의 싱글톤 인스턴스를 가져옴
-    private DatabaseConnection dbConnection = DatabaseConnection.getInstance();
-
+    private DatabaseConnection dbConnection = new DatabaseConnection(); // 데이터베이스 연결 객체
 
     // 교육 게시글을 삽입하는 메서드
     public boolean insertEducationPost(String title, String category, String content, String location, int fee, int userId, ZonedDateTime kstTime) {

@@ -75,16 +75,16 @@ public class LectureContentView extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         // UI 요소 초기화
-        titleTextView = findViewById(R.id.content_title);
-        contentTextView = findViewById(R.id.content_text);
-        lecturerNameTextView = findViewById(R.id.name);
-        dateTextView = findViewById(R.id.upload_date);
-        feeTextView = findViewById(R.id.work_price);
-        locationTextView = findViewById(R.id.location);
-        menuButton = findViewById(R.id.menu_button);
-        contentImageView = findViewById(R.id.content_image);
+        titleTextView = findViewById(R.id.content_title);  // 제목 텍스트뷰
+        contentTextView = findViewById(R.id.content_text);  // 내용 텍스트뷰
+        lecturerNameTextView = findViewById(R.id.name);  // 강연자 이름 텍스트뷰
+        dateTextView = findViewById(R.id.upload_date);  // 날짜 텍스트뷰
+        feeTextView = findViewById(R.id.work_price);  // 강연료 텍스트뷰
+        locationTextView = findViewById(R.id.location);  // 위치 텍스트뷰
+        menuButton = findViewById(R.id.menu_button);  // 메뉴 버튼
+        contentImageView = findViewById(R.id.content_image);  // 이미지뷰 참조
         profileImageView = findViewById(R.id.profile_image);
-        workName = findViewById(R.id.work_name);
+        workName = findViewById(R.id.work_name);  // 강연명 텍스트뷰
 
         // SharedPreferences에서 폰트 크기 설정 불러오기
         SharedPreferences preferences = getSharedPreferences("fontSizePrefs", MODE_PRIVATE);
@@ -124,7 +124,7 @@ public class LectureContentView extends AppCompatActivity {
             }
 
             // 데이터베이스 연결 비동기 처리
-            DatabaseConnection databaseConnection = DatabaseConnection.getInstance(); // Singleton 인스턴스 가져오기
+            DatabaseConnection databaseConnection = new DatabaseConnection();
             databaseConnection.connectAsync(new DatabaseConnection.DatabaseCallback() {
                 @Override
                 public void onSuccess(Connection connection) {
