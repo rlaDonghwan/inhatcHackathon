@@ -76,8 +76,15 @@
   <br>  <강연 시퀀스 다이어그램> 
 </p>
 
+### 4. 개발 도구
+운영체제: MacOS Sonoma
+개발 언어: JAVA
+통합 개발 화경(IDE): Android Studio, DataGrip
+Database: AWS RDS(MySql)
 
-#### 사용한 API
+**Relational Database Service(RDS):** 클라우드에서 간편하게 데이터베이스를 설치, 운영 및 규모 조정할 수 있는 관리형 서비스
+
+### 5. 사용한 API
 **회원가입 시 학교 또는 기업 인증 시 사용**
 
 **커리어넷 학교 정보 API:** https://www.career.go.kr/cnet/front/openapi/openApiSchoolCenter.do
