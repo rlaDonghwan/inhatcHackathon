@@ -12,7 +12,7 @@ public class DatabaseConnection {
     private static final String TAG = "DatabaseConnection"; // 로그 태그 정의
     private static final String URL = "jdbc:mysql://projectdb.cno4e4q0ev10.ap-northeast-2.rds.amazonaws.com:3306/project?useSSL=false"; // 데이터베이스 URL
     private static final String USER = "admin"; // 데이터베이스 사용자명
-    private static final String PASSWORD = "inhatc2024"; // 데이터베이스 비밀번호
+    private static final String PASSWORD = "INhatc202044064"; // 데이터베이스 비밀번호
 
     // 동기적으로 데이터베이스에 연결하는 메서드
     public Connection connect() throws SQLException {

@@ -9,6 +9,15 @@ public class ChatMessage {
     private int senderUserId;  // 메시지 전송자 ID
     private String messageText;  // 메시지 내용
     private LocalDateTime sentTime;  // 메시지 전송 시간
+    private int authorID;  // 메시지 작성자 ID
+
+    public int getAuthorID() {
+        return authorID;
+    }
+
+    public void setAuthorID(int authorID) {
+        this.authorID = authorID;
+    }
 
     // 기존의 Getters와 Setters
     public int getMessageId() {
