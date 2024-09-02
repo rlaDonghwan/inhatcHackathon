@@ -67,16 +67,3 @@
   <img src="이미지경로">
   <br>  <교육 시퀀스 다이어그램> 
 </p>
-
-<p align="center">
-  <img src="이미지경로">
-  <br>  <강연 시퀀스 다이어그램> 
-</p>
-
-### 사용 API 출처
-
-회원가입에서 사용한 API
-
-**금융위원회 기업기본정보 API:** https://www.data.go.kr/iim/api/selectAPIAcountView.do
-
-**커리어넷 학교 정보 API:** https://www.career.go.kr/cnet/front/openapi/openApiSchoolCenter.do
