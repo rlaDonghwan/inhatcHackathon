@@ -87,7 +87,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void run() {
                 loadChatMessages(); // 주기적으로 메시지를 로드합니다.
-                handler.postDelayed(this, 2000); // 0.5초마다 반복 실행
+                handler.postDelayed(this, 3000); // 0.5초마다 반복 실행
             }
         };
 
@@ -583,8 +583,11 @@ public class ChatActivity extends AppCompatActivity {
 
                 if (chat != null) {
                     if (chat.getAuthorID() == loggedInUserId) {
+                        // 현재 사용자가 AuthorID이면 IsAuthorMessageRead를 TRUE로 설정
                         query = "UPDATE Chat SET IsOtherUserMessageRead = TRUE WHERE ChatID = ?";
                     } else {
+                        // 현재 사용자가 OtherUserID이면 IsOtherUserMessageRead를 TRUE로 설정
+
                         query = "UPDATE Chat SET IsAuthorMessageRead = TRUE WHERE ChatID = ?";
                     }
 

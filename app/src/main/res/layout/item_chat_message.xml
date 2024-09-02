@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
-            android:backgroundTint="#BADCE9">
+            android:backgroundTint="@color/orange2">
 
             <TextView
                 android:id="@+id/msgContent1"

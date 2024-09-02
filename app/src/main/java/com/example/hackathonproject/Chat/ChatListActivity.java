@@ -153,7 +153,7 @@ public class ChatListActivity extends AppCompatActivity {
             @Override
             public void run() {
                 new LoadChatListTask(new DatabaseConnection()).execute(); // 채팅 목록을 주기적으로 로드합니다.
-                handler.postDelayed(this, 1000); // 1초마다 반복 실행
+                handler.postDelayed(this, 2000); // 1초마다 반복 실행
             }
         };
     }
