@@ -3,11 +3,11 @@
   <component name="deploymentTargetSelector">
     <selectionStates>
       <SelectionState runConfigName="app">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-09-02T00:59:34.530783Z">
+        <option name="selectionMode" value="DIALOG" />
+        <DropdownSelection timestamp="2024-09-03T11:11:10.797469Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R59R7019GXD" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/donghwan/.android/avd/Pixel_8_Pro_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -15,7 +15,7 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=R59R7019GXD" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=/Users/donghwan/.android/avd/Pixel_8_Pro_API_35.avd" />
               </handle>
             </Target>
           </targets>
